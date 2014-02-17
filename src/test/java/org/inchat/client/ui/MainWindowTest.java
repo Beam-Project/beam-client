@@ -62,10 +62,4 @@ public class MainWindowTest {
         assertEquals("spock", mainWindow.usernameButton.getText());
     }
 
-    @Test
-    public void testInitMenu() {
-        assertTrue(mainWindow.menu.getX() > 0);
-        assertTrue(mainWindow.menu.getY() > 0);
-    }
-
 }

@@ -30,7 +30,6 @@ import org.inchat.common.Config;
 public class MainWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
-    Menu menu;
 
     /**
      * Creates new form MainWindow
@@ -39,7 +38,6 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setProfileSpecificValues();
         setPosition();
-        setUpMenu();
     }
 
     private void setPosition() {
@@ -60,9 +58,6 @@ public class MainWindow extends javax.swing.JFrame {
         usernameButton.setText(username != null ? username : "");
     }
 
-    private void setUpMenu() {
-        menu = new Menu();
-   }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -108,11 +103,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/menu.png"))); // NOI18N
         menuButton.setBorderPainted(false);
-        menuButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                menuButtonMouseReleased(evt);
-            }
-        });
         menuButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuButtonActionPerformed(evt);
@@ -192,10 +182,6 @@ public class MainWindow extends javax.swing.JFrame {
         Config.setProperty(Config.Key.windowPositionX, "" + xPosition);
         Config.setProperty(Config.Key.windowPositionY, "" + yPosition);
     }//GEN-LAST:event_formComponentMoved
-
-    private void menuButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuButtonMouseReleased
-
-    }//GEN-LAST:event_menuButtonMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addUserButton;
