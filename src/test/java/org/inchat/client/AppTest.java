@@ -1,0 +1,102 @@
+/*
+ * Copyright (C) 2013, 2014 inchat.org
+ *
+ * This file is part of inchat-client.
+ *
+ * inchat-client is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * inchat-client is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.inchat.client;
+
+import java.io.File;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Ignore;
+
+public class AppTest {
+
+    private final String CONFIG_DIRECTORY = "./inchat-client-test-dir/";
+    private final String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
+    private final String DATABASE_FILE = CONFIG_DIRECTORY + "client.db";
+
+    @Before
+    public void setUp() {
+        deleteConfigs();
+
+        App.CONFIG_DIRECTORY = CONFIG_DIRECTORY;
+        App.CONFIG_FILE = CONFIG_FILE;
+        App.DATABASE_FILE = DATABASE_FILE;
+    }
+
+    @After
+    public void cleanUp() {
+        deleteConfigs();
+    }
+
+    private void deleteConfigs() {
+        File configFile = new File(CONFIG_FILE);
+        File databaseFile = new File(DATABASE_FILE);
+        File configDirectory = new File(CONFIG_DIRECTORY);
+
+        if (configFile.exists()) {
+            configFile.delete();
+        }
+
+        if (databaseFile.exists()) {
+            databaseFile.delete();
+        }
+
+        if (configDirectory.exists()) {
+            configDirectory.delete();
+        }
+    }
+
+    @Test
+    public void testOnPahtInitialization() {
+        assertNotNull(App.CONFIG_DIRECTORY);
+        assertNotNull(App.CONFIG_FILE);
+    }
+
+    @Test
+    public void testLoadConfigOnCreatingDirectory() {
+        App.loadConfig();
+
+        File configDirectory = new File(CONFIG_DIRECTORY);
+        assertTrue(configDirectory.exists());
+    }
+
+    @Test
+    public void testLoadConfigOnCreatingConfigFile() {
+        App.loadConfig();
+
+        File configFile = new File(CONFIG_FILE);
+        assertTrue(configFile.exists());
+    }
+
+    @Ignore // otherwise the window is shown
+    @Test
+    public void testMainOnLoadingConfig() {
+        App.main(null);
+
+        File configFile = new File(CONFIG_FILE);
+        assertTrue(configFile.exists());
+    }
+
+    @Test
+    public void testGetMainWindow() {
+        assertSame(App.mainWindow, App.getMainWindow());
+    }
+
+}

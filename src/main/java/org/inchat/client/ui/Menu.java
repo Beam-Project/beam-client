@@ -16,3 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.inchat.client.ui;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
+public class Menu extends JPopupMenu {
+
+    private static final long serialVersionUID = 1L;
+    JMenuItem anItem;
+
+    public Menu() {
+        anItem = new JMenuItem("Click Me!");
+        add(anItem);
+    }
+}
