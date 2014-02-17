@@ -18,9 +18,6 @@
  */
 package org.inchat.client.ui;
 
-import java.awt.Component;
-import java.awt.Event;
-import org.inchat.client.App;
 import org.inchat.common.Config;
 
 /**
