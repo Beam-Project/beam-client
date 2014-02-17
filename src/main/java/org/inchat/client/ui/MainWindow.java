@@ -55,7 +55,6 @@ public class MainWindow extends javax.swing.JFrame {
         usernameButton.setText(username != null ? username : "");
     }
 
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -97,6 +96,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         addUserButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/addContact.png"))); // NOI18N
         addUserButton.setBorderPainted(false);
+        addUserButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addUserButtonActionPerformed(evt);
+            }
+        });
 
         menuButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/menu.png"))); // NOI18N
         menuButton.setBorderPainted(false);
@@ -165,11 +169,11 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuButtonActionPerformed
-        
+
     }//GEN-LAST:event_menuButtonActionPerformed
 
     private void avatarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_avatarButtonActionPerformed
-        
+
     }//GEN-LAST:event_avatarButtonActionPerformed
 
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
@@ -179,6 +183,12 @@ public class MainWindow extends javax.swing.JFrame {
         Config.setProperty(Config.Key.windowPositionX, "" + xPosition);
         Config.setProperty(Config.Key.windowPositionY, "" + yPosition);
     }//GEN-LAST:event_formComponentMoved
+
+    private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
+        AddContactDialog dialog = new AddContactDialog();
+        Frames.setIcons(dialog);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_addUserButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addUserButton;

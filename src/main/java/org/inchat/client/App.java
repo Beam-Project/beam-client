@@ -23,6 +23,7 @@ import java.awt.EventQueue;
 import java.io.File;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.inchat.client.ui.Frames;
 import org.inchat.client.ui.MainWindow;
 import org.inchat.client.ui.SetUpDialog;
 import org.inchat.common.Config;
@@ -64,6 +65,7 @@ public class App {
             @Override
             public void run() {
                 mainWindow = new MainWindow();
+                Frames.setIcons(mainWindow);
                 mainWindow.setVisible(true);
             }
         });
@@ -86,10 +88,11 @@ public class App {
     static void loadParticipant() {
         if (!isProfileExisting()) {
             SetUpDialog dialog = new SetUpDialog();
+            Frames.setIcons(dialog);
             dialog.setLocationRelativeTo(null);
             dialog.setVisible(true);
         }
-        
+
         Config.loadOrCreateParticipant();
     }
 
@@ -99,7 +102,7 @@ public class App {
 
         return publicKey.exists();
     }
-    
+
     public static MainWindow getMainWindow() {
         return mainWindow;
     }
