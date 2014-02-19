@@ -19,6 +19,10 @@
 package org.inchat.client.ui;
 
 import java.io.File;
+import javax.swing.JButton;
+import org.inchat.client.App;
+import org.inchat.client.AppTest;
+import org.inchat.client.Model;
 import org.inchat.common.Config;
 import org.junit.After;
 import org.junit.Test;
@@ -43,6 +47,16 @@ public class MainWindowTest {
         File configFile = new File(CONFIG_FILE);
         configFile.delete();
     }
+    
+    @Test
+    public void testConstructorOnSettingModelList() {
+        Model model = new Model();
+        AppTest.setAppMdoel(model);
+        
+        mainWindow = new MainWindow();
+        
+        assertSame(model.getContactList(), mainWindow.contactList.getModel());
+    }
 
     @Test
     public void testSetPositionOnNewSetting() {
@@ -60,6 +74,38 @@ public class MainWindowTest {
         Config.setProperty(Config.Key.participantName, "spock");
         mainWindow = new MainWindow();
         assertEquals("spock", mainWindow.usernameButton.getText());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetUsernameOnNull() {
+        mainWindow.setUsername(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetUsernameOnEmptyString() {
+        mainWindow.setUsername("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetUsernameOnSpaceString() {
+        mainWindow.setUsername("   ");
+    }
+
+    @Test
+    public void testSetUsername() {
+        String username = "Timmee";
+        mainWindow.setUsername(username);
+        assertEquals(username, mainWindow.usernameButton.getText());
+    }
+
+    /**
+     * Gets the MainWindows {@link JButton} of the username for testing
+     * purposes.
+     *
+     * @return The button.
+     */
+    public static JButton getUsernameButton() {
+        return App.getMainWindow().usernameButton;
     }
 
 }

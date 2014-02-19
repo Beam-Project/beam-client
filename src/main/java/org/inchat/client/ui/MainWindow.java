@@ -18,14 +18,16 @@
  */
 package org.inchat.client.ui;
 
+import org.inchat.client.App;
 import org.inchat.common.Config;
+import org.inchat.common.util.Exceptions;
 
 /**
  *
  * @author René Bernhardsgrütter <rene.bernhardsgruetter@posteo.ch>
  */
 public class MainWindow extends javax.swing.JFrame {
-
+    
     private static final long serialVersionUID = 1L;
 
     /**
@@ -35,12 +37,13 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setProfileSpecificValues();
         setPosition();
+        initalizeContactList();
     }
-
+    
     private void setPosition() {
         String xValue = Config.getProperty(Config.Key.windowPositionX);
         String yValue = Config.getProperty(Config.Key.windowPositionY);
-
+        
         if (xValue != null && yValue != null) {
             int xPosition = Integer.valueOf(xValue);
             int yPosition = Integer.valueOf(yValue);
@@ -49,10 +52,23 @@ public class MainWindow extends javax.swing.JFrame {
             setLocationRelativeTo(null);
         }
     }
-
+    
     private void setProfileSpecificValues() {
         String username = Config.getProperty(Config.Key.participantName);
         usernameButton.setText(username != null ? username : "");
+    }
+    
+    public void setUsername(String username) {
+        Exceptions.verifyArgumentNotEmpty(username);
+        username = username.trim();
+        Exceptions.verifyArgumentNotEmpty(username);
+        System.out.println("username is: " + username);
+        
+        usernameButton.setText(username);
+    }
+    
+    private void initalizeContactList() {
+        contactList.setModel(App.getModel().getContactList());
     }
 
     /**
@@ -179,7 +195,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
         int xPosition = evt.getComponent().getX();
         int yPosition = evt.getComponent().getY();
-
+        
         Config.setProperty(Config.Key.windowPositionX, "" + xPosition);
         Config.setProperty(Config.Key.windowPositionY, "" + yPosition);
     }//GEN-LAST:event_formComponentMoved
@@ -193,7 +209,7 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addUserButton;
     private javax.swing.JButton avatarButton;
-    private javax.swing.JList contactList;
+    javax.swing.JList contactList;
     private javax.swing.JScrollPane contactListScrollPane;
     private javax.swing.JButton menuButton;
     javax.swing.JButton statusButton;
