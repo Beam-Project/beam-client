@@ -18,6 +18,12 @@
  */
 package org.inchat.client.ui;
 
+import static org.easymock.EasyMock.*;
+import org.easymock.IAnswer;
+import org.inchat.client.App;
+import org.inchat.client.AppTest;
+import org.inchat.client.Controller;
+import org.inchat.common.Contact;
 import org.inchat.common.Participant;
 import org.inchat.common.crypto.EccKeyPairGenerator;
 import org.inchat.common.transfer.UrlAssembler;
@@ -28,10 +34,67 @@ import org.junit.Before;
 public class AddContactDialogTest {
 
     private AddContactDialog dialog;
+    private Controller controller;
 
     @Before
     public void setUp() {
         dialog = new AddContactDialog();
+        controller = createMock(Controller.class);
+    }
+
+    @Test
+    public void testVerifyUrlTextAreaOnEmptyString() {
+        dialog.verifyUrlTextArea();
+        assertEquals(App.ERROR_BACKGROUND, dialog.urlTextArea.getBackground());
+    }
+
+    @Test
+    public void testVerifyUrlTextAreaOnShortUrl() {
+        dialog.urlTextArea.setText("inchat:asdf");
+        dialog.verifyUrlTextArea();
+        assertEquals(App.ERROR_BACKGROUND, dialog.urlTextArea.getBackground());
+    }
+
+    @Test
+    public void testDoneButtonOnErrorInputs() {
+        replay(controller);
+
+        AppTest.setAppController(controller);
+        dialog.doneButton.doClick();
+
+        verify(controller);
+    }
+
+    @Test
+    public void testDoneButtonOnErrorUrlTextArea() {
+        replay(controller);
+
+        AppTest.setAppController(controller);
+        dialog.doneButton.doClick();
+
+        verify(controller);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDoneButton() {
+        Participant participant = new Participant(EccKeyPairGenerator.generate());
+        controller.addContact(anyObject(Contact.class));
+        expectLastCall().andAnswer(new IAnswer() {
+            @Override
+            public Object answer() {
+                Contact argument = (Contact) getCurrentArguments()[0];
+                assertEquals("username", argument.getName());
+                return null;
+            }
+        });
+        replay(controller);
+
+        AppTest.setAppController(controller);
+        dialog.urlTextArea.setText(UrlAssembler.toUrlByServerAndClient(participant, participant, "username"));
+        dialog.doneButton.doClick();
+
+        verify(controller);
     }
 
 }
