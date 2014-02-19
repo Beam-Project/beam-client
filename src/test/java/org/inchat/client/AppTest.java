@@ -19,6 +19,7 @@
 package org.inchat.client;
 
 import java.io.File;
+import org.inchat.client.ui.MainWindow;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -64,6 +65,12 @@ public class AppTest {
     }
 
     @Test
+    public void testConstructorOnCreatingControllerAndModel() {
+        assertNotNull(App.controller);
+        assertNotNull(App.model);
+    }
+
+    @Test
     public void testOnPahtInitialization() {
         assertNotNull(App.CONFIG_DIRECTORY);
         assertNotNull(App.CONFIG_FILE);
@@ -95,8 +102,48 @@ public class AppTest {
     }
 
     @Test
+    public void testGetController() {
+        assertSame(App.controller, App.getController());
+    }
+
+    @Test
+    public void testGetModel() {
+        assertSame(App.model, App.getModel());
+    }
+
+    @Test
     public void testGetMainWindow() {
         assertSame(App.mainWindow, App.getMainWindow());
+    }
+
+    /**
+     * Overwrites the existing {@link Controller} in {@link App} for unit
+     * testing purposes.
+     *
+     * @param controller The new controller.
+     */
+    public static void setAppController(Controller controller) {
+        App.controller = controller;
+    }
+
+    /**
+     * Overwrites the existing {@link Model} in {@link App} for unit testing
+     * purposes.
+     *
+     * @param model The new model.
+     */
+    public static void setAppMdoel(Model model) {
+        App.model = model;
+    }
+
+    /**
+     * Overwrites the existing {@link MainWindow} in {@link App} for unit
+     * testing purposes.
+     *
+     * @param mainWindow The new window.
+     */
+    public static void setAppMainWindow(MainWindow mainWindow) {
+        App.mainWindow = mainWindow;
     }
 
 }

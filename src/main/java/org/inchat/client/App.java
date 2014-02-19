@@ -19,8 +19,10 @@
 package org.inchat.client;
 
 import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.File;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.inchat.client.ui.Frames;
@@ -31,11 +33,15 @@ import org.inchat.common.crypto.KeyPairStore;
 
 public class App {
 
+    public final static Color DEFAULT_BACKGROUND = null; // is really null
+    public final static Color ERROR_BACKGROUND = new Color(255, 153, 153);
     static String CONFIG_DIRECTORY = System.getProperty("user.home") + "/.inchat-client/";
     static String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
     static String DATABASE_FILE = CONFIG_DIRECTORY + "client.db";
+    static Controller controller = new Controller();
+    static Model model = new Model();
     static MainWindow mainWindow;
-
+    
     public static void main(String args[]) {
         setNativeLookAndFeel();
         showMainWindow();
@@ -101,6 +107,14 @@ public class App {
         File publicKey = new File(CONFIG_DIRECTORY + keyPairFilename + KeyPairStore.PUBILC_KEY_FILE_EXTENSION);
 
         return publicKey.exists();
+    }
+
+    public static Controller getController() {
+        return controller;
+    }
+
+    public static Model getModel() {
+        return model;
     }
 
     public static MainWindow getMainWindow() {
