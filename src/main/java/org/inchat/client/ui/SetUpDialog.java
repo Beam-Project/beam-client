@@ -18,8 +18,7 @@
  */
 package org.inchat.client.ui;
 
-import java.awt.Color;
-import org.inchat.common.Config;
+import org.inchat.client.App;
 
 /**
  *
@@ -28,6 +27,8 @@ import org.inchat.common.Config;
 public class SetUpDialog extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
+    private String username;
+    boolean isUsernameValid;
 
     /**
      * Creates new form SetUpDialog
@@ -54,12 +55,13 @@ public class SetUpDialog extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Username");
         setAlwaysOnTop(true);
+        setPreferredSize(new java.awt.Dimension(400, 139));
         setResizable(false);
 
         titleLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         titleLabel.setText("What's Your Name?");
 
-        textLabel.setText("<html>Please pick a username for your new profile. This will be displayed publicly and is not a secret. You can change this always.</html>");
+        textLabel.setText("Please pick a username for your profile. ");
 
         usernameLabel.setText("Username:");
 
@@ -77,10 +79,10 @@ public class SetUpDialog extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                    .addComponent(textLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(textLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(usernameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(usernameTextField))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -94,35 +96,45 @@ public class SetUpDialog extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(titleLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(textLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(usernameLabel)
                     .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(doneButton)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
-        String username = usernameTextField.getText();
+        verifyUsername();
 
-        if (username != null && !username.isEmpty()) {
-            Config.setProperty(Config.Key.participantName, username);
+        if (isUsernameValid) {
+            App.getController().changeUsername(username);
             dispose();
-        } else {
-            usernameTextField.setBackground(Color.red);
         }
     }//GEN-LAST:event_doneButtonActionPerformed
 
+    void verifyUsername() {
+        username = usernameTextField.getText().trim();
+
+        if (username.isEmpty()) {
+            Components.setErrorBackground(usernameTextField);
+            isUsernameValid = false;
+        } else {
+            Components.setDefalutBackground(usernameTextField);
+            isUsernameValid = true;
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton doneButton;
+    javax.swing.JButton doneButton;
     private javax.swing.JLabel textLabel;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel usernameLabel;
-    private javax.swing.JTextField usernameTextField;
+    javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
 }
