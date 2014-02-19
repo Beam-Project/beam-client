@@ -19,7 +19,6 @@
 package org.inchat.client;
 
 import java.io.File;
-import javax.swing.ListModel;
 import static org.easymock.EasyMock.*;
 import org.inchat.client.ui.MainWindow;
 import org.inchat.client.ui.MainWindowTest;
