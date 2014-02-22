@@ -19,6 +19,7 @@
 package org.inchat.client;
 
 import java.io.File;
+import javax.swing.DefaultListModel;
 import static org.easymock.EasyMock.*;
 import org.inchat.client.ui.MainWindow;
 import org.inchat.client.ui.MainWindowTest;
@@ -48,7 +49,7 @@ public class ControllerTest {
 
     @Test
     public void testChangeUsername() {
-        replay(model, contact);
+        replay(contact);
         String username = "Timmeeee";
         String filename = "username.conf";
         File configFile = new File(filename);
@@ -65,7 +66,7 @@ public class ControllerTest {
 
         configFile.delete();
         
-        verify(model, contact);
+        verify(contact);
     }
 
     private void testChangeUsernameOnWritingConfigProperty(String username) {
