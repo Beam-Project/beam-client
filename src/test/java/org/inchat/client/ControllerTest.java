@@ -42,7 +42,13 @@ public class ControllerTest {
     }
 
     @Test
+    public void testConstructorOnInstatiation() {
+        assertTrue(controller.conversationWindows.isEmpty());
+    }
+
+    @Test
     public void testChangeUsername() {
+        replay(model, contact);
         String username = "Timmeeee";
         String filename = "username.conf";
         File configFile = new File(filename);
@@ -58,6 +64,8 @@ public class ControllerTest {
         testChangeUsernameOnUpdatingGui(username);
 
         configFile.delete();
+        
+        verify(model, contact);
     }
 
     private void testChangeUsernameOnWritingConfigProperty(String username) {
@@ -90,5 +98,24 @@ public class ControllerTest {
         controller.addContact(contact);
 
         verify(model);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testOpenConversationWindowOnNull() {
+        controller.openConversationWindow(null);
+    }
+
+    @Test
+    public void testOpenConversationWindow() {
+        expect(contact.getName()).andReturn("myname");
+        replay(contact);
+
+        assertTrue(controller.conversationWindows.isEmpty());
+        controller.openConversationWindow(contact);
+        assertEquals(1, controller.conversationWindows.size());
+        assertTrue(controller.conversationWindows.get(0).isVisible());
+        assertSame(contact, controller.conversationWindows.get(0).getContact());
+
+        verify(contact);
     }
 }

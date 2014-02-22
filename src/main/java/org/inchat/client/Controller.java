@@ -18,6 +18,10 @@
  */
 package org.inchat.client;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.inchat.client.ui.ConversationWindow;
+import org.inchat.client.ui.Frames;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
 
@@ -27,6 +31,8 @@ import org.inchat.common.Contact;
  */
 public class Controller {
     
+    List<ConversationWindow> conversationWindows = new ArrayList<>();
+    
     public void changeUsername(String username) {
         Config.setProperty(Config.Key.participantName, username);
         App.getMainWindow().setUsername(username);
@@ -34,5 +40,13 @@ public class Controller {
     
     public void addContact(Contact contact) {
         App.getModel().addContact(contact);
+    }
+    
+    public void openConversationWindow(Contact contact) {
+        ConversationWindow window = new ConversationWindow();
+        Frames.setIcons(window);
+        window.setContact(contact);
+        conversationWindows.add(window);
+        window.setVisible(true);
     }
 }
