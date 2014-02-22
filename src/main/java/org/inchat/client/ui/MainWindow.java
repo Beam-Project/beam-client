@@ -20,6 +20,7 @@ package org.inchat.client.ui;
 
 import org.inchat.client.App;
 import org.inchat.common.Config;
+import org.inchat.common.Contact;
 import org.inchat.common.util.Exceptions;
 
 /**
@@ -27,8 +28,9 @@ import org.inchat.common.util.Exceptions;
  * @author René Bernhardsgrütter <rene.bernhardsgruetter@posteo.ch>
  */
 public class MainWindow extends javax.swing.JFrame {
-    
+
     private static final long serialVersionUID = 1L;
+    private final int DOUBLE_CLICK_NUMBER = 2;
 
     /**
      * Creates new form MainWindow
@@ -39,11 +41,11 @@ public class MainWindow extends javax.swing.JFrame {
         setPosition();
         initalizeContactList();
     }
-    
+
     private void setPosition() {
         String xValue = Config.getProperty(Config.Key.windowPositionX);
         String yValue = Config.getProperty(Config.Key.windowPositionY);
-        
+
         if (xValue != null && yValue != null) {
             int xPosition = Integer.valueOf(xValue);
             int yPosition = Integer.valueOf(yValue);
@@ -52,21 +54,22 @@ public class MainWindow extends javax.swing.JFrame {
             setLocationRelativeTo(null);
         }
     }
-    
+
     private void setProfileSpecificValues() {
         String username = Config.getProperty(Config.Key.participantName);
         usernameButton.setText(username != null ? username : "");
     }
-    
+
     public void setUsername(String username) {
         Exceptions.verifyArgumentNotEmpty(username);
         username = username.trim();
         Exceptions.verifyArgumentNotEmpty(username);
         System.out.println("username is: " + username);
-        
+
         usernameButton.setText(username);
     }
-    
+
+    @SuppressWarnings("unchecked")
     private void initalizeContactList() {
         contactList.setModel(App.getModel().getContactList());
     }
@@ -163,6 +166,11 @@ public class MainWindow extends javax.swing.JFrame {
             public Object getElementAt(int i) { return strings[i]; }
         });
         contactList.setMaximumSize(new java.awt.Dimension(999999999, 99999999));
+        contactList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                contactListMouseClicked(evt);
+            }
+        });
         contactListScrollPane.setViewportView(contactList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -195,7 +203,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
         int xPosition = evt.getComponent().getX();
         int yPosition = evt.getComponent().getY();
-        
+
         Config.setProperty(Config.Key.windowPositionX, "" + xPosition);
         Config.setProperty(Config.Key.windowPositionY, "" + yPosition);
     }//GEN-LAST:event_formComponentMoved
@@ -205,6 +213,13 @@ public class MainWindow extends javax.swing.JFrame {
         Frames.setIcons(dialog);
         dialog.setVisible(true);
     }//GEN-LAST:event_addUserButtonActionPerformed
+
+    private void contactListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_contactListMouseClicked
+        if (evt.getClickCount() == DOUBLE_CLICK_NUMBER) {
+            Contact selectedContect = (Contact) contactList.getSelectedValue();
+            App.getController().openConversationWindow(selectedContect);
+        }
+    }//GEN-LAST:event_contactListMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addUserButton;

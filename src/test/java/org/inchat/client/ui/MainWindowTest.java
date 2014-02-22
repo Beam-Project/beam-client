@@ -47,14 +47,14 @@ public class MainWindowTest {
         File configFile = new File(CONFIG_FILE);
         configFile.delete();
     }
-    
+
     @Test
     public void testConstructorOnSettingModelList() {
         Model model = new Model();
         AppTest.setAppMdoel(model);
-        
+
         mainWindow = new MainWindow();
-        
+
         assertSame(model.getContactList(), mainWindow.contactList.getModel());
     }
 
