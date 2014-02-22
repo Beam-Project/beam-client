@@ -27,6 +27,9 @@ import org.inchat.common.util.Exceptions;
  */
 public class Components {
 
+    public final static int TAB_KEY_CODE = 9;
+    public final static int ENTER_KEY_CODE = 10;
+
     private Components() {
         // Static access only.
     }
