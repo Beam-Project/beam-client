@@ -30,15 +30,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="introductionLabel" max="32767" attributes="0"/>
                   <Component id="titleLabel" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Component id="urlLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="urlScrollPane" max="32767" attributes="0"/>
-                  </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="doneButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="addButton" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <Component id="urlScrollPane" alignment="1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -52,12 +48,9 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="introductionLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="urlLabel" min="-2" max="-2" attributes="0"/>
-                  <Component id="urlScrollPane" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="urlScrollPane" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="doneButton" min="-2" max="-2" attributes="0"/>
+              <Component id="addButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -74,12 +67,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="introductionLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Copy &amp; Paste the inchat URL of the contact you want to add in the filed below."/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="urlLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="inchat URL:"/>
+        <Property name="text" type="java.lang.String" value="Copy &amp; Paste the inchat URL of the contact you want to add to the filed:"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="urlScrollPane">
@@ -95,18 +83,21 @@
             <Property name="lineWrap" type="boolean" value="true"/>
             <Property name="rows" type="int" value="5"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="urlTextAreaKeyPressed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="doneButton">
+    <Component class="javax.swing.JButton" name="addButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Done"/>
+        <Property name="text" type="java.lang.String" value="Add"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="doneButtonActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addButtonActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>

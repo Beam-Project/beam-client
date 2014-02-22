@@ -53,10 +53,9 @@ public class AddContactDialog extends javax.swing.JFrame {
 
         titleLabel = new javax.swing.JLabel();
         introductionLabel = new javax.swing.JLabel();
-        urlLabel = new javax.swing.JLabel();
         urlScrollPane = new javax.swing.JScrollPane();
         urlTextArea = new javax.swing.JTextArea();
-        doneButton = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add a Contact");
@@ -65,19 +64,22 @@ public class AddContactDialog extends javax.swing.JFrame {
         titleLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         titleLabel.setText("Add a Contact");
 
-        introductionLabel.setText("Copy & Paste the inchat URL of the contact you want to add in the filed below.");
-
-        urlLabel.setText("inchat URL:");
+        introductionLabel.setText("Copy & Paste the inchat URL of the contact you want to add to the filed:");
 
         urlTextArea.setColumns(20);
         urlTextArea.setLineWrap(true);
         urlTextArea.setRows(5);
+        urlTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                urlTextAreaKeyPressed(evt);
+            }
+        });
         urlScrollPane.setViewportView(urlTextArea);
 
-        doneButton.setText("Done");
-        doneButton.addActionListener(new java.awt.event.ActionListener() {
+        addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                doneButtonActionPerformed(evt);
+                addButtonActionPerformed(evt);
             }
         });
 
@@ -90,13 +92,10 @@ public class AddContactDialog extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(introductionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(urlLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(urlScrollPane))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(doneButton)))
+                        .addComponent(addButton))
+                    .addComponent(urlScrollPane, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -107,25 +106,41 @@ public class AddContactDialog extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(introductionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(urlLabel)
-                    .addComponent(urlScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(urlScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(doneButton)
+                .addComponent(addButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+        trimUrl();
         verifyUrlTextArea();
 
         if (!isErrorInUrlTextArea && !isErrorInNameTextField) {
             App.getController().addContact(contact);
             dispose();
         }
-    }//GEN-LAST:event_doneButtonActionPerformed
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void trimUrl() {
+        urlTextArea.setText(urlTextArea.getText().trim());
+    }
+
+    private void urlTextAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_urlTextAreaKeyPressed
+        switch (evt.getKeyCode()) {
+            case Components.TAB_KEY_CODE:
+                addButton.requestFocus();
+                evt.consume();
+                break;
+            case Components.ENTER_KEY_CODE:
+                addButton.doClick();
+                evt.consume();
+                break;
+        }
+    }//GEN-LAST:event_urlTextAreaKeyPressed
 
     void verifyUrlTextArea() {
         try {
@@ -139,10 +154,9 @@ public class AddContactDialog extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    javax.swing.JButton doneButton;
+    javax.swing.JButton addButton;
     private javax.swing.JLabel introductionLabel;
     private javax.swing.JLabel titleLabel;
-    private javax.swing.JLabel urlLabel;
     private javax.swing.JScrollPane urlScrollPane;
     javax.swing.JTextArea urlTextArea;
     // End of variables declaration//GEN-END:variables

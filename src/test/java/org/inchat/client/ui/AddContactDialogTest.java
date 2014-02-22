@@ -56,28 +56,59 @@ public class AddContactDialogTest {
     }
 
     @Test
-    public void testDoneButtonOnErrorInputs() {
+    public void testAddButtonOnErrorInputs() {
         replay(controller);
 
         AppTest.setAppController(controller);
-        dialog.doneButton.doClick();
+        dialog.addButton.doClick();
 
         verify(controller);
     }
 
     @Test
-    public void testDoneButtonOnErrorUrlTextArea() {
+    public void testAddButtonOnErrorUrlTextArea() {
         replay(controller);
 
         AppTest.setAppController(controller);
-        dialog.doneButton.doClick();
+        dialog.addButton.doClick();
+
+        verify(controller);
+    }
+
+    @Test
+    public void testAddButtonOnTrimmingWithWrongUrl() {
+        replay(controller);
+
+        AppTest.setAppController(controller);
+        String untrimmed = "         text to trim    \n         ";
+        String trimmed = "text to trim";
+        dialog.urlTextArea.setText(untrimmed);
+        dialog.addButton.doClick();
+        assertEquals(trimmed, dialog.urlTextArea.getText());
+
+        verify(controller);
+    }
+
+    @Test
+    public void testAddButtonOnTrimmingWithCorrectUrl() {
+        Participant participant = new Participant(EccKeyPairGenerator.generate());
+        String url = UrlAssembler.toUrlByServerAndClient(participant, participant, "myname");
+
+        controller.addContact(anyObject(Contact.class));
+        expectLastCall().once();
+        replay(controller);
+
+        AppTest.setAppController(controller);
+        String untrimmed = "    " + url + "    ";
+        dialog.urlTextArea.setText(untrimmed);
+        dialog.addButton.doClick();
 
         verify(controller);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testDoneButton() {
+    public void testAddButton() {
         Participant participant = new Participant(EccKeyPairGenerator.generate());
         controller.addContact(anyObject(Contact.class));
         expectLastCall().andAnswer(new IAnswer() {
@@ -92,7 +123,7 @@ public class AddContactDialogTest {
 
         AppTest.setAppController(controller);
         dialog.urlTextArea.setText(UrlAssembler.toUrlByServerAndClient(participant, participant, "username"));
-        dialog.doneButton.doClick();
+        dialog.addButton.doClick();
 
         verify(controller);
     }
