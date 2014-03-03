@@ -18,6 +18,7 @@
  */
 package org.inchat.client.ui;
 
+import org.inchat.client.ui.settings.SettingsWindow;
 import org.inchat.client.App;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
@@ -193,7 +194,9 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuButtonActionPerformed
-
+        SettingsWindow settingsWindow = new SettingsWindow();
+        Frames.setIcons(settingsWindow);
+        settingsWindow.setVisible(true);
     }//GEN-LAST:event_menuButtonActionPerformed
 
     private void avatarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_avatarButtonActionPerformed
