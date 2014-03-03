@@ -18,6 +18,15 @@
  */
 package org.inchat.client.ui;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import org.inchat.client.App;
 import org.inchat.common.Contact;
 import org.inchat.common.util.Exceptions;
 
@@ -30,13 +39,52 @@ public class ConversationWindow extends javax.swing.JFrame {
     private static final long serialVersionUID = 1L;
     private final String AND_YOU = "and you";
     Contact contact;
+    DefaultListModel<String> messagesModel;
 
     /**
      * Creates new form ConversationWindow
      */
     public ConversationWindow() {
         initComponents();
+        initMessages();
         setLocationRelativeTo(null);
+        messageTextArea.requestFocus();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private void initMessages() {
+        messagesModel = new DefaultListModel<>();
+        messages.setModel(messagesModel);
+        messages.setCellRenderer(new DefaultListCellRenderer() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Component getListCellRendererComponent(
+                    final JList list,
+                    final Object value,
+                    final int index,
+                    final boolean isSelected,
+                    final boolean hasFocus) {
+                final String text = (String) value;
+                final JPanel panel = new JPanel();
+                panel.setLayout(new BorderLayout());
+
+                final JPanel iconPanel = new JPanel(new BorderLayout());
+                final JLabel label = new JLabel(""); //<-- this will be an icon instead of a text
+                iconPanel.add(label, BorderLayout.NORTH);
+                panel.add(iconPanel, BorderLayout.WEST);
+
+                final JTextArea textArea = new JTextArea();
+                textArea.setText(text);
+                textArea.setLineWrap(true);
+                textArea.setWrapStyleWord(true);
+                textArea.setRows(textArea.getLineCount());
+                textArea.validate();
+                panel.add(textArea, BorderLayout.CENTER);
+
+                return panel;
+            }
+        });
     }
 
     public void setContact(Contact contact) {
@@ -67,16 +115,18 @@ public class ConversationWindow extends javax.swing.JFrame {
         messageScrollPane = new javax.swing.JScrollPane();
         messageTextArea = new javax.swing.JTextArea();
         sendButton = new javax.swing.JButton();
-        conversationScrollPane = new javax.swing.JScrollPane();
-        conversationEditorPane = new javax.swing.JEditorPane();
+        messagesScrollPane = new javax.swing.JScrollPane();
+        messages = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Conversation");
+        setMinimumSize(new java.awt.Dimension(400, 400));
 
         namesLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
         namesLabel.setText("Names");
 
         messageTextArea.setColumns(20);
+        messageTextArea.setLineWrap(true);
         messageTextArea.setRows(4);
         messageTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -93,9 +143,8 @@ public class ConversationWindow extends javax.swing.JFrame {
             }
         });
 
-        conversationEditorPane.setEditable(false);
-        conversationEditorPane.setContentType("text/html"); // NOI18N
-        conversationScrollPane.setViewportView(conversationEditorPane);
+        messages.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        messagesScrollPane.setViewportView(messages);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -104,14 +153,14 @@ public class ConversationWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(conversationScrollPane)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(messageScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                        .addComponent(messageScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sendButton, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                        .addComponent(sendButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(namesLabel)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(messagesScrollPane))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -120,11 +169,11 @@ public class ConversationWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(namesLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(conversationScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                .addComponent(messagesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(sendButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(messageScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
+                    .addComponent(messageScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -132,8 +181,19 @@ public class ConversationWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
-        // TODO add your handling code here:
+        String message = messageTextArea.getText().trim();
+
+        if (message.length() > 0) {
+            updateWindowWithMessage(message);
+            App.getController().sendMessage(contact, message);
+        }
     }//GEN-LAST:event_sendButtonActionPerformed
+
+    void updateWindowWithMessage(String message) {
+        messagesModel.addElement(message);
+        messages.ensureIndexIsVisible(messagesModel.getSize() - 1);
+        messageTextArea.setText("");
+    }
 
     private void messageTextAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_messageTextAreaKeyPressed
         switch (evt.getKeyCode()) {
@@ -149,11 +209,11 @@ public class ConversationWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_messageTextAreaKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JEditorPane conversationEditorPane;
-    private javax.swing.JScrollPane conversationScrollPane;
     private javax.swing.JScrollPane messageScrollPane;
-    private javax.swing.JTextArea messageTextArea;
+    javax.swing.JTextArea messageTextArea;
+    javax.swing.JList messages;
+    private javax.swing.JScrollPane messagesScrollPane;
     javax.swing.JLabel namesLabel;
-    private javax.swing.JButton sendButton;
+    javax.swing.JButton sendButton;
     // End of variables declaration//GEN-END:variables
 }

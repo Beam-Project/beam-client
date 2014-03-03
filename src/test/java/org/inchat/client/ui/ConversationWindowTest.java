@@ -19,6 +19,8 @@
 package org.inchat.client.ui;
 
 import static org.easymock.EasyMock.*;
+import org.inchat.client.AppTest;
+import org.inchat.client.Controller;
 import org.inchat.common.Contact;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -68,6 +70,42 @@ public class ConversationWindowTest {
 
         assertEquals(NAME + " and you", window.namesLabel.getText());
         verify(contact);
+    }
+
+    @Test
+    public void testSendButtonActionPerformedOnEmptyInput() {
+        replay(contact);
+        Controller controller = createMock(Controller.class);
+        replay(controller);
+        String input = "     \t   ";
+
+        AppTest.setAppController(controller);
+        window.messageTextArea.setText(input);
+        assertEquals(0, window.messages.getModel().getSize());
+
+        window.sendButton.doClick();
+
+        assertEquals(0, window.messages.getModel().getSize());
+        assertEquals(input, window.messageTextArea.getText());
+        verify(controller);
+    }
+
+    @Test
+    public void testSendButtonActionPerformed() {
+        replay(contact);
+        Controller controller = createMock(Controller.class);
+        controller.sendMessage(anyObject(Contact.class), anyString());
+        expectLastCall().anyTimes();
+        replay(controller);
+
+        AppTest.setAppController(controller);
+        window.messageTextArea.setText("  hello \t ");
+        assertEquals(0, window.messages.getModel().getSize());
+
+        window.sendButton.doClick();
+        assertEquals("hello", window.messagesModel.get(0));
+        assertTrue(window.messageTextArea.getText().isEmpty());
+        verify(controller);
     }
 
 }
