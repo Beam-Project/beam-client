@@ -20,25 +20,36 @@ package org.inchat.client;
 
 import java.io.File;
 import static org.easymock.EasyMock.*;
+import org.inchat.client.storage.Storage;
 import org.inchat.client.ui.MainWindow;
 import org.inchat.client.ui.MainWindowTest;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
+import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
 public class ControllerTest {
 
+    private final String CONTACTS_STORAGE_FILE = "contacts.storage";
     private Controller controller;
     private Model model;
     private Contact contact;
+    private File contactsStorageFile;
 
     @Before
     public void setUp() {
+        App.CONTACTS_STORAGE_FILE = CONTACTS_STORAGE_FILE;
+        contactsStorageFile = new File(CONTACTS_STORAGE_FILE);
         controller = new Controller();
         model = createMock(Model.class);
         contact = createMock(Contact.class);
+    }
+
+    @After
+    public void cleanUp() {
+        contactsStorageFile.delete();
     }
 
     @Test
@@ -64,7 +75,7 @@ public class ControllerTest {
         testChangeUsernameOnUpdatingGui(username);
 
         configFile.delete();
-        
+
         verify(contact);
     }
 
@@ -80,6 +91,8 @@ public class ControllerTest {
     public void testAddContactOnInvocingModelOnNull() {
         model.addContact(anyObject(Contact.class));
         expectLastCall().once();
+        expect(model.getContactListStorage()).andReturn(new Storage<ContactList>(CONTACTS_STORAGE_FILE)).anyTimes();
+        expect(model.getContactList()).andReturn(new ContactList());
         replay(model);
 
         AppTest.setAppMdoel(model);
@@ -89,13 +102,17 @@ public class ControllerTest {
     }
 
     @Test
-    public void testAddContactOnInvocingModel() {
+    public void testAddContact() {
         model.addContact(anyObject(Contact.class));
         expectLastCall().once();
+        expect(model.getContactListStorage()).andReturn(new Storage<ContactList>(CONTACTS_STORAGE_FILE)).anyTimes();
+        expect(model.getContactList()).andReturn(new ContactList());
         replay(model, contact);
 
+        assertFalse(contactsStorageFile.exists());
         AppTest.setAppMdoel(model);
         controller.addContact(contact);
+        assertTrue(contactsStorageFile.exists());
 
         verify(model);
     }
@@ -118,4 +135,45 @@ public class ControllerTest {
 
         verify(contact);
     }
+
+    @Test
+    public void testLoadContactStorageOnNewFile() {
+        App.model = new Model();
+        assertNull(App.model.contactListStorage);
+        assertFalse(contactsStorageFile.exists());
+
+        controller.readContactListStorage();
+        assertNotNull(App.model.contactListStorage);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testWriteContactStorageOnNotExistingStorage() {
+        App.model = new Model();
+        controller.writeContactListStorage();
+    }
+
+    @Test
+    public void testWriteContactStorage() {
+        assertFalse(contactsStorageFile.exists());
+        testLoadContactStorageOnNewFile();
+
+        controller.writeContactListStorage();
+        assertTrue(contactsStorageFile.exists());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSendMessageOnNulls() {
+        controller.sendMessage(null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSendMessageOnNullTarget() {
+        controller.sendMessage(null, "message");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSendMessageOnEmptyMessage() {
+        controller.sendMessage(contact, "");
+    }
+
 }
