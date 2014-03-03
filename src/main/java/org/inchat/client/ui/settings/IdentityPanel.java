@@ -18,12 +18,20 @@
  */
 package org.inchat.client.ui.settings;
 
+import org.inchat.client.App;
+import org.inchat.common.Config;
+
 public class IdentityPanel extends javax.swing.JPanel {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     public IdentityPanel() {
         initComponents();
+        loadName();
+    }
+    
+    private void loadName() {
+        nameTextField.setText(Config.getProperty(Config.Key.participantName));
     }
 
     /**
@@ -35,28 +43,146 @@ public class IdentityPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        nameLabel = new javax.swing.JLabel();
+        nameTextField = new javax.swing.JTextField();
+        keyMaterialLabel = new javax.swing.JLabel();
+        publicKeyLabel = new javax.swing.JLabel();
+        publicKeyTextField = new javax.swing.JTextField();
+        privateKeyLabel = new javax.swing.JLabel();
+        privateKeyTextField = new javax.swing.JTextField();
+        decryptPrivateKeyButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        jRadioButton3 = new javax.swing.JRadioButton();
 
-        jLabel1.setText("Identity Panel");
+        nameLabel.setText("Your Name:");
+
+        nameTextField.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                nameTextFieldPropertyChange(evt);
+            }
+        });
+
+        keyMaterialLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        keyMaterialLabel.setText("Key Material");
+
+        publicKeyLabel.setText("Public Key:");
+
+        publicKeyTextField.setEditable(false);
+
+        privateKeyLabel.setText("Private Key:");
+
+        privateKeyTextField.setEditable(false);
+        privateKeyTextField.setFont(new java.awt.Font("Ubuntu", 2, 13)); // NOI18N
+        privateKeyTextField.setText("encrypted");
+
+        decryptPrivateKeyButton.setText("Decrypt...");
+        decryptPrivateKeyButton.setEnabled(false);
+
+        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        jLabel1.setText("Master Password");
+
+        jRadioButton1.setSelected(true);
+        jRadioButton1.setText("Store password in cleartext");
+        jRadioButton1.setEnabled(false);
+
+        jRadioButton2.setText("Use system key ring");
+        jRadioButton2.setEnabled(false);
+
+        jRadioButton3.setText("Ask at every application start");
+        jRadioButton3.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addGap(0, 315, Short.MAX_VALUE))
+                .addComponent(nameLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nameTextField))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(privateKeyLabel)
+                    .addComponent(publicKeyLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(privateKeyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(decryptPrivateKeyButton))
+                    .addComponent(publicKeyTextField)))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButton1)
+                            .addComponent(jRadioButton2)
+                            .addComponent(jRadioButton3)))
+                    .addComponent(keyMaterialLabel))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nameLabel)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
-                .addGap(0, 284, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton3)
+                .addGap(18, 18, 18)
+                .addComponent(keyMaterialLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(publicKeyLabel)
+                    .addComponent(publicKeyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(privateKeyLabel)
+                    .addComponent(privateKeyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(decryptPrivateKeyButton))
+                .addGap(54, 54, 54))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void nameTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_nameTextFieldPropertyChange
+        String name = nameTextField.getText().trim();
+        
+        if (isNameValid(name)) {
+            App.getController().changeUsername(name);
+        }
+    }//GEN-LAST:event_nameTextFieldPropertyChange
+    
+    boolean isNameValid(String name) {
+        if (name == null) {
+            return false;
+        }
+        
+        String trimmedName = name.trim();
+        return !trimmedName.isEmpty() && trimmedName.equals(name);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton decryptPrivateKeyButton;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButton3;
+    private javax.swing.JLabel keyMaterialLabel;
+    private javax.swing.JLabel nameLabel;
+    javax.swing.JTextField nameTextField;
+    private javax.swing.JLabel privateKeyLabel;
+    private javax.swing.JTextField privateKeyTextField;
+    private javax.swing.JLabel publicKeyLabel;
+    private javax.swing.JTextField publicKeyTextField;
     // End of variables declaration//GEN-END:variables
 }
