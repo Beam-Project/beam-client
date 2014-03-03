@@ -18,6 +18,7 @@
  */
 package org.inchat.client.storage;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -99,6 +100,18 @@ public class Storage<T extends Serializable> {
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         Object restoredObject = objectInputStream.readObject();
         return classType.cast(restoredObject);
+    }
+
+    /**
+     * Checks if a storage file at the configured storage path can be found or
+     * not. This does not test whether the file contains a serialized Java
+     * object, nor if it is of the correct type!
+     *
+     * @return True, if a storage file is existing, otherwise false.
+     */
+    public boolean isExisting() {
+        File storage = new File(storagePath);
+        return storage.exists();
     }
 
 }

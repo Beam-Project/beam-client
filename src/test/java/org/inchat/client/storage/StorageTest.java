@@ -107,4 +107,17 @@ public class StorageTest {
         Integer restoredInt = restorer.restore(Integer.class);
     }
 
+    @Test
+    public void testIsStorageExisting() {
+        Storage<String> readerStorage = new Storage<>(STOROGE_PATH);
+
+        assertFalse(storageFile.exists());
+        assertFalse(storage.isExisting());
+        assertFalse(readerStorage.isExisting());
+
+        storage.store(STOROGE_OBJECT);
+        assertTrue(storage.isExisting());
+        assertTrue(readerStorage.isExisting());
+    }
+
 }
