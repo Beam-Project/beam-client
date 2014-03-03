@@ -51,10 +51,10 @@ public class IdentityPanel extends javax.swing.JPanel {
         privateKeyLabel = new javax.swing.JLabel();
         privateKeyTextField = new javax.swing.JTextField();
         decryptPrivateKeyButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        masterPasswordLabel = new javax.swing.JLabel();
+        passwordInClearTextRadioButton = new javax.swing.JRadioButton();
+        keyRingRadioButton = new javax.swing.JRadioButton();
+        askForPasswordRadioButton = new javax.swing.JRadioButton();
 
         nameLabel.setText("Your Name:");
 
@@ -80,18 +80,18 @@ public class IdentityPanel extends javax.swing.JPanel {
         decryptPrivateKeyButton.setText("Decrypt...");
         decryptPrivateKeyButton.setEnabled(false);
 
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
-        jLabel1.setText("Master Password");
+        masterPasswordLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        masterPasswordLabel.setText("Master Password");
 
-        jRadioButton1.setSelected(true);
-        jRadioButton1.setText("Store password in cleartext");
-        jRadioButton1.setEnabled(false);
+        passwordInClearTextRadioButton.setSelected(true);
+        passwordInClearTextRadioButton.setText("Store password in cleartext");
+        passwordInClearTextRadioButton.setEnabled(false);
 
-        jRadioButton2.setText("Use system key ring");
-        jRadioButton2.setEnabled(false);
+        keyRingRadioButton.setText("Use system key ring");
+        keyRingRadioButton.setEnabled(false);
 
-        jRadioButton3.setText("Ask at every application start");
-        jRadioButton3.setEnabled(false);
+        askForPasswordRadioButton.setText("Ask at every application start");
+        askForPasswordRadioButton.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -115,13 +115,13 @@ public class IdentityPanel extends javax.swing.JPanel {
                     .addComponent(publicKeyTextField)))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
+                    .addComponent(masterPasswordLabel)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton1)
-                            .addComponent(jRadioButton2)
-                            .addComponent(jRadioButton3)))
+                            .addComponent(passwordInClearTextRadioButton)
+                            .addComponent(keyRingRadioButton)
+                            .addComponent(askForPasswordRadioButton)))
                     .addComponent(keyMaterialLabel))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -132,13 +132,13 @@ public class IdentityPanel extends javax.swing.JPanel {
                     .addComponent(nameLabel)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel1)
+                .addComponent(masterPasswordLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton1)
+                .addComponent(passwordInClearTextRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton2)
+                .addComponent(keyRingRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton3)
+                .addComponent(askForPasswordRadioButton)
                 .addGap(18, 18, 18)
                 .addComponent(keyMaterialLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -172,14 +172,14 @@ public class IdentityPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton askForPasswordRadioButton;
     private javax.swing.JButton decryptPrivateKeyButton;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JLabel keyMaterialLabel;
+    private javax.swing.JRadioButton keyRingRadioButton;
+    private javax.swing.JLabel masterPasswordLabel;
     private javax.swing.JLabel nameLabel;
     javax.swing.JTextField nameTextField;
+    private javax.swing.JRadioButton passwordInClearTextRadioButton;
     private javax.swing.JLabel privateKeyLabel;
     private javax.swing.JTextField privateKeyTextField;
     private javax.swing.JLabel publicKeyLabel;
