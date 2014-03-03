@@ -19,6 +19,7 @@
 package org.inchat.client;
 
 import static org.easymock.EasyMock.*;
+import org.inchat.client.storage.Storage;
 import org.inchat.common.Contact;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -56,6 +57,20 @@ public class ModelTest {
     @Test
     public void testGetContactList() {
         assertEquals(model.contactList, model.getContactList());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetContactListStorageOnNull() {
+        model.setContactListStorage(null);
+    }
+
+    @Test
+    public void testSetAndGetContactListStorageOnAssignment() {
+        Storage<ContactList> storage = new Storage<>("hello");
+        model.setContactListStorage(storage);
+        assertSame(storage, model.contactListStorage);
+
+        assertSame(storage, model.getContactListStorage());
     }
 
 }

@@ -18,22 +18,38 @@
  */
 package org.inchat.client;
 
-import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
+import org.inchat.client.storage.Storage;
 import org.inchat.common.Contact;
 import org.inchat.common.util.Exceptions;
 
 public class Model {
 
-    DefaultListModel<Contact> contactList = new DefaultListModel<>();
+    Storage<ContactList> contactListStorage;
+    ContactList contactList = new ContactList();
 
     public void addContact(Contact contact) {
         Exceptions.verifyArgumentNotNull(contact);
 
         contactList.addElement(contact);
     }
-    
-    public ListModel<Contact> getContactList() {
+
+    public ContactList getContactList() {
         return contactList;
+    }
+
+    /**
+     * Sets the given storage to this {@link Model}.
+     *
+     * @param storage This may not be null.
+     * @throws IllegalArgumentException If the argument is null.
+     */
+    public void setContactListStorage(Storage<ContactList> storage) {
+        Exceptions.verifyArgumentNotNull(storage);
+
+        this.contactListStorage = storage;
+    }
+
+    public Storage<ContactList> getContactListStorage() {
+        return contactListStorage;
     }
 }
