@@ -59,7 +59,10 @@ public class ControllerTest {
 
     @Test
     public void testChangeUsername() {
-        replay(contact);
+        expect(model.getContactList()).andReturn(new ContactList());
+        App.model = model;
+        replay(contact, model);
+        
         String username = "Timmeeee";
         String filename = "username.conf";
         File configFile = new File(filename);
@@ -76,7 +79,7 @@ public class ControllerTest {
 
         configFile.delete();
 
-        verify(contact);
+        verify(contact, model);
     }
 
     private void testChangeUsernameOnWritingConfigProperty(String username) {
