@@ -30,6 +30,9 @@ import org.inchat.client.ui.SetUpDialog;
 import org.inchat.common.Config;
 import org.inchat.common.crypto.KeyPairStore;
 
+/**
+ * The main class of this application.
+ */
 public class App {
 
     public final static Color DEFAULT_BACKGROUND = null; // is really null
@@ -37,15 +40,17 @@ public class App {
     static String CONFIG_DIRECTORY = System.getProperty("user.home") + "/.inchat-client/";
     static String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
     static String DATABASE_FILE = CONFIG_DIRECTORY + "client.db";
+    static String CONTACTS_STORAGE_FILE = CONFIG_DIRECTORY + "contacts.storage";
     static Controller controller = new Controller();
     static Model model = new Model();
     static MainWindow mainWindow;
-    
+
     public static void main(String args[]) {
         setNativeLookAndFeel();
         showMainWindow();
         loadConfig();
         loadParticipant();
+        readContactList();
     }
 
     private static void setNativeLookAndFeel() {
@@ -99,6 +104,10 @@ public class App {
         }
 
         Config.loadOrCreateParticipant();
+    }
+    
+    static void readContactList() {
+        controller.readContactListStorage();
     }
 
     private static boolean isProfileExisting() {

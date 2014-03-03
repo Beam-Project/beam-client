@@ -31,6 +31,7 @@ public class AppTest {
     private final String CONFIG_DIRECTORY = "./inchat-client-test-dir/";
     private final String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
     private final String DATABASE_FILE = CONFIG_DIRECTORY + "client.db";
+    private final String CONTACT_LIST_STORAGE = "contactlist.storage";
 
     @Before
     public void setUp() {
@@ -115,6 +116,7 @@ public class AppTest {
     public void testGetMainWindow() {
         assertSame(App.mainWindow, App.getMainWindow());
     }
+    
 
     /**
      * Overwrites the existing {@link Controller} in {@link App} for unit
