@@ -75,9 +75,9 @@ public class IdentityPanelTest {
         String validName1 = "Mr Garrison";
         String validName2 = "Mrs Garrison";
 
-        controller.changeUsername(validName1);
+        controller.changeName(validName1);
         expectLastCall();
-        controller.changeUsername(validName2);
+        controller.changeName(validName2);
         expectLastCall();
         replay(controller);
 

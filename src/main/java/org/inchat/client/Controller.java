@@ -35,9 +35,9 @@ public class Controller {
 
     List<ConversationWindow> conversationWindows = new ArrayList<>();
 
-    public void changeUsername(String username) {
-        Config.setProperty(Config.Key.participantName, username);
-        App.getMainWindow().setUsername(username);
+    public void changeName(String name) {
+        Config.setProperty(Config.Key.participantName, name);
+        App.getMainWindow().setUsername(name);
     }
 
     public void addContact(Contact contact) {

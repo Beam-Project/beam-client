@@ -18,17 +18,30 @@
  */
 package org.inchat.client.ui.settings;
 
+import java.io.File;
+import org.inchat.common.Config;
+import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
 public class SettingsWindowTest {
 
+    private final String CONFIG_FILE = "settingsWindow.conf";
     private SettingsWindow window;
 
     @Before
     public void setUp() {
+        Config.createDefaultConfig(CONFIG_FILE);
+        Config.loadConfig(CONFIG_FILE);
+        
         window = new SettingsWindow();
+    }
+    
+    @After
+    public void cleanUp() {
+        File configFile = new File(CONFIG_FILE);
+        configFile.delete();
     }
 
     @Test

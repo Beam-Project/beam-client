@@ -158,7 +158,7 @@ public class IdentityPanel extends javax.swing.JPanel {
         String name = nameTextField.getText().trim();
         
         if (isNameValid(name)) {
-            App.getController().changeUsername(name);
+            App.getController().changeName(name);
         }
     }//GEN-LAST:event_nameTextFieldPropertyChange
     

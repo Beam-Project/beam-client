@@ -29,7 +29,7 @@ import org.junit.Ignore;
 
 public class SetUpDialogTest {
 
-    private final String USERNAME = "MYUSER";
+    private final String NAME = "MYUSER";
     private SetUpDialog dialog;
     private Controller controller;
 
@@ -40,37 +40,37 @@ public class SetUpDialogTest {
     }
 
     @Test
-    public void testVerifyUsernameOnNull() {
-        dialog.usernameTextField.setText(null);
-        expectInvalidUsername();
+    public void testVerifyNameOnNull() {
+        dialog.nameTextField.setText(null);
+        expectInvalidName();
     }
 
     @Test
-    public void testVerifyUsernameOnEmptyString() {
-        dialog.usernameTextField.setText("");
-        expectInvalidUsername();
+    public void testVerifyNameOnEmptyString() {
+        dialog.nameTextField.setText("");
+        expectInvalidName();
     }
 
     @Test
-    public void testVerifyUsernameOnSpaces() {
-        dialog.usernameTextField.setText("   ");
-        expectInvalidUsername();
+    public void testVerifyNameOnSpaces() {
+        dialog.nameTextField.setText("   ");
+        expectInvalidName();
     }
 
-    private void expectInvalidUsername() {
-        dialog.verifyUsername();
-        assertEquals(App.ERROR_BACKGROUND, dialog.usernameTextField.getBackground());
-        assertFalse(dialog.isUsernameValid);
+    private void expectInvalidName() {
+        dialog.verifyName();
+        assertEquals(App.ERROR_BACKGROUND, dialog.nameTextField.getBackground());
+        assertFalse(dialog.isNameValid);
 
     }
 
     @Ignore
     @Test
-    public void testVerifyUsernameOnValidUser() {
-        dialog.usernameTextField.setText(USERNAME);
-        dialog.verifyUsername();
-        assertFalse(App.DEFAULT_BACKGROUND.equals(dialog.usernameTextField.getBackground()));
-        assertTrue(dialog.isUsernameValid);
+    public void testVerifyNameOnValidUser() {
+        dialog.nameTextField.setText(NAME);
+        dialog.verifyName();
+        assertFalse(App.DEFAULT_BACKGROUND.equals(dialog.nameTextField.getBackground()));
+        assertTrue(dialog.isNameValid);
     }
 
     @Test
@@ -85,13 +85,13 @@ public class SetUpDialogTest {
 
     @Test
     public void testDoneButtonOnControllerInvocation() {
-        String usernameWithSpaces = USERNAME + "   ";
-        controller.changeUsername(USERNAME);
+        String nameWithSpaces = NAME + "   ";
+        controller.changeName(NAME);
         expectLastCall().once();
         replay(controller);
         AppTest.setAppController(controller);
 
-        dialog.usernameTextField.setText(usernameWithSpaces);
+        dialog.nameTextField.setText(nameWithSpaces);
         dialog.doneButton.doClick();
 
         verify(controller);

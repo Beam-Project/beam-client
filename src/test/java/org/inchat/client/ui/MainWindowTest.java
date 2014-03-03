@@ -31,21 +31,34 @@ import org.junit.Before;
 
 public class MainWindowTest {
 
-    private final String CONFIG_FILE = "MainWidow.conf";
+    private final String CONFIG_FILE = "MainWindow.conf";
     private MainWindow mainWindow;
 
     @Before
     public void setUp() {
         cleanUp();
+        
         Config.createDefaultConfig(CONFIG_FILE);
         Config.loadConfig(CONFIG_FILE);
+
         mainWindow = new MainWindow();
     }
 
+    /**
+     * This method deletes the config file. In this very test class, @After and
+     * config.delete() does not seem to work properly, no idea why. It could be
+     * a bug somewhere. To avoid this problem, the cleanUp() method is manually
+     * invoked after each test.
+     */
     @After
     public void cleanUp() {
-        File configFile = new File(CONFIG_FILE);
-        configFile.delete();
+        File config = new File(CONFIG_FILE);
+
+        // A simple config.delete() does not the job here - no idea why.
+        // With this workaround, the config file gets deleted after all.
+        while (!config.delete() && config.exists()) {
+            System.out.println("Could not delete the config file - try again...");
+        }
     }
 
     @Test
@@ -56,56 +69,71 @@ public class MainWindowTest {
         mainWindow = new MainWindow();
 
         assertSame(model.getContactList(), mainWindow.contactList.getModel());
+        
+        cleanUp();
     }
 
     @Test
     public void testSetPositionOnNewSetting() {
         assertTrue(mainWindow.getX() > 0);
         assertTrue(mainWindow.getY() > 0);
+        
+        cleanUp();
     }
 
     @Test
     public void testSetOfProfileSpecificValuesOnNewSetting() {
-        assertTrue(mainWindow.usernameButton.getText().isEmpty());
+        assertTrue(mainWindow.nameButton.getText().isEmpty());
+        
+        cleanUp();
     }
 
     @Test
     public void testSetOfProfileSpecificValuesOnExistingSetting() {
         Config.setProperty(Config.Key.participantName, "spock");
         mainWindow = new MainWindow();
-        assertEquals("spock", mainWindow.usernameButton.getText());
+        assertEquals("spock", mainWindow.nameButton.getText());
+        
+        cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnNull() {
         mainWindow.setUsername(null);
+        
+        cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnEmptyString() {
         mainWindow.setUsername("");
+        
+        cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnSpaceString() {
         mainWindow.setUsername("   ");
+        
+        cleanUp();
     }
 
     @Test
     public void testSetUsername() {
-        String username = "Timmee";
-        mainWindow.setUsername(username);
-        assertEquals(username, mainWindow.usernameButton.getText());
+        String name = "Timmee";
+        mainWindow.setUsername(name);
+        assertEquals(name, mainWindow.nameButton.getText());
+        
+        cleanUp();
     }
 
     /**
-     * Gets the MainWindows {@link JButton} of the username for testing
-     * purposes.
+     * Gets the MainWindows {@link JButton} of the name for testing purposes.
      *
      * @return The button.
      */
-    public static JButton getUsernameButton() {
-        return App.getMainWindow().usernameButton;
+    public static JButton getNameButton() {
+        return App.getMainWindow().nameButton;
     }
 
 }

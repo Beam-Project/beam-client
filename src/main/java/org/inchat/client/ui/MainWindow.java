@@ -15,6 +15,23 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *//*
+ * Copyright (C) 2013, 2014 inchat.org
+ *
+ * This file is part of inchat-client.
+ *
+ * inchat-client is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * inchat-client is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.inchat.client.ui;
 
@@ -57,17 +74,16 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void setProfileSpecificValues() {
-        String username = Config.getProperty(Config.Key.participantName);
-        usernameButton.setText(username != null ? username : "");
+        String name = Config.getProperty(Config.Key.participantName);
+        nameButton.setText(name != null ? name : "");
     }
 
-    public void setUsername(String username) {
-        Exceptions.verifyArgumentNotEmpty(username);
-        username = username.trim();
-        Exceptions.verifyArgumentNotEmpty(username);
-        System.out.println("username is: " + username);
+    public void setUsername(String name) {
+        Exceptions.verifyArgumentNotEmpty(name);
+        name = name.trim();
+        Exceptions.verifyArgumentNotEmpty(name);
 
-        usernameButton.setText(username);
+        nameButton.setText(name);
     }
 
     @SuppressWarnings("unchecked")
@@ -86,7 +102,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         topPanel = new javax.swing.JPanel();
         avatarButton = new javax.swing.JButton();
-        usernameButton = new javax.swing.JButton();
+        nameButton = new javax.swing.JButton();
         addUserButton = new javax.swing.JButton();
         menuButton = new javax.swing.JButton();
         statusButton = new javax.swing.JButton();
@@ -110,9 +126,9 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        usernameButton.setFont(new java.awt.Font("Ubuntu", 1, 12)); // NOI18N
-        usernameButton.setText("Username");
-        usernameButton.setBorderPainted(false);
+        nameButton.setFont(new java.awt.Font("Ubuntu", 1, 12)); // NOI18N
+        nameButton.setText("Name");
+        nameButton.setBorderPainted(false);
 
         addUserButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/addContact.png"))); // NOI18N
         addUserButton.setBorderPainted(false);
@@ -141,10 +157,10 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(topPanelLayout.createSequentialGroup()
                 .addComponent(avatarButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(usernameButton)
+                .addComponent(nameButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(addUserButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(menuButton))
@@ -156,7 +172,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(addUserButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(menuButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(avatarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(usernameButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nameButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statusButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -230,8 +246,8 @@ public class MainWindow extends javax.swing.JFrame {
     javax.swing.JList contactList;
     private javax.swing.JScrollPane contactListScrollPane;
     private javax.swing.JButton menuButton;
+    javax.swing.JButton nameButton;
     javax.swing.JButton statusButton;
     private javax.swing.JPanel topPanel;
-    javax.swing.JButton usernameButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -115,14 +115,14 @@ public class AddContactDialogTest {
             @Override
             public Object answer() {
                 Contact argument = (Contact) getCurrentArguments()[0];
-                assertEquals("username", argument.getName());
+                assertEquals("name", argument.getName());
                 return null;
             }
         });
         replay(controller);
 
         AppTest.setAppController(controller);
-        dialog.urlTextArea.setText(UrlAssembler.toUrlByServerAndClient(participant, participant, "username"));
+        dialog.urlTextArea.setText(UrlAssembler.toUrlByServerAndClient(participant, participant, "name"));
         dialog.addButton.doClick();
 
         verify(controller);

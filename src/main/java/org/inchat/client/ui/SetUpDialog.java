@@ -27,8 +27,8 @@ import org.inchat.client.App;
 public class SetUpDialog extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
-    private String username;
-    boolean isUsernameValid;
+    private String name;
+    boolean isNameValid;
 
     /**
      * Creates new form SetUpDialog
@@ -48,12 +48,12 @@ public class SetUpDialog extends javax.swing.JFrame {
 
         titleLabel = new javax.swing.JLabel();
         textLabel = new javax.swing.JLabel();
-        usernameLabel = new javax.swing.JLabel();
-        usernameTextField = new javax.swing.JTextField();
+        nameLabel = new javax.swing.JLabel();
+        nameTextField = new javax.swing.JTextField();
         doneButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Username");
+        setTitle("Name");
         setAlwaysOnTop(true);
         setPreferredSize(new java.awt.Dimension(400, 139));
         setResizable(false);
@@ -61,9 +61,9 @@ public class SetUpDialog extends javax.swing.JFrame {
         titleLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         titleLabel.setText("What's Your Name?");
 
-        textLabel.setText("Please pick a username for your profile. ");
+        textLabel.setText("Please pick a name for your profile. ");
 
-        usernameLabel.setText("Username:");
+        nameLabel.setText("Name");
 
         doneButton.setText("Done");
         doneButton.addActionListener(new java.awt.event.ActionListener() {
@@ -82,9 +82,9 @@ public class SetUpDialog extends javax.swing.JFrame {
                     .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(usernameLabel)
+                        .addComponent(nameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(usernameTextField))
+                        .addComponent(nameTextField))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(doneButton)))
@@ -99,8 +99,8 @@ public class SetUpDialog extends javax.swing.JFrame {
                 .addComponent(textLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(usernameLabel)
-                    .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nameLabel)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(doneButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -110,31 +110,31 @@ public class SetUpDialog extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
-        verifyUsername();
+        verifyName();
 
-        if (isUsernameValid) {
-            App.getController().changeUsername(username);
+        if (isNameValid) {
+            App.getController().changeName(name);
             dispose();
         }
     }//GEN-LAST:event_doneButtonActionPerformed
 
-    void verifyUsername() {
-        username = usernameTextField.getText().trim();
+    void verifyName() {
+        name = nameTextField.getText().trim();
 
-        if (username.isEmpty()) {
-            Components.setErrorBackground(usernameTextField);
-            isUsernameValid = false;
+        if (name.isEmpty()) {
+            Components.setErrorBackground(nameTextField);
+            isNameValid = false;
         } else {
-            Components.setDefalutBackground(usernameTextField);
-            isUsernameValid = true;
+            Components.setDefalutBackground(nameTextField);
+            isNameValid = true;
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton doneButton;
+    private javax.swing.JLabel nameLabel;
+    javax.swing.JTextField nameTextField;
     private javax.swing.JLabel textLabel;
     private javax.swing.JLabel titleLabel;
-    private javax.swing.JLabel usernameLabel;
-    javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
 }

@@ -58,13 +58,13 @@ public class ControllerTest {
     }
 
     @Test
-    public void testChangeUsername() {
+    public void testChangeName() {
         expect(model.getContactList()).andReturn(new ContactList());
         App.model = model;
         replay(contact, model);
         
-        String username = "Timmeeee";
-        String filename = "username.conf";
+        String name = "Timmeeee";
+        String filename = "name.conf";
         File configFile = new File(filename);
         configFile.delete();
 
@@ -72,22 +72,22 @@ public class ControllerTest {
         Config.loadConfig(filename);
         MainWindow mainWindow = new MainWindow();
         AppTest.setAppMainWindow(mainWindow);
-        controller.changeUsername(username);
+        controller.changeName(name);
 
-        testChangeUsernameOnWritingConfigProperty(username);
-        testChangeUsernameOnUpdatingGui(username);
+        testChangeNameOnWritingConfigProperty(name);
+        testChangeNameOnUpdatingGui(name);
 
         configFile.delete();
 
         verify(contact, model);
     }
 
-    private void testChangeUsernameOnWritingConfigProperty(String username) {
-        assertEquals(username, Config.getProperty(Config.Key.participantName));
+    private void testChangeNameOnWritingConfigProperty(String name) {
+        assertEquals(name, Config.getProperty(Config.Key.participantName));
     }
 
-    private void testChangeUsernameOnUpdatingGui(String username) {
-        assertEquals(username, MainWindowTest.getUsernameButton().getText());
+    private void testChangeNameOnUpdatingGui(String name) {
+        assertEquals(name, MainWindowTest.getNameButton().getText());
     }
 
     @Test

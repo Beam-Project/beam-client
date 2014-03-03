@@ -54,10 +54,10 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="avatarButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="usernameButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="nameButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                  <EmptySpace pref="40" max="32767" attributes="0"/>
                   <Component id="addUserButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="menuButton" min="-2" max="-2" attributes="0"/>
@@ -71,7 +71,7 @@
                       <Component id="addUserButton" max="32767" attributes="0"/>
                       <Component id="menuButton" max="32767" attributes="0"/>
                       <Component id="avatarButton" alignment="1" max="32767" attributes="0"/>
-                      <Component id="usernameButton" alignment="0" max="32767" attributes="0"/>
+                      <Component id="nameButton" alignment="0" max="32767" attributes="0"/>
                       <Component id="statusButton" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -91,12 +91,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="avatarButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="usernameButton">
+        <Component class="javax.swing.JButton" name="nameButton">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Ubuntu" size="12" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Username"/>
+            <Property name="text" type="java.lang.String" value="Name"/>
             <Property name="borderPainted" type="boolean" value="false"/>
           </Properties>
           <AuxValues>
