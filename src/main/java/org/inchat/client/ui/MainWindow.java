@@ -15,27 +15,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *//*
- * Copyright (C) 2013, 2014 inchat.org
- *
- * This file is part of inchat-client.
- *
- * inchat-client is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * inchat-client is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.inchat.client.ui;
 
-import org.inchat.client.ui.settings.SettingsWindow;
 import org.inchat.client.App;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
@@ -244,7 +226,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_contactListMouseClicked
 
     private void nameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameButtonActionPerformed
-        App.getController().showIdentityNameInSettingsWindow();
+        App.getController().showNameInSettingsWindow();
     }//GEN-LAST:event_nameButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
