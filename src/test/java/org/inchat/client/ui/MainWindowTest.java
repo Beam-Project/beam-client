@@ -20,8 +20,10 @@ package org.inchat.client.ui;
 
 import java.io.File;
 import javax.swing.JButton;
+import static org.easymock.EasyMock.*;
 import org.inchat.client.App;
 import org.inchat.client.AppTest;
+import org.inchat.client.Controller;
 import org.inchat.client.Model;
 import org.inchat.common.Config;
 import org.junit.After;
@@ -32,7 +34,8 @@ import org.junit.Before;
 public class MainWindowTest {
 
     private final String CONFIG_FILE = "MainWindow.conf";
-    private MainWindow mainWindow;
+    private MainWindow window;
+    private Controller controller;
 
     @Before
     public void setUp() {
@@ -40,8 +43,11 @@ public class MainWindowTest {
         
         Config.createDefaultConfig(CONFIG_FILE);
         Config.loadConfig(CONFIG_FILE);
+        
+        controller = createMock(Controller.class);
+        AppTest.setAppController(controller);
 
-        mainWindow = new MainWindow();
+        window = new MainWindow();
     }
 
     /**
@@ -66,24 +72,24 @@ public class MainWindowTest {
         Model model = new Model();
         AppTest.setAppMdoel(model);
 
-        mainWindow = new MainWindow();
+        window = new MainWindow();
 
-        assertSame(model.getContactList(), mainWindow.contactList.getModel());
+        assertSame(model.getContactList(), window.contactList.getModel());
         
         cleanUp();
     }
 
     @Test
     public void testSetPositionOnNewSetting() {
-        assertTrue(mainWindow.getX() > 0);
-        assertTrue(mainWindow.getY() > 0);
+        assertTrue(window.getX() > 0);
+        assertTrue(window.getY() > 0);
         
         cleanUp();
     }
 
     @Test
     public void testSetOfProfileSpecificValuesOnNewSetting() {
-        assertTrue(mainWindow.nameButton.getText().isEmpty());
+        assertTrue(window.nameButton.getText().isEmpty());
         
         cleanUp();
     }
@@ -91,29 +97,29 @@ public class MainWindowTest {
     @Test
     public void testSetOfProfileSpecificValuesOnExistingSetting() {
         Config.setProperty(Config.Key.participantName, "spock");
-        mainWindow = new MainWindow();
-        assertEquals("spock", mainWindow.nameButton.getText());
+        window = new MainWindow();
+        assertEquals("spock", window.nameButton.getText());
         
         cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnNull() {
-        mainWindow.setUsername(null);
+        window.setUsername(null);
         
         cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnEmptyString() {
-        mainWindow.setUsername("");
+        window.setUsername("");
         
         cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnSpaceString() {
-        mainWindow.setUsername("   ");
+        window.setUsername("   ");
         
         cleanUp();
     }
@@ -121,10 +127,32 @@ public class MainWindowTest {
     @Test
     public void testSetUsername() {
         String name = "Timmee";
-        mainWindow.setUsername(name);
-        assertEquals(name, mainWindow.nameButton.getText());
+        window.setUsername(name);
+        assertEquals(name, window.nameButton.getText());
         
         cleanUp();
+    }
+    
+    @Test
+    public void testNameButtonOnShowingInvokingMethod() {
+        controller.showIdentityNameInSettingsWindow();
+        expectLastCall();
+        replay(controller);
+        
+        window.nameButton.doClick();
+        
+        verify(controller);
+    }
+    
+    @Test
+    public void testSettingsButtonOnShowingInvokingMethod() {
+        controller.showSettingsWindow();
+        expectLastCall();
+        replay(controller);
+        
+        window.settingsButton.doClick();
+        
+        verify(controller);
     }
 
     /**

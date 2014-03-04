@@ -104,7 +104,7 @@ public class MainWindow extends javax.swing.JFrame {
         avatarButton = new javax.swing.JButton();
         nameButton = new javax.swing.JButton();
         addUserButton = new javax.swing.JButton();
-        menuButton = new javax.swing.JButton();
+        settingsButton = new javax.swing.JButton();
         statusButton = new javax.swing.JButton();
         contactListScrollPane = new javax.swing.JScrollPane();
         contactList = new javax.swing.JList();
@@ -129,6 +129,11 @@ public class MainWindow extends javax.swing.JFrame {
         nameButton.setFont(new java.awt.Font("Ubuntu", 1, 12)); // NOI18N
         nameButton.setText("Name");
         nameButton.setBorderPainted(false);
+        nameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nameButtonActionPerformed(evt);
+            }
+        });
 
         addUserButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/addContact.png"))); // NOI18N
         addUserButton.setBorderPainted(false);
@@ -138,11 +143,11 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        menuButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/menu.png"))); // NOI18N
-        menuButton.setBorderPainted(false);
-        menuButton.addActionListener(new java.awt.event.ActionListener() {
+        settingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/menu.png"))); // NOI18N
+        settingsButton.setBorderPainted(false);
+        settingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuButtonActionPerformed(evt);
+                settingsButtonActionPerformed(evt);
             }
         });
 
@@ -163,14 +168,14 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(addUserButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(menuButton))
+                .addComponent(settingsButton))
         );
         topPanelLayout.setVerticalGroup(
             topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
                 .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(addUserButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(menuButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(settingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(avatarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nameButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statusButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -209,11 +214,9 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void menuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuButtonActionPerformed
-        SettingsWindow settingsWindow = new SettingsWindow();
-        Frames.setIcons(settingsWindow);
-        settingsWindow.setVisible(true);
-    }//GEN-LAST:event_menuButtonActionPerformed
+    private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
+        App.getController().showSettingsWindow();
+    }//GEN-LAST:event_settingsButtonActionPerformed
 
     private void avatarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_avatarButtonActionPerformed
 
@@ -240,13 +243,17 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_contactListMouseClicked
 
+    private void nameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameButtonActionPerformed
+        App.getController().showIdentityNameInSettingsWindow();
+    }//GEN-LAST:event_nameButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addUserButton;
     private javax.swing.JButton avatarButton;
     javax.swing.JList contactList;
     private javax.swing.JScrollPane contactListScrollPane;
-    private javax.swing.JButton menuButton;
     javax.swing.JButton nameButton;
+    javax.swing.JButton settingsButton;
     javax.swing.JButton statusButton;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
