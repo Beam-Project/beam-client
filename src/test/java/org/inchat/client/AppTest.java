@@ -24,19 +24,15 @@ import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Ignore;
 
 public class AppTest {
 
     private final String CONFIG_DIRECTORY = "./inchat-client-test-dir/";
     private final String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
     private final String DATABASE_FILE = CONFIG_DIRECTORY + "client.db";
-    private final String CONTACT_LIST_STORAGE = "contactlist.storage";
 
     @Before
     public void setUp() {
-        deleteConfigs();
-
         App.CONFIG_DIRECTORY = CONFIG_DIRECTORY;
         App.CONFIG_FILE = CONFIG_FILE;
         App.DATABASE_FILE = DATABASE_FILE;
@@ -44,25 +40,9 @@ public class AppTest {
 
     @After
     public void cleanUp() {
-        deleteConfigs();
-    }
-
-    private void deleteConfigs() {
-        File configFile = new File(CONFIG_FILE);
-        File databaseFile = new File(DATABASE_FILE);
-        File configDirectory = new File(CONFIG_DIRECTORY);
-
-        if (configFile.exists()) {
-            configFile.delete();
-        }
-
-        if (databaseFile.exists()) {
-            databaseFile.delete();
-        }
-
-        if (configDirectory.exists()) {
-            configDirectory.delete();
-        }
+        new File(CONFIG_FILE).delete();
+        new File(DATABASE_FILE).delete();
+        new File(CONFIG_DIRECTORY).delete();
     }
 
     @Test
@@ -81,25 +61,14 @@ public class AppTest {
     public void testLoadConfigOnCreatingDirectory() {
         App.loadConfig();
 
-        File configDirectory = new File(CONFIG_DIRECTORY);
-        assertTrue(configDirectory.exists());
+        assertTrue(new File(CONFIG_DIRECTORY).exists());
     }
 
     @Test
     public void testLoadConfigOnCreatingConfigFile() {
         App.loadConfig();
 
-        File configFile = new File(CONFIG_FILE);
-        assertTrue(configFile.exists());
-    }
-
-    @Ignore // otherwise the window is shown
-    @Test
-    public void testMainOnLoadingConfig() {
-        App.main(null);
-
-        File configFile = new File(CONFIG_FILE);
-        assertTrue(configFile.exists());
+        assertTrue(new File(CONFIG_DIRECTORY).exists());
     }
 
     @Test
@@ -116,7 +85,6 @@ public class AppTest {
     public void testGetMainWindow() {
         assertSame(App.mainWindow, App.getMainWindow());
     }
-    
 
     /**
      * Overwrites the existing {@link Controller} in {@link App} for unit
