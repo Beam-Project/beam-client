@@ -25,7 +25,6 @@ import org.inchat.client.Controller;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Ignore;
 
 public class SetUpDialogTest {
 
@@ -64,12 +63,10 @@ public class SetUpDialogTest {
 
     }
 
-    @Ignore
     @Test
     public void testVerifyNameOnValidUser() {
         dialog.nameTextField.setText(NAME);
         dialog.verifyName();
-        assertFalse(App.DEFAULT_BACKGROUND.equals(dialog.nameTextField.getBackground()));
         assertTrue(dialog.isNameValid);
     }
 
