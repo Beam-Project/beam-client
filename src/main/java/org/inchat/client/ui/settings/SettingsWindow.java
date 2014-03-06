@@ -19,9 +19,8 @@
 package org.inchat.client.ui.settings;
 
 import java.awt.BorderLayout;
-import javax.swing.JLabel;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import org.inchat.client.App;
 
 /**
  * This is the settings window. The default selection is always the 'General'
@@ -29,6 +28,9 @@ import javax.swing.event.ListSelectionListener;
  */
 public class SettingsWindow extends javax.swing.JFrame {
 
+    private final int GLOBAL_MENU_INDEX = 0;
+    private final int IDENTITY_MENU_INDEX = 1;
+    private final int NETWORK_MENU_INDEX = 2;
     private static final long serialVersionUID = 1L;
     GeneralPanel generalPanel;
     IdentityPanel identityPanel;
@@ -49,12 +51,13 @@ public class SettingsWindow extends javax.swing.JFrame {
     private void openGeneralMenu() {
         menuListValueChanged(null);
     }
-    
+
     public void openIdentityMenuWithFocusedName() {
-        menuList.setSelectedIndex(1);
-        ListSelectionEvent clickOnIdentity = new ListSelectionEvent(menuList, 1, 1, false);
+        menuList.setSelectedIndex(IDENTITY_MENU_INDEX);
+
+        ListSelectionEvent clickOnIdentity = new ListSelectionEvent(menuList, IDENTITY_MENU_INDEX, IDENTITY_MENU_INDEX, false);
         menuListValueChanged(clickOnIdentity);
-        
+
         getIdentityPanel().nameTextField.requestFocus();
         getIdentityPanel().nameTextField.selectAll();
     }
@@ -143,8 +146,7 @@ public class SettingsWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-        dispose();
-        
+        App.getController().closeSettingsWindow();
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void menuListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_menuListValueChanged
@@ -155,10 +157,10 @@ public class SettingsWindow extends javax.swing.JFrame {
         contentPanel.removeAll();
 
         switch (menuList.getSelectedIndex()) {
-            case 1:
+            case IDENTITY_MENU_INDEX:
                 contentPanel.add(getIdentityPanel(), BorderLayout.CENTER);
                 break;
-            case 2:
+            case NETWORK_MENU_INDEX:
                 contentPanel.add(getNetworkPanel(), BorderLayout.CENTER);
                 break;
             default:

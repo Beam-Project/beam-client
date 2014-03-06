@@ -95,7 +95,7 @@ public class SettingsWindowTest {
         controller.changeName(name);
         expectLastCall().anyTimes();
         replay(mainWindow, controller);
-        
+
         Config.setProperty(Config.Key.participantName, name);
         window.openIdentityMenuWithFocusedName();
 
@@ -110,11 +110,13 @@ public class SettingsWindowTest {
 
     @Test
     public void testCloseButtonOnDisposingWindow() {
-        assertTrue(window.isDisplayable());
+        controller.closeSettingsWindow();
+        expectLastCall();
+        replay(controller);
+
         window.closeButton.doClick();
-        assertFalse(window.isDisplayable());
-        
-        //
+
+        verify(controller);
     }
 
     @Test
