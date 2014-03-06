@@ -94,13 +94,18 @@ public class Controller {
         getSettingsWindow().openIdentityMenuWithFocusedName();
         getSettingsWindow().setVisible(true);
     }
-    
+
+    public void closeSettingsWindow() {
+        getSettingsWindow().dispose();
+        settingsWindow = null;
+    }
+
     private SettingsWindow getSettingsWindow() {
         if (settingsWindow == null) {
             settingsWindow = new SettingsWindow();
             Frames.setIcons(settingsWindow);
         }
-        
+
         return settingsWindow;
     }
 

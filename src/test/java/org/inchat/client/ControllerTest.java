@@ -50,11 +50,25 @@ public class ControllerTest {
         controller = new Controller();
         model = createMock(Model.class);
         contact = createMock(Contact.class);
+        
+        App.controller = controller;
     }
 
     @After
     public void cleanUp() {
         contactsStorageFile.delete();
+        disposeSettingsWindow();
+    }
+
+    /**
+     * Dispose the settings window manually if it's still available. Otherwise,
+     * tests could fail because other tests would expect settingsWindow to be
+     * newly instantiated.
+     */
+    private void disposeSettingsWindow() {
+        if (controller.settingsWindow != null) {
+            controller.settingsWindow.dispose();
+        }
     }
 
     @Test
@@ -222,12 +236,37 @@ public class ControllerTest {
     public void testShowIdentityNameInSettingsWindowOnReusingExistingWindow() {
         SettingsWindow window = new SettingsWindow();
         controller.settingsWindow = window;
-        assertFalse(window.isVisible());
+        assertFalse(controller.settingsWindow.isVisible());
 
         controller.showNameInSettingsWindow();
 
         assertSame(window, controller.settingsWindow);
         assertTrue(controller.settingsWindow.isVisible());
+    }
+
+    @Test
+    public void testCloseSettingsWindow() {
+        SettingsWindow window = new SettingsWindow();
+        controller.settingsWindow = window;
+        controller.settingsWindow.setVisible(true);
+
+        controller.closeSettingsWindow();
+
+        assertFalse(window.isVisible());
+        assertFalse(window.isDisplayable());
+        assertNull(controller.settingsWindow);
+    }
+
+    /**
+     * This static method can for testing purposes be used to
+     * {@link SettingsWindow} reference of the controller of the given
+     * controller.
+     *
+     * @param controller The controller to access.
+     * @return The {@link SettingsWindow} reference of the given controller.
+     */
+    public static SettingsWindow getControllerSettingsWindow(Controller controller) {
+        return controller.settingsWindow;
     }
 
 }
