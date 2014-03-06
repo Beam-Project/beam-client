@@ -95,6 +95,7 @@ public class SettingsWindow extends javax.swing.JFrame {
         menuList.setLayoutOrientation(javax.swing.JList.HORIZONTAL_WRAP);
         menuList.setMaximumSize(new java.awt.Dimension(260, 64));
         menuList.setMinimumSize(new java.awt.Dimension(260, 62));
+        menuList.setSelectedIndex(0);
         menuList.setVisibleRowCount(1);
         menuList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
