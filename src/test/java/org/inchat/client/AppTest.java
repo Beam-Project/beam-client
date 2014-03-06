@@ -20,6 +20,7 @@ package org.inchat.client;
 
 import java.io.File;
 import org.inchat.client.ui.MainWindow;
+import org.inchat.common.crypto.KeyPairStore;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -42,7 +43,13 @@ public class AppTest {
     public void cleanUp() {
         new File(CONFIG_FILE).delete();
         new File(DATABASE_FILE).delete();
-        new File(CONFIG_DIRECTORY).delete();
+
+        String keystoreFilename = "keypair";
+        new File(CONFIG_DIRECTORY + keystoreFilename + KeyPairStore.PRIVATE_KEY_FILE_EXTENSION).delete();
+        new File(CONFIG_DIRECTORY + keystoreFilename + KeyPairStore.PUBILC_KEY_FILE_EXTENSION).delete();
+        new File(CONFIG_DIRECTORY + keystoreFilename + KeyPairStore.SALT_FILE_EXTENSION).delete();
+        
+        new File(CONFIG_DIRECTORY).delete();        
     }
 
     @Test
