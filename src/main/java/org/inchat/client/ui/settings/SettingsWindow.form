@@ -73,10 +73,11 @@
               <Border info="null"/>
             </Property>
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-              <StringArray count="3">
+              <StringArray count="4">
                 <StringItem index="0" value="General"/>
                 <StringItem index="1" value="Identity"/>
-                <StringItem index="2" value="Network"/>
+                <StringItem index="2" value="Security"/>
+                <StringItem index="3" value="Network"/>
               </StringArray>
             </Property>
             <Property name="selectionMode" type="int" value="0"/>
@@ -87,7 +88,6 @@
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[260, 62]"/>
             </Property>
-            <Property name="selectedIndex" type="int" value="0"/>
             <Property name="visibleRowCount" type="int" value="1"/>
           </Properties>
           <Events>

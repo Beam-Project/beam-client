@@ -88,13 +88,16 @@ public class MenuCellRenderer extends DefaultListCellRenderer {
         String imagePath = "/org/inchat/client/ui/settings/";
 
         switch (menuIndex) {
-            case 0:
+            case SettingsWindow.GENERAL_MENU_INDEX:
                 imagePath += "general.png";
                 break;
-            case 1:
+            case SettingsWindow.IDENTITY_MENU_INDEX:
                 imagePath += "identity.png";
                 break;
-            case 2:
+            case SettingsWindow.SECURITY_MENU_INDEX:
+                imagePath += "security.png";
+                break;
+            case SettingsWindow.NETWORK_MENU_INDEX:
                 imagePath += "network.png";
                 break;
         }

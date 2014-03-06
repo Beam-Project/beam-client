@@ -28,12 +28,14 @@ import org.inchat.client.App;
  */
 public class SettingsWindow extends javax.swing.JFrame {
 
-    private final int GLOBAL_MENU_INDEX = 0;
-    private final int IDENTITY_MENU_INDEX = 1;
-    private final int NETWORK_MENU_INDEX = 2;
+    public final static int GENERAL_MENU_INDEX = 0;
+    public final static int IDENTITY_MENU_INDEX = 1;
+    public final static int SECURITY_MENU_INDEX = 2;
+    public final static int NETWORK_MENU_INDEX = 3;
     private static final long serialVersionUID = 1L;
     GeneralPanel generalPanel;
     IdentityPanel identityPanel;
+    SecurityPanel securityPanel;
     NetworkPanel networkPanel;
 
     public SettingsWindow() {
@@ -85,7 +87,7 @@ public class SettingsWindow extends javax.swing.JFrame {
 
         menuList.setBorder(null);
         menuList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "General", "Identity", "Network" };
+            String[] strings = { "General", "Identity", "Security", "Network" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -93,7 +95,6 @@ public class SettingsWindow extends javax.swing.JFrame {
         menuList.setLayoutOrientation(javax.swing.JList.HORIZONTAL_WRAP);
         menuList.setMaximumSize(new java.awt.Dimension(260, 64));
         menuList.setMinimumSize(new java.awt.Dimension(260, 62));
-        menuList.setSelectedIndex(0);
         menuList.setVisibleRowCount(1);
         menuList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -160,6 +161,9 @@ public class SettingsWindow extends javax.swing.JFrame {
             case IDENTITY_MENU_INDEX:
                 contentPanel.add(getIdentityPanel(), BorderLayout.CENTER);
                 break;
+            case SECURITY_MENU_INDEX:
+                contentPanel.add(getSecurityPanel(), BorderLayout.CENTER);
+                break;
             case NETWORK_MENU_INDEX:
                 contentPanel.add(getNetworkPanel(), BorderLayout.CENTER);
                 break;
@@ -185,6 +189,14 @@ public class SettingsWindow extends javax.swing.JFrame {
         }
 
         return identityPanel;
+    }
+
+    SecurityPanel getSecurityPanel() {
+        if (securityPanel == null) {
+            securityPanel = new SecurityPanel();
+        }
+
+        return securityPanel;
     }
 
     NetworkPanel getNetworkPanel() {

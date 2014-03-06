@@ -74,15 +74,19 @@ public class SettingsWindowTest {
 
     @Test
     public void testMenuListOnSelectionChange() {
-        window.menuList.setSelectedIndex(0);
+        window.menuList.setSelectedIndex(SettingsWindow.GENERAL_MENU_INDEX);
         assertSame(window.getGeneralPanel(), window.contentPanel.getComponent(0));
         assertTrue(window.contentPanel.isValid());
 
-        window.menuList.setSelectedIndex(1);
+        window.menuList.setSelectedIndex(SettingsWindow.IDENTITY_MENU_INDEX);
         assertSame(window.getIdentityPanel(), window.contentPanel.getComponent(0));
         assertTrue(window.contentPanel.isValid());
 
-        window.menuList.setSelectedIndex(2);
+        window.menuList.setSelectedIndex(SettingsWindow.SECURITY_MENU_INDEX);
+        assertSame(window.getSecurityPanel(), window.contentPanel.getComponent(0));
+        assertTrue(window.contentPanel.isValid());
+
+        window.menuList.setSelectedIndex(SettingsWindow.NETWORK_MENU_INDEX);
         assertSame(window.getNetworkPanel(), window.contentPanel.getComponent(0));
         assertTrue(window.contentPanel.isValid());
     }
@@ -124,6 +128,13 @@ public class SettingsWindowTest {
         assertNotNull(window.generalPanel);
         assertNotNull(window.getGeneralPanel());
         assertSame(window.generalPanel, window.getGeneralPanel());
+    }
+
+    @Test
+    public void testGetSecurityPanel() {
+        assertNull(window.securityPanel);
+        assertNotNull(window.getSecurityPanel());
+        assertSame(window.securityPanel, window.getSecurityPanel());
     }
 
     @Test
