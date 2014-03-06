@@ -23,6 +23,7 @@ import java.util.List;
 import org.inchat.client.storage.Storage;
 import org.inchat.client.ui.ConversationWindow;
 import org.inchat.client.ui.Frames;
+import org.inchat.client.ui.settings.SettingsWindow;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
 import org.inchat.common.util.Exceptions;
@@ -34,6 +35,7 @@ import org.inchat.common.util.Exceptions;
 public class Controller {
 
     List<ConversationWindow> conversationWindows = new ArrayList<>();
+    SettingsWindow settingsWindow;
 
     public void changeName(String name) {
         Config.setProperty(Config.Key.participantName, name);
@@ -73,15 +75,33 @@ public class Controller {
         if (App.getModel().getContactListStorage() == null) {
             throw new IllegalStateException("The contact storage has to be loaded first.");
         }
-        
+
         ContactList list = App.getModel().getContactList();
         App.getModel().getContactListStorage().store(list);
     }
-    
+
     public void sendMessage(Contact target, String message) {
         Exceptions.verifyArgumentNotNull(target);
         Exceptions.verifyArgumentNotEmpty(message);
+
+    }
+
+    public void showSettingsWindow() {
+        getSettingsWindow().setVisible(true);
+    }
+
+    public void showNameInSettingsWindow() {
+        getSettingsWindow().openIdentityMenuWithFocusedName();
+        getSettingsWindow().setVisible(true);
+    }
+    
+    private SettingsWindow getSettingsWindow() {
+        if (settingsWindow == null) {
+            settingsWindow = new SettingsWindow();
+            Frames.setIcons(settingsWindow);
+        }
         
+        return settingsWindow;
     }
 
 }

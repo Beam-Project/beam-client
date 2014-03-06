@@ -19,10 +19,15 @@
 package org.inchat.client;
 
 import java.io.File;
+import javax.swing.JPanel;
 import static org.easymock.EasyMock.*;
 import org.inchat.client.storage.Storage;
 import org.inchat.client.ui.MainWindow;
 import org.inchat.client.ui.MainWindowTest;
+import org.inchat.client.ui.settings.GeneralPanel;
+import org.inchat.client.ui.settings.IdentityPanel;
+import org.inchat.client.ui.settings.SettingsWindow;
+import org.inchat.client.ui.settings.SettingsWindowTest;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
 import org.junit.After;
@@ -62,7 +67,7 @@ public class ControllerTest {
         expect(model.getContactList()).andReturn(new ContactList());
         App.model = model;
         replay(contact, model);
-        
+
         String name = "Timmeeee";
         String filename = "name.conf";
         File configFile = new File(filename);
@@ -177,6 +182,52 @@ public class ControllerTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessageOnEmptyMessage() {
         controller.sendMessage(contact, "");
+    }
+
+    @Test
+    public void testShowSettingsWindow() {
+        assertNull(controller.settingsWindow);
+
+        controller.showSettingsWindow();
+
+        JPanel activeContentPanel = SettingsWindowTest.getContentPanel(controller.settingsWindow);
+        assertTrue(activeContentPanel.getComponent(0) instanceof GeneralPanel);
+        assertTrue(controller.settingsWindow.isVisible());
+    }
+
+    @Test
+    public void testShowSettingsWindowOnReusingExistingWindow() {
+        SettingsWindow window = new SettingsWindow();
+        controller.settingsWindow = window;
+        assertFalse(window.isVisible());
+
+        controller.showSettingsWindow();
+
+        assertSame(window, controller.settingsWindow);
+        assertTrue(controller.settingsWindow.isVisible());
+    }
+
+    @Test
+    public void testShowIdentityNameInSettingsWindow() {
+        assertNull(controller.settingsWindow);
+
+        controller.showNameInSettingsWindow();
+
+        JPanel activeContentPanel = SettingsWindowTest.getContentPanel(controller.settingsWindow);
+        assertTrue(activeContentPanel.getComponent(0) instanceof IdentityPanel);
+        assertTrue(controller.settingsWindow.isVisible());
+    }
+
+    @Test
+    public void testShowIdentityNameInSettingsWindowOnReusingExistingWindow() {
+        SettingsWindow window = new SettingsWindow();
+        controller.settingsWindow = window;
+        assertFalse(window.isVisible());
+
+        controller.showNameInSettingsWindow();
+
+        assertSame(window, controller.settingsWindow);
+        assertTrue(controller.settingsWindow.isVisible());
     }
 
 }

@@ -19,6 +19,11 @@
 package org.inchat.client.ui.settings;
 
 import java.io.File;
+import javax.swing.JPanel;
+import static org.easymock.EasyMock.*;
+import org.inchat.client.AppTest;
+import org.inchat.client.Controller;
+import org.inchat.client.ui.MainWindow;
 import org.inchat.common.Config;
 import org.junit.After;
 import org.junit.Test;
@@ -29,15 +34,22 @@ public class SettingsWindowTest {
 
     private final String CONFIG_FILE = "settingsWindow.conf";
     private SettingsWindow window;
+    private MainWindow mainWindow;
+    private Controller controller;
 
     @Before
     public void setUp() {
+        mainWindow = createMock(MainWindow.class);
+        controller = createMock(Controller.class);
+        AppTest.setAppMainWindow(mainWindow);
+        AppTest.setAppController(controller);
+
         Config.createDefaultConfig(CONFIG_FILE);
         Config.loadConfig(CONFIG_FILE);
-        
+
         window = new SettingsWindow();
     }
-    
+
     @After
     public void cleanUp() {
         File configFile = new File(CONFIG_FILE);
@@ -76,10 +88,33 @@ public class SettingsWindowTest {
     }
 
     @Test
+    public void testShowIdentityNameWithFocusedName() {
+        String name = "my name";
+        mainWindow.setUsername(name);
+        expectLastCall().anyTimes();
+        controller.changeName(name);
+        expectLastCall().anyTimes();
+        replay(mainWindow, controller);
+        
+        Config.setProperty(Config.Key.participantName, name);
+        window.openIdentityMenuWithFocusedName();
+
+        assertTrue(window.contentPanel.getComponent(0) instanceof IdentityPanel);
+        IdentityPanel panel = (IdentityPanel) window.contentPanel.getComponent(0);
+
+        String selectedText = panel.nameTextField.getSelectedText();
+        assertEquals(name, selectedText);
+
+        verify(mainWindow, controller);
+    }
+
+    @Test
     public void testCloseButtonOnDisposingWindow() {
         assertTrue(window.isDisplayable());
         window.closeButton.doClick();
         assertFalse(window.isDisplayable());
+        
+        //
     }
 
     @Test
@@ -101,6 +136,17 @@ public class SettingsWindowTest {
         assertNull(window.networkPanel);
         assertNotNull(window.getNetworkPanel());
         assertSame(window.networkPanel, window.getNetworkPanel());
+    }
+
+    /**
+     * This method provides access to the content panel for testing purposes.
+     *
+     * @param settingsWindow A instance of {@link SettingsWindow} from which the
+     * content panel will be retrieved.
+     * @return The content panel of the given argument.
+     */
+    public static JPanel getContentPanel(SettingsWindow settingsWindow) {
+        return settingsWindow.contentPanel;
     }
 
 }

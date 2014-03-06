@@ -135,7 +135,7 @@ public class MainWindowTest {
     
     @Test
     public void testNameButtonOnShowingInvokingMethod() {
-        controller.showIdentityNameInSettingsWindow();
+        controller.showNameInSettingsWindow();
         expectLastCall();
         replay(controller);
         

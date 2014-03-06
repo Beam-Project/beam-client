@@ -19,6 +19,9 @@
 package org.inchat.client.ui.settings;
 
 import java.awt.BorderLayout;
+import javax.swing.JLabel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * This is the settings window. The default selection is always the 'General'
@@ -45,6 +48,15 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private void openGeneralMenu() {
         menuListValueChanged(null);
+    }
+    
+    public void openIdentityMenuWithFocusedName() {
+        menuList.setSelectedIndex(1);
+        ListSelectionEvent clickOnIdentity = new ListSelectionEvent(menuList, 1, 1, false);
+        menuListValueChanged(clickOnIdentity);
+        
+        getIdentityPanel().nameTextField.requestFocus();
+        getIdentityPanel().nameTextField.selectAll();
     }
 
     /**
@@ -132,6 +144,7 @@ public class SettingsWindow extends javax.swing.JFrame {
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         dispose();
+        
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void menuListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_menuListValueChanged
