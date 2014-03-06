@@ -64,7 +64,7 @@ public class SettingsWindowTest {
     @Test
     public void testConstructorOnLoadingGeneralPanel() {
         assertSame(window.generalPanel, window.contentPanel.getComponent(0));
-        assertEquals(window.GENERAL_MENU_INDEX, window.menuList.getSelectedIndex());
+        assertEquals(SettingsWindow.GENERAL_MENU_INDEX, window.menuList.getSelectedIndex());
     }
 
     @Test
