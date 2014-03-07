@@ -37,6 +37,7 @@ import org.junit.Before;
 
 public class ControllerTest {
 
+    private final String CONFIG_FILE = "controller.conf";
     private final String CONTACTS_STORAGE_FILE = "contacts.storage";
     private Controller controller;
     private Model model;
@@ -56,6 +57,7 @@ public class ControllerTest {
 
     @After
     public void cleanUp() {
+        new File(CONFIG_FILE).delete();
         contactsStorageFile.delete();
         disposeSettingsWindow();
     }
@@ -83,20 +85,15 @@ public class ControllerTest {
         replay(contact, model);
 
         String name = "Timmeeee";
-        String filename = "name.conf";
-        File configFile = new File(filename);
-        configFile.delete();
 
-        Config.createDefaultConfig(filename);
-        Config.loadConfig(filename);
+        Config.createDefaultConfig(CONFIG_FILE);
+        Config.loadConfig(CONFIG_FILE);
         MainWindow mainWindow = new MainWindow();
         AppTest.setAppMainWindow(mainWindow);
         controller.changeName(name);
 
         testChangeNameOnWritingConfigProperty(name);
         testChangeNameOnUpdatingGui(name);
-
-        configFile.delete();
 
         verify(contact, model);
     }
@@ -108,7 +105,6 @@ public class ControllerTest {
     private void testChangeNameOnUpdatingGui(String name) {
         assertEquals(name, MainWindowTest.getNameButton().getText());
     }
-
 
     @Test
     public void testAddContactOnInvocingModelOnNull() {
@@ -123,6 +119,7 @@ public class ControllerTest {
 
         verify(model);
     }
+
     @Test
     public void testSetServerUrl() {
         expect(model.getContactList()).andReturn(new ContactList());
@@ -130,19 +127,15 @@ public class ControllerTest {
         replay(contact, model);
 
         String serverUrl = "https://www.inchat.org:443/myserver/?name=user&password=verySecure";
-        String filename = "name.conf";
-        File configFile = new File(filename);
-        configFile.delete();
 
-        Config.createDefaultConfig(filename);
-        Config.loadConfig(filename);
+        Config.createDefaultConfig(CONFIG_FILE);
+        Config.loadConfig(CONFIG_FILE);
         MainWindow mainWindow = new MainWindow();
         AppTest.setAppMainWindow(mainWindow);
-        
+
         controller.setServerUrl(serverUrl);
         assertEquals(serverUrl, Config.getProperty(Config.Key.serverUrl));
 
-        configFile.delete();
         verify(contact, model);
     }
 
