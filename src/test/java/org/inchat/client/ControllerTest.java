@@ -50,7 +50,7 @@ public class ControllerTest {
         controller = new Controller();
         model = createMock(Model.class);
         contact = createMock(Contact.class);
-        
+
         App.controller = controller;
     }
 
@@ -109,6 +109,7 @@ public class ControllerTest {
         assertEquals(name, MainWindowTest.getNameButton().getText());
     }
 
+
     @Test
     public void testAddContactOnInvocingModelOnNull() {
         model.addContact(anyObject(Contact.class));
@@ -121,6 +122,28 @@ public class ControllerTest {
         controller.addContact(null); // should just invoke model
 
         verify(model);
+    }
+    @Test
+    public void testSetServerUrl() {
+        expect(model.getContactList()).andReturn(new ContactList());
+        App.model = model;
+        replay(contact, model);
+
+        String serverUrl = "https://www.inchat.org:443/myserver/?name=user&password=verySecure";
+        String filename = "name.conf";
+        File configFile = new File(filename);
+        configFile.delete();
+
+        Config.createDefaultConfig(filename);
+        Config.loadConfig(filename);
+        MainWindow mainWindow = new MainWindow();
+        AppTest.setAppMainWindow(mainWindow);
+        
+        controller.setServerUrl(serverUrl);
+        assertEquals(serverUrl, Config.getProperty(Config.Key.serverUrl));
+
+        configFile.delete();
+        verify(contact, model);
     }
 
     @Test

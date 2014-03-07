@@ -41,6 +41,10 @@ public class Controller {
         Config.setProperty(Config.Key.participantName, name);
         App.getMainWindow().setUsername(name);
     }
+    
+    public void setServerUrl(String serverUrl) {
+        Config.setProperty(Config.Key.serverUrl, serverUrl);
+    }
 
     public void addContact(Contact contact) {
         App.getModel().addContact(contact);
