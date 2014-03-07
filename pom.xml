@@ -24,6 +24,8 @@
                 <version>2.4</version>
             </plugin>
             <plugin>
+                <!--Run this command to build with dependencies:-->
+                <!--mvn clean compile assembly:single-->
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
