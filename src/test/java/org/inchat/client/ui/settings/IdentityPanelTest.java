@@ -33,6 +33,7 @@ public class IdentityPanelTest {
 
     private final String CONFIG_FILE = "identity.conf";
     private final String NAME = "Mr/Mrs Garrison";
+    private final String SERVER_URL = "http://my-server.inchat.org:1234";
     private IdentityPanel panel;
     private Controller controller;
 
@@ -41,6 +42,7 @@ public class IdentityPanelTest {
         Config.createDefaultConfig(CONFIG_FILE);
         Config.loadConfig(CONFIG_FILE);
         Config.setProperty(Config.Key.participantName, NAME);
+        Config.setProperty(Config.Key.serverUrl, SERVER_URL);
 
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
@@ -55,12 +57,13 @@ public class IdentityPanelTest {
     }
 
     @Test
-    public void testConstructorOnLoadingName() {
+    public void testConstructorOnLoadingNameAndServerUrl() {
         assertEquals(NAME, panel.nameTextField.getText());
+        assertEquals(SERVER_URL, panel.serverUrlTextField.getText());
     }
 
     @Test
-    public void testIsValidName() {
+    public void testIsNameValid() {
         assertFalse(panel.isNameValid(null));
         assertFalse(panel.isNameValid(""));
         assertTrue(panel.isNameValid("a"));
@@ -93,6 +96,43 @@ public class IdentityPanelTest {
 
         String changedNameToTrim = "  Mrs Garrison   ";
         panel.nameTextField.setText(changedNameToTrim);
+        listener.propertyChange(null);
+
+        verify(controller);
+    }
+
+    @Test
+    public void testIsServerUrlValid() {
+        assertFalse(panel.isServerUrlValid(null));
+        assertFalse(panel.isServerUrlValid(""));
+        assertFalse(panel.isServerUrlValid("z "));
+        assertTrue(panel.isServerUrlValid("http://org"));
+        assertTrue(panel.isServerUrlValid(SERVER_URL));
+        assertTrue(panel.isServerUrlValid("    \t   " + SERVER_URL + "    \t   "));
+    }
+
+    @Test
+    public void testServerUrlTextFieldPropertyChange() {
+        PropertyChangeListener listener = panel.serverUrlTextField.getPropertyChangeListeners()[2];
+        String validUrl1 = "http://inchtat.org/myserver/is/very/cool";
+        String validUrl2 = "http://192.168.0.123";
+
+        controller.setServerUrl(validUrl1);
+        expectLastCall();
+        controller.setServerUrl(validUrl2);
+        expectLastCall();
+        replay(controller);
+
+        panel.serverUrlTextField.setText("   ");
+        listener.propertyChange(null);
+
+        panel.serverUrlTextField.setText("");
+        listener.propertyChange(null);
+
+        panel.serverUrlTextField.setText(validUrl1);
+        listener.propertyChange(null);
+
+        panel.serverUrlTextField.setText("    " + validUrl2 + "     ");
         listener.propertyChange(null);
 
         verify(controller);

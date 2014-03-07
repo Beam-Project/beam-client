@@ -18,20 +18,29 @@
  */
 package org.inchat.client.ui.settings;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import org.inchat.client.App;
 import org.inchat.common.Config;
 
 public class IdentityPanel extends javax.swing.JPanel {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     public IdentityPanel() {
         initComponents();
         loadName();
+        loadServerUrl();
     }
-    
+
     private void loadName() {
         nameTextField.setText(Config.getProperty(Config.Key.participantName));
+    }
+
+    private void loadServerUrl() {
+        serverUrlTextField.setText(Config.getProperty(Config.Key.serverUrl));
     }
 
     /**
@@ -84,6 +93,12 @@ public class IdentityPanel extends javax.swing.JPanel {
 
         serverUrlLabel.setText("Server URL:");
 
+        serverUrlTextField.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                serverUrlTextFieldPropertyChange(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,7 +128,7 @@ public class IdentityPanel extends javax.swing.JPanel {
                             .addComponent(publicKeyTextField)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(serverUrlLabel)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(serverUrlTextField))))
         );
         layout.setVerticalGroup(
@@ -145,19 +160,38 @@ public class IdentityPanel extends javax.swing.JPanel {
 
     private void nameTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_nameTextFieldPropertyChange
         String name = nameTextField.getText().trim();
-        
+
         if (isNameValid(name)) {
             App.getController().changeName(name);
         }
     }//GEN-LAST:event_nameTextFieldPropertyChange
-    
+
+    private void serverUrlTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverUrlTextFieldPropertyChange
+        String serverUrl = serverUrlTextField.getText().trim();
+        
+        if (isServerUrlValid(serverUrl)) {
+            App.getController().setServerUrl(serverUrl);
+        }
+    }//GEN-LAST:event_serverUrlTextFieldPropertyChange
+
     boolean isNameValid(String name) {
         if (name == null) {
             return false;
         }
-        
+
         String trimmedName = name.trim();
         return !trimmedName.isEmpty() && trimmedName.equals(name);
+    }
+
+    boolean isServerUrlValid(String serverUrl) {
+        //TODO Extract all validators into a seperate class
+        try {
+            URL validUrl = new URL(serverUrl.trim());
+            URI validUri = validUrl.toURI();
+            return true;
+        } catch (MalformedURLException | URISyntaxException | NullPointerException ex) {
+            return false;
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -171,6 +205,6 @@ public class IdentityPanel extends javax.swing.JPanel {
     private javax.swing.JLabel publicKeyLabel;
     private javax.swing.JTextField publicKeyTextField;
     private javax.swing.JLabel serverUrlLabel;
-    private javax.swing.JTextField serverUrlTextField;
+    javax.swing.JTextField serverUrlTextField;
     // End of variables declaration//GEN-END:variables
 }
