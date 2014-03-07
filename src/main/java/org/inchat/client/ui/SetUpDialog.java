@@ -18,6 +18,10 @@
  */
 package org.inchat.client.ui;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import org.inchat.client.App;
 
 /**
@@ -28,7 +32,9 @@ public class SetUpDialog extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
     private String name;
+    private String serverUrl;
     boolean isNameValid;
+    boolean isServerUrlValid;
 
     /**
      * Creates new form SetUpDialog
@@ -51,19 +57,20 @@ public class SetUpDialog extends javax.swing.JFrame {
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         doneButton = new javax.swing.JButton();
+        serverUrlLabel = new javax.swing.JLabel();
+        serverUrlTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Name");
         setAlwaysOnTop(true);
-        setPreferredSize(new java.awt.Dimension(400, 139));
         setResizable(false);
 
         titleLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        titleLabel.setText("What's Your Name?");
+        titleLabel.setText("Welcome to inchat!");
 
-        textLabel.setText("Please pick a name for your profile. ");
+        textLabel.setText("Fill in the following fields to set up your account.");
 
-        nameLabel.setText("Name");
+        nameLabel.setText("Your Name:");
 
         doneButton.setText("Done");
         doneButton.addActionListener(new java.awt.event.ActionListener() {
@@ -71,6 +78,8 @@ public class SetUpDialog extends javax.swing.JFrame {
                 doneButtonActionPerformed(evt);
             }
         });
+
+        serverUrlLabel.setText("Server URL:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -81,13 +90,18 @@ public class SetUpDialog extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(nameLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameTextField))
+                    .addComponent(doneButton, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(doneButton)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(nameLabel)
+                                .addGap(18, 18, 18))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(serverUrlLabel)
+                                .addGap(16, 16, 16)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(serverUrlTextField)
+                            .addComponent(nameTextField))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -102,8 +116,12 @@ public class SetUpDialog extends javax.swing.JFrame {
                     .addComponent(nameLabel)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(serverUrlLabel)
+                    .addComponent(serverUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(doneButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -111,9 +129,11 @@ public class SetUpDialog extends javax.swing.JFrame {
 
     private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
         verifyName();
+        verifyServerUrl();
 
-        if (isNameValid) {
+        if (isNameValid && isServerUrlValid) {
             App.getController().changeName(name);
+            App.getController().setServerUrl(serverUrl);
             dispose();
         }
     }//GEN-LAST:event_doneButtonActionPerformed
@@ -130,10 +150,27 @@ public class SetUpDialog extends javax.swing.JFrame {
         }
     }
 
+    void verifyServerUrl() {
+        //TODO Extract all validators into a seperate class
+        try {
+            URL validUrl = new URL(serverUrlTextField.getText());
+            URI validUri = validUrl.toURI();
+
+            Components.setDefalutBackground(serverUrlTextField);
+            isServerUrlValid = true;
+            serverUrl = validUrl.toString();
+        } catch (MalformedURLException | URISyntaxException ex) {
+            Components.setErrorBackground(serverUrlTextField);
+            isServerUrlValid = false;
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton doneButton;
     private javax.swing.JLabel nameLabel;
     javax.swing.JTextField nameTextField;
+    private javax.swing.JLabel serverUrlLabel;
+    javax.swing.JTextField serverUrlTextField;
     private javax.swing.JLabel textLabel;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables

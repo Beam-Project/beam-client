@@ -29,6 +29,7 @@ import org.junit.Before;
 public class SetUpDialogTest {
 
     private final String NAME = "MYUSER";
+    private final String SERVER_URL = "http://inchat.org/:80/my-server/";
     private SetUpDialog dialog;
     private Controller controller;
 
@@ -71,10 +72,54 @@ public class SetUpDialogTest {
     }
 
     @Test
-    public void testDoneButtonOnControllerNotInvocating() {
+    public void testVerifyServerUrlOnNull() {
+        dialog.serverUrlTextField.setText(null);
+        expectInvalidServerUrl();
+    }
+
+    @Test
+    public void testVerifyServerUrlOnEmptyString() {
+        dialog.serverUrlTextField.setText("");
+        expectInvalidServerUrl();
+    }
+
+    @Test
+    public void testVerifyServerUrlOnSpaces() {
+        dialog.serverUrlTextField.setText("   ");
+        expectInvalidServerUrl();
+    }
+
+    private void expectInvalidServerUrl() {
+        dialog.verifyServerUrl();
+        assertEquals(App.ERROR_BACKGROUND, dialog.serverUrlTextField.getBackground());
+        assertFalse(dialog.isServerUrlValid);
+    }
+
+    @Test
+    public void testVerifyServerUrlOnValidUrl() {
+        dialog.serverUrlTextField.setText(SERVER_URL);
+        dialog.verifyServerUrl();
+        assertTrue(dialog.isServerUrlValid);
+    }
+
+    @Test
+    public void testDoneButtonOnInvocatingWithInvalidName() {
         replay(controller);
         AppTest.setAppController(controller);
 
+        dialog.serverUrlTextField.setText(SERVER_URL);
+        dialog.doneButton.doClick();
+
+        verify(controller);
+    }
+
+    @Test
+    public void testDoneButtonOnInvocatingWithInvaidUrl() {
+        replay(controller);
+        AppTest.setAppController(controller);
+
+        dialog.nameTextField.setText(NAME);
+        dialog.serverUrlTextField.setText("invalid url");
         dialog.doneButton.doClick();
 
         verify(controller);
@@ -85,10 +130,13 @@ public class SetUpDialogTest {
         String nameWithSpaces = NAME + "   ";
         controller.changeName(NAME);
         expectLastCall().once();
+        controller.setServerUrl(SERVER_URL);
+        expectLastCall().once();
         replay(controller);
         AppTest.setAppController(controller);
 
         dialog.nameTextField.setText(nameWithSpaces);
+        dialog.serverUrlTextField.setText(SERVER_URL);
         dialog.doneButton.doClick();
 
         verify(controller);
