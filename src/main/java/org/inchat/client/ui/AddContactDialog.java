@@ -64,7 +64,7 @@ public class AddContactDialog extends javax.swing.JFrame {
         titleLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         titleLabel.setText("Add a Contact");
 
-        introductionLabel.setText("Copy & Paste the inchat URL of the contact you want to add to the filed:");
+        introductionLabel.setText("Copy & Paste the inchat URL of the contact you want to add here.");
 
         urlTextArea.setColumns(20);
         urlTextArea.setLineWrap(true);
@@ -89,14 +89,13 @@ public class AddContactDialog extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(introductionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(addButton))
-                    .addComponent(urlScrollPane, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(addButton)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(urlScrollPane, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(titleLabel, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(introductionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
