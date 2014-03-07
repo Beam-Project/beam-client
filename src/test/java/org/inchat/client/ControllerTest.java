@@ -30,6 +30,8 @@ import org.inchat.client.ui.settings.SettingsWindow;
 import org.inchat.client.ui.settings.SettingsWindowTest;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
+import org.inchat.common.Participant;
+import org.inchat.common.crypto.EccKeyPairGenerator;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -212,6 +214,14 @@ public class ControllerTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessageOnEmptyMessage() {
         controller.sendMessage(contact, "");
+    }
+
+    @Test
+    public void testSendMessage() {
+        Participant server = new Participant(EccKeyPairGenerator.generate());
+        Participant client = new Participant(EccKeyPairGenerator.generate());
+        Contact contact = new Contact(server, client, "john");
+        controller.sendMessage(contact, "hello");
     }
 
     @Test

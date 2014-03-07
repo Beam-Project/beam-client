@@ -20,12 +20,15 @@ package org.inchat.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.inchat.client.network.HttpConnector;
 import org.inchat.client.storage.Storage;
 import org.inchat.client.ui.ConversationWindow;
 import org.inchat.client.ui.Frames;
 import org.inchat.client.ui.settings.SettingsWindow;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
+import org.inchat.common.Message;
+import org.inchat.common.crypto.CryptoPacker;
 import org.inchat.common.util.Exceptions;
 
 /**
@@ -34,14 +37,16 @@ import org.inchat.common.util.Exceptions;
  */
 public class Controller {
 
+    public final static String FORMAT_VERSION = "1.0";
     List<ConversationWindow> conversationWindows = new ArrayList<>();
     SettingsWindow settingsWindow;
+    CryptoPacker cryptoPacker;
 
     public void changeName(String name) {
         Config.setProperty(Config.Key.participantName, name);
         App.getMainWindow().setUsername(name);
     }
-    
+
     public void setServerUrl(String serverUrl) {
         Config.setProperty(Config.Key.serverUrl, serverUrl);
     }
@@ -84,10 +89,29 @@ public class Controller {
         App.getModel().getContactListStorage().store(list);
     }
 
-    public void sendMessage(Contact target, String message) {
+    public void sendMessage(Contact target, String content) {
         Exceptions.verifyArgumentNotNull(target);
-        Exceptions.verifyArgumentNotEmpty(message);
+        Exceptions.verifyArgumentNotEmpty(content);
 
+        Message plaintext = assemblePlaintextMessage(target, content);
+        byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext, target.getServer());
+        byte[] response = sendCiphertextToNextServer(ciphertext, Config.getProperty(Config.Key.serverUrl));
+        System.out.println("response: " + new String(response));
+    }
+
+    private Message assemblePlaintextMessage(Contact target, String content) {
+        Message plaintext = new Message();
+
+        plaintext.setVersion(FORMAT_VERSION);
+        plaintext.setParticipant(target.getServer());
+        plaintext.setContent(content.getBytes());
+
+        return plaintext;
+    }
+
+    private byte[] sendCiphertextToNextServer(byte[] ciphertext, String targetServerUrl) {
+        HttpConnector http = new HttpConnector(targetServerUrl);
+        return http.excutePost(ciphertext);
     }
 
     public void showSettingsWindow() {
@@ -111,6 +135,14 @@ public class Controller {
         }
 
         return settingsWindow;
+    }
+
+    private CryptoPacker getCryptoPacker() {
+        if (cryptoPacker == null) {
+            cryptoPacker = new CryptoPacker();
+        }
+
+        return cryptoPacker;
     }
 
 }
