@@ -237,8 +237,6 @@ public class InfoWindow extends javax.swing.JFrame {
         AboutWindow window = new AboutWindow();
         Frames.setIcons(window);
         window.setVisible(true);
-
-        closeButtonActionPerformed(null);
     }//GEN-LAST:event_aboutButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
