@@ -164,6 +164,17 @@ public class MainWindowTest {
     }
 
     @Test
+    public void testInfoButtonOnShowingInvokingMethod() {
+        controller.showInfoWindow();
+        expectLastCall();
+        replay(controller);
+
+        window.infoButton.doClick();
+
+        verify(controller);
+    }
+
+    @Test
     public void testNameButtonOnShowingInvokingMethod() {
         controller.showNameInSettingsWindow();
         expectLastCall();
