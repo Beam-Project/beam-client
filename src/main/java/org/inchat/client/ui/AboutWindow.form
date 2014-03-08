@@ -90,6 +90,10 @@
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="websiteButton" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="versionLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -109,7 +113,9 @@
                           <Component id="websiteButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="thankYouLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="48" max="32767" attributes="0"/>
+                      <EmptySpace pref="26" max="32767" attributes="0"/>
+                      <Component id="versionLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="copyrightLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -180,9 +186,17 @@
             <Component class="javax.swing.JLabel" name="copyrightLabel">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="a6" green="a6" red="ab" type="rgb"/>
+                  <Color blue="af" green="af" red="af" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="&lt;html&gt;This software was developed by the team behind inchat.org and released under the terms of the GPLv3 or later. &#xa9; 2014 inchat.org.&lt;/html&gt;"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="versionLabel">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="af" green="af" red="af" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Version"/>
               </Properties>
             </Component>
           </SubComponents>
