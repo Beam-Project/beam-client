@@ -105,8 +105,8 @@ public class MainWindow extends javax.swing.JFrame {
         avatarButton = new javax.swing.JButton();
         nameButton = new javax.swing.JButton();
         statusButton = new javax.swing.JButton();
-        infoButton = new javax.swing.JButton();
         addUserButton = new javax.swing.JButton();
+        infoButton = new javax.swing.JButton();
         settingsButton = new javax.swing.JButton();
         contactListScrollPane = new javax.swing.JScrollPane();
         contactList = new javax.swing.JList();
@@ -147,19 +147,19 @@ public class MainWindow extends javax.swing.JFrame {
         statusButton.setText("Offline");
         statusButton.setBorderPainted(false);
 
-        infoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/infoButton.png"))); // NOI18N
-        infoButton.setBorderPainted(false);
-        infoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                infoButtonActionPerformed(evt);
-            }
-        });
-
         addUserButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/addContact.png"))); // NOI18N
         addUserButton.setBorderPainted(false);
         addUserButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addUserButtonActionPerformed(evt);
+            }
+        });
+
+        infoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/infoButton.png"))); // NOI18N
+        infoButton.setBorderPainted(false);
+        infoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                infoButtonActionPerformed(evt);
             }
         });
 
@@ -182,9 +182,9 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
-                .addComponent(infoButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addUserButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(infoButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(settingsButton))
         );
