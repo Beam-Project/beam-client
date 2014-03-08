@@ -60,7 +60,6 @@
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Component id="receivedMessagesLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" attributes="0">
                                               <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
@@ -85,7 +84,7 @@
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="aboutInchatButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="aboutButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="closeButton" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -130,7 +129,7 @@
               </Group>
               <EmptySpace type="separate" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="aboutInchatButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="aboutButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -227,10 +226,13 @@
         <Property name="text" type="java.lang.String" value="n/a"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="aboutInchatButton">
+    <Component class="javax.swing.JButton" name="aboutButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="About inchat..."/>
+        <Property name="text" type="java.lang.String" value="About"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aboutButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="closeButton">
       <Properties>

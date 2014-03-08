@@ -35,11 +35,11 @@ public class InfoWindow extends javax.swing.JFrame {
         loadName();
         loadUrl();
     }
-    
+
     private void loadName() {
         nameTextField.setText(Config.getProperty(Config.Key.participantName));
     }
-    
+
     private void loadUrl() {
         urlTextField.setText("n/a");
     }
@@ -67,7 +67,7 @@ public class InfoWindow extends javax.swing.JFrame {
         sentMessagesValueLabel = new javax.swing.JLabel();
         receivedMessagesLabel = new javax.swing.JLabel();
         receivedMessagesValueLabel = new javax.swing.JLabel();
-        aboutInchatButton = new javax.swing.JButton();
+        aboutButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -114,7 +114,12 @@ public class InfoWindow extends javax.swing.JFrame {
 
         receivedMessagesValueLabel.setText("n/a");
 
-        aboutInchatButton.setText("About inchat...");
+        aboutButton.setText("About");
+        aboutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutButtonActionPerformed(evt);
+            }
+        });
 
         closeButton.setText("Close");
         closeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -156,7 +161,6 @@ public class InfoWindow extends javax.swing.JFrame {
                                         .addComponent(storedContactsValueLabel))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(receivedMessagesLabel)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(layout.createSequentialGroup()
                                                 .addGap(12, 12, 12)
@@ -171,7 +175,7 @@ public class InfoWindow extends javax.swing.JFrame {
                             .addComponent(statisticsLabel))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(aboutInchatButton)
+                        .addComponent(aboutButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(closeButton)))
                 .addContainerGap())
@@ -207,7 +211,7 @@ public class InfoWindow extends javax.swing.JFrame {
                     .addComponent(receivedMessagesValueLabel))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(aboutInchatButton)
+                    .addComponent(aboutButton)
                     .addComponent(closeButton))
                 .addContainerGap())
         );
@@ -229,9 +233,16 @@ public class InfoWindow extends javax.swing.JFrame {
         access.copyTextToClipboard(urlTextField.getText());
     }//GEN-LAST:event_copyUrlButtonActionPerformed
 
+    private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutButtonActionPerformed
+        AboutWindow window = new AboutWindow();
+        Frames.setIcons(window);
+        window.setVisible(true);
+
+        closeButtonActionPerformed(null);
+    }//GEN-LAST:event_aboutButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton aboutInchatButton;
+    private javax.swing.JButton aboutButton;
     javax.swing.JButton closeButton;
     private javax.swing.JButton copyNameButton;
     private javax.swing.JButton copyUrlButton;
