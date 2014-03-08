@@ -40,7 +40,6 @@ public class AboutWindow extends javax.swing.JFrame {
     private static final long serialVersionUID = 1L;
     private final int ESCAPE_KEY_CODE = 27;
     private final String WEBSITE_URL = "https://www.inchat.org/";
-    private final String POM_VERSION = "0.0.1"; // This will be updated by Maven
     private final String BACKGROUND_IMAGE_PATH = "/org/inchat/client/ui/aboutWindowBackground.png";
     private final float FRAME_BORDER_RADIUS_IN_PX = 15f;
 
@@ -62,8 +61,15 @@ public class AboutWindow extends javax.swing.JFrame {
         RoundRectangle2D shape = new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), FRAME_BORDER_RADIUS_IN_PX, FRAME_BORDER_RADIUS_IN_PX);
         setShape(shape);
     }
-    
+
+    /**
+     * This method is special since Maven updates this code automatically during
+     * compilation. Do not change the text, the formatting or anything else
+     * without checking the pom.xml and testing the version update manually in
+     * the AboutWindow!
+     */
     private void setVersion() {
+        final String POM_VERSION = "0.0.1"; // This will be updated by Maven - DO NOT CHANGE!
         versionLabel.setText("Version " + POM_VERSION);
     }
 
@@ -96,9 +102,9 @@ public class AboutWindow extends javax.swing.JFrame {
         thankYouLabel = new javax.swing.JLabel();
         introLabel = new javax.swing.JLabel();
         helpUsLabel = new javax.swing.JLabel();
-        websiteButton = new javax.swing.JButton();
-        copyrightLabel = new javax.swing.JLabel();
         versionLabel = new javax.swing.JLabel();
+        copyrightLabel = new javax.swing.JLabel();
+        linkLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("About");
@@ -116,6 +122,8 @@ public class AboutWindow extends javax.swing.JFrame {
                 formKeyTyped(evt);
             }
         });
+
+        backgroundPanel.setPreferredSize(new java.awt.Dimension(550, 330));
 
         contentPanel.setOpaque(false);
 
@@ -135,22 +143,23 @@ public class AboutWindow extends javax.swing.JFrame {
         helpUsLabel.setForeground(new java.awt.Color(254, 254, 254));
         helpUsLabel.setText("<html>Help us to make inchat better and contribute code, spend us a beer or run an inchat server. The latter is surprisingly easy! Visit inchat.org to learn more.</html>");
 
-        websiteButton.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
-        websiteButton.setForeground(new java.awt.Color(254, 254, 254));
-        websiteButton.setText("inchat.org");
-        websiteButton.setBorderPainted(false);
-        websiteButton.setMargin(new java.awt.Insets(0, 5, 0, 5));
-        websiteButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                websiteButtonActionPerformed(evt);
-            }
-        });
-
-        copyrightLabel.setForeground(new java.awt.Color(175, 175, 175));
-        copyrightLabel.setText("<html>This software was developed by the team behind inchat.org and released under the terms of the GPLv3 or later. © 2014 inchat.org.</html>");
-
+        versionLabel.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
         versionLabel.setForeground(new java.awt.Color(175, 175, 175));
         versionLabel.setText("Version");
+        versionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        copyrightLabel.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        copyrightLabel.setText("<html>This software was developed by the team behind inchat.org and released under the terms of the GPLv3 or later. © 2014 inchat.org.</html>");
+        copyrightLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        linkLabel.setForeground(java.awt.Color.blue);
+        linkLabel.setText("www.inchat.org");
+        linkLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        linkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                linkLabelMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
@@ -159,16 +168,16 @@ public class AboutWindow extends javax.swing.JFrame {
             .addGroup(contentPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(copyrightLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(logoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(introLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
-                    .addComponent(helpUsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(helpUsLabel)
                     .addGroup(contentPanelLayout.createSequentialGroup()
                         .addComponent(thankYouLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(websiteButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(linkLabel))
+                    .addGroup(contentPanelLayout.createSequentialGroup()
+                        .addComponent(copyrightLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(versionLabel)))
                 .addContainerGap())
         );
@@ -176,19 +185,19 @@ public class AboutWindow extends javax.swing.JFrame {
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(logoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(introLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(helpUsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(websiteButton)
-                    .addComponent(thankYouLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(versionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(copyrightLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thankYouLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(linkLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(copyrightLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(versionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -203,10 +212,9 @@ public class AboutWindow extends javax.swing.JFrame {
         );
         backgroundPanelLayout.setVerticalGroup(
             backgroundPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundPanelLayout.createSequentialGroup()
+            .addGroup(backgroundPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -217,7 +225,9 @@ public class AboutWindow extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(backgroundPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(backgroundPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -233,7 +243,7 @@ public class AboutWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formKeyTyped
 
-    private void websiteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_websiteButtonActionPerformed
+    private void linkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_linkLabelMouseClicked
         if (Desktop.isDesktopSupported()) {
             try {
                 Desktop.getDesktop().browse(new URL(WEBSITE_URL).toURI());
@@ -251,7 +261,7 @@ public class AboutWindow extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(AboutWindow.class.getName()).log(Level.WARNING, "Could not open the website ''" + WEBSITE_URL + "'' since: {0}", ex.getMessage());
         }
-    }//GEN-LAST:event_websiteButtonActionPerformed
+    }//GEN-LAST:event_linkLabelMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel backgroundPanel;
@@ -259,9 +269,9 @@ public class AboutWindow extends javax.swing.JFrame {
     private javax.swing.JLabel copyrightLabel;
     private javax.swing.JLabel helpUsLabel;
     private javax.swing.JLabel introLabel;
+    private javax.swing.JLabel linkLabel;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JLabel thankYouLabel;
     private javax.swing.JLabel versionLabel;
-    private javax.swing.JButton websiteButton;
     // End of variables declaration//GEN-END:variables
 }
