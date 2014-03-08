@@ -59,17 +59,17 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void setSize() {
-        String width = Config.getProperty(Config.Key.windowWidth);
-        String height = Config.getProperty(Config.Key.windowHeight);
+        String preferredWidth = Config.getProperty(Config.Key.windowWidth);
+        String preferredHeight = Config.getProperty(Config.Key.windowHeight);
 
-        if (width != null && height != null) {
-            int windowWidth = Integer.valueOf(width);
-            int windowHeight = Integer.valueOf(height);
+        if (preferredWidth != null && preferredHeight != null) {
+            int width = Integer.valueOf(preferredWidth);
+            int height = Integer.valueOf(preferredHeight);
 
-            if (windowWidth >= MINIMAL_WINDOW_WIDTH_IN_PX
-                    && windowHeight >= MINIMAL_WINDOW_HEIGHT_IN_PX) {
-                setSize(windowWidth, windowHeight);
+            if (width >= MINIMAL_WINDOW_WIDTH_IN_PX && height >= MINIMAL_WINDOW_HEIGHT_IN_PX) {
+                setSize(width, height);
                 revalidate();
+                repaint();
             }
         }
     }
@@ -114,6 +114,7 @@ public class MainWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("inchat");
         setMinimumSize(new java.awt.Dimension(260, 400));
+        setPreferredSize(new java.awt.Dimension(260, 400));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 formComponentMoved(evt);
@@ -122,6 +123,8 @@ public class MainWindow extends javax.swing.JFrame {
                 formComponentResized(evt);
             }
         });
+
+        topPanel.setPreferredSize(new java.awt.Dimension(260, 46));
 
         avatarButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/inchat/client/ui/avatar.png"))); // NOI18N
         avatarButton.setBorderPainted(false);
@@ -178,7 +181,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(nameButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(infoButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addUserButton)
