@@ -40,10 +40,10 @@ public class MainWindowTest {
     @Before
     public void setUp() {
         cleanUp();
-        
+
         Config.createDefaultConfig(CONFIG_FILE);
         Config.loadConfig(CONFIG_FILE);
-        
+
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
 
@@ -75,7 +75,7 @@ public class MainWindowTest {
         window = new MainWindow();
 
         assertSame(model.getContactList(), window.contactList.getModel());
-        
+
         cleanUp();
     }
 
@@ -83,14 +83,44 @@ public class MainWindowTest {
     public void testSetPositionOnNewSetting() {
         assertTrue(window.getX() > 0);
         assertTrue(window.getY() > 0);
-        
+
+        cleanUp();
+    }
+
+    @Test
+    public void testSetPositionOnSize() {
+        int width = 400;
+        int height = 600;
+        Config.setProperty(Config.Key.windowWidth, "" + width);
+        Config.setProperty(Config.Key.windowHeight, "" + height);
+
+        window = new MainWindow();
+
+        assertEquals(width, window.getWidth());
+        assertEquals(height, window.getHeight());
+
+        cleanUp();
+    }
+
+    @Test
+    public void testSetPositionOnIllegalSize() {
+        int width = 1;
+        int height = 1;
+        Config.setProperty(Config.Key.windowWidth, "" + width);
+        Config.setProperty(Config.Key.windowHeight, "" + height);
+
+        window = new MainWindow();
+
+        assertTrue(window.getWidth() > width);
+        assertTrue(window.getHeight() > height);
+
         cleanUp();
     }
 
     @Test
     public void testSetOfProfileSpecificValuesOnNewSetting() {
         assertTrue(window.nameButton.getText().isEmpty());
-        
+
         cleanUp();
     }
 
@@ -99,28 +129,28 @@ public class MainWindowTest {
         Config.setProperty(Config.Key.participantName, "spock");
         window = new MainWindow();
         assertEquals("spock", window.nameButton.getText());
-        
+
         cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnNull() {
         window.setUsername(null);
-        
+
         cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnEmptyString() {
         window.setUsername("");
-        
+
         cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnSpaceString() {
         window.setUsername("   ");
-        
+
         cleanUp();
     }
 
@@ -129,29 +159,29 @@ public class MainWindowTest {
         String name = "Timmee";
         window.setUsername(name);
         assertEquals(name, window.nameButton.getText());
-        
+
         cleanUp();
     }
-    
+
     @Test
     public void testNameButtonOnShowingInvokingMethod() {
         controller.showNameInSettingsWindow();
         expectLastCall();
         replay(controller);
-        
+
         window.nameButton.doClick();
-        
+
         verify(controller);
     }
-    
+
     @Test
     public void testSettingsButtonOnShowingInvokingMethod() {
         controller.showSettingsWindow();
         expectLastCall();
         replay(controller);
-        
+
         window.settingsButton.doClick();
-        
+
         verify(controller);
     }
 

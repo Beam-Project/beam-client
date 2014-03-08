@@ -31,6 +31,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
     private final int DOUBLE_CLICK_NUMBER = 2;
+    private final int MINIMAL_WINDOW_WIDTH_IN_PX = 260;
+    private final int MINIMAL_WINDOW_HEIGHT_IN_PX = 400;
 
     /**
      * Creates new form MainWindow
@@ -39,6 +41,7 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         setProfileSpecificValues();
         setPosition();
+        setSize();
         initalizeContactList();
     }
 
@@ -52,6 +55,22 @@ public class MainWindow extends javax.swing.JFrame {
             setLocation(xPosition, yPosition);
         } else {
             setLocationRelativeTo(null);
+        }
+    }
+
+    private void setSize() {
+        String width = Config.getProperty(Config.Key.windowWidth);
+        String height = Config.getProperty(Config.Key.windowHeight);
+
+        if (width != null && height != null) {
+            int windowWidth = Integer.valueOf(width);
+            int windowHeight = Integer.valueOf(height);
+
+            if (windowWidth >= MINIMAL_WINDOW_WIDTH_IN_PX
+                    && windowHeight >= MINIMAL_WINDOW_HEIGHT_IN_PX) {
+                setSize(windowWidth, windowHeight);
+                revalidate();
+            }
         }
     }
 
@@ -97,6 +116,9 @@ public class MainWindow extends javax.swing.JFrame {
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentMoved(java.awt.event.ComponentEvent evt) {
                 formComponentMoved(evt);
+            }
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
             }
         });
 
@@ -228,6 +250,14 @@ public class MainWindow extends javax.swing.JFrame {
     private void nameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameButtonActionPerformed
         App.getController().showNameInSettingsWindow();
     }//GEN-LAST:event_nameButtonActionPerformed
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+        int width = evt.getComponent().getWidth();
+        int height = evt.getComponent().getHeight();
+
+        Config.setProperty(Config.Key.windowWidth, "" + width);
+        Config.setProperty(Config.Key.windowHeight, "" + height);
+    }//GEN-LAST:event_formComponentResized
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addUserButton;
