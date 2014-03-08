@@ -65,7 +65,7 @@ public class ControllerTest {
         while (!controllerConfig.delete() && controllerConfig.exists()) {
             System.out.println("Tried to delete the controller.conf config file.");
         }
-        
+
         contactsStorageFile.delete();
         disposeSettingsWindow();
     }
@@ -136,7 +136,10 @@ public class ControllerTest {
 
         String serverUrl = "https://www.inchat.org:443/myserver/?name=user&password=verySecure";
 
-        Config.createDefaultConfig(CONFIG_FILE);
+        if (!new File(CONFIG_FILE).exists()) {
+            Config.createDefaultConfig(CONFIG_FILE);
+        }
+        
         Config.loadConfig(CONFIG_FILE);
         MainWindow mainWindow = new MainWindow();
         AppTest.setAppMainWindow(mainWindow);
@@ -251,6 +254,7 @@ public class ControllerTest {
         assertSame(window, controller.infoWindow);
         assertTrue(controller.infoWindow.isVisible());
     }
+
     @Test
     public void testCloseInfoWindow() {
         InfoWindow window = new InfoWindow();
