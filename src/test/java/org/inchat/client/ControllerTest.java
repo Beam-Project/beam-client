@@ -61,7 +61,11 @@ public class ControllerTest {
 
     @After
     public void cleanUp() {
-        new File(CONFIG_FILE).delete();
+        File controllerConfig = new File(CONFIG_FILE);
+        while (!controllerConfig.delete() && controllerConfig.exists()) {
+            System.out.println("Tried to delete the controller.conf config file.");
+        }
+        
         contactsStorageFile.delete();
         disposeSettingsWindow();
     }
