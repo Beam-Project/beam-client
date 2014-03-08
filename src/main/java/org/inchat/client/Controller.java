@@ -24,6 +24,7 @@ import org.inchat.client.network.HttpConnector;
 import org.inchat.client.storage.Storage;
 import org.inchat.client.ui.ConversationWindow;
 import org.inchat.client.ui.Frames;
+import org.inchat.client.ui.InfoWindow;
 import org.inchat.client.ui.settings.SettingsWindow;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
@@ -39,6 +40,7 @@ public class Controller {
 
     public final static String FORMAT_VERSION = "1.0";
     List<ConversationWindow> conversationWindows = new ArrayList<>();
+    InfoWindow infoWindow;
     SettingsWindow settingsWindow;
     CryptoPacker cryptoPacker;
 
@@ -114,6 +116,15 @@ public class Controller {
         return http.excutePost(ciphertext);
     }
 
+    public void showInfoWindow() {
+        getInfoWindow().setVisible(true);
+    }
+
+    public void closeInfoWindow() {
+        getInfoWindow().dispose();
+        infoWindow = null;
+    }
+
     public void showSettingsWindow() {
         getSettingsWindow().setVisible(true);
     }
@@ -126,6 +137,15 @@ public class Controller {
     public void closeSettingsWindow() {
         getSettingsWindow().dispose();
         settingsWindow = null;
+    }
+
+    private InfoWindow getInfoWindow() {
+        if (infoWindow == null) {
+            infoWindow = new InfoWindow();
+            Frames.setIcons(infoWindow);
+        }
+
+        return infoWindow;
     }
 
     private SettingsWindow getSettingsWindow() {

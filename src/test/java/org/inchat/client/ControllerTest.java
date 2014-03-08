@@ -22,6 +22,7 @@ import java.io.File;
 import javax.swing.JPanel;
 import static org.easymock.EasyMock.*;
 import org.inchat.client.storage.Storage;
+import org.inchat.client.ui.InfoWindow;
 import org.inchat.client.ui.MainWindow;
 import org.inchat.client.ui.MainWindowTest;
 import org.inchat.client.ui.settings.GeneralPanel;
@@ -224,6 +225,39 @@ public class ControllerTest {
         Participant client = new Participant(EccKeyPairGenerator.generate());
         Contact contact = new Contact(server, client, "john");
         controller.sendMessage(contact, "hello");
+    }
+
+    @Test
+    public void testShowInfoWindow() {
+        assertNull(controller.infoWindow);
+
+        controller.showInfoWindow();
+
+        assertTrue(controller.infoWindow.isVisible());
+    }
+
+    @Test
+    public void testShowInfoWindowOnReusingExistingWindow() {
+        InfoWindow window = new InfoWindow();
+        controller.infoWindow = window;
+        assertFalse(window.isVisible());
+
+        controller.showInfoWindow();
+
+        assertSame(window, controller.infoWindow);
+        assertTrue(controller.infoWindow.isVisible());
+    }
+    @Test
+    public void testCloseInfoWindow() {
+        InfoWindow window = new InfoWindow();
+        controller.infoWindow = window;
+        controller.infoWindow.setVisible(true);
+
+        controller.closeInfoWindow();
+
+        assertFalse(window.isVisible());
+        assertFalse(window.isDisplayable());
+        assertNull(controller.infoWindow);
     }
 
     @Test
