@@ -26,7 +26,7 @@ import org.inchat.client.Controller;
 import org.inchat.common.Contact;
 import org.inchat.common.Participant;
 import org.inchat.common.crypto.EccKeyPairGenerator;
-import org.inchat.common.transfer.UrlAssembler;
+import org.inchat.common.network.UrlAssembler;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;

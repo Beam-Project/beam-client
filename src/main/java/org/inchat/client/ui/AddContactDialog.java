@@ -20,7 +20,7 @@ package org.inchat.client.ui;
 
 import org.inchat.client.App;
 import org.inchat.common.Contact;
-import org.inchat.common.transfer.UrlAssembler;
+import org.inchat.common.network.UrlAssembler;
 
 /**
  *

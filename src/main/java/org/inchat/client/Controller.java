@@ -20,7 +20,7 @@ package org.inchat.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.inchat.client.network.HttpConnector;
+import org.inchat.common.network.HttpConnector;
 import org.inchat.client.storage.Storage;
 import org.inchat.client.ui.ConversationWindow;
 import org.inchat.client.ui.Frames;
