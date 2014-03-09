@@ -29,6 +29,7 @@ import org.inchat.client.ui.settings.SettingsWindow;
 import org.inchat.common.Config;
 import org.inchat.common.Contact;
 import org.inchat.common.Message;
+import org.inchat.common.MessageField;
 import org.inchat.common.crypto.CryptoPacker;
 import org.inchat.common.util.Exceptions;
 
@@ -106,7 +107,7 @@ public class Controller {
 
         plaintext.setVersion(FORMAT_VERSION);
         plaintext.setParticipant(target.getServer());
-        plaintext.setContent(content.getBytes());
+        plaintext.appendContent(MessageField.CNT_MSG, content.getBytes());
 
         return plaintext;
     }
