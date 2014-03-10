@@ -18,7 +18,6 @@
  */
 package org.inchat.client;
 
-import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.io.File;
@@ -61,7 +60,7 @@ public class App {
 
         try {
             if (isUnix) {
-                UIManager.setLookAndFeel(new GTKLookAndFeel());
+                UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
             } else {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
