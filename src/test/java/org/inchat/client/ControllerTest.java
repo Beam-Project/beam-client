@@ -18,13 +18,11 @@
  */
 package org.inchat.client;
 
-import java.io.File;
 import javax.swing.JPanel;
 import static org.easymock.EasyMock.*;
 import org.inchat.client.storage.Storage;
 import org.inchat.client.ui.InfoWindow;
 import org.inchat.client.ui.MainWindow;
-import org.inchat.client.ui.MainWindowTest;
 import org.inchat.client.ui.settings.GeneralPanel;
 import org.inchat.client.ui.settings.IdentityPanel;
 import org.inchat.client.ui.settings.SettingsWindow;
@@ -41,187 +39,161 @@ import org.junit.Ignore;
 
 public class ControllerTest {
 
-    private final String CONFIG_FILE = "controller.conf";
-    private final String CONTACTS_STORAGE_FILE = "contacts.storage";
+    private final String NAME = "myControllerName";
+    private final String URL = "http://srv.inchat.org";
+    private Config config;
     private Controller controller;
     private Model model;
     private Contact contact;
-    private File contactsStorageFile;
+    private Storage<ContactList> storage;
+    private ContactList contactList;
+    private MainWindow mainWindow;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
-        App.CONTACTS_STORAGE_FILE = CONTACTS_STORAGE_FILE;
-        contactsStorageFile = new File(CONTACTS_STORAGE_FILE);
-        controller = new Controller();
+        config = createMock(Config.class);
         model = createMock(Model.class);
         contact = createMock(Contact.class);
+        storage = createMock(Storage.class);
+        mainWindow = createMock(MainWindow.class);
+        AppTest.setAppConfig(config);
+        AppTest.setAppMdoel(model);
+        AppTest.setAppMainWindow(mainWindow);
+
+        contactList = new ContactList();
+        controller = new Controller(config);
 
         App.controller = controller;
     }
 
     @After
-    public void cleanUp() {
-        File controllerConfig = new File(CONFIG_FILE);
-        while (!controllerConfig.delete() && controllerConfig.exists()) {
-            System.out.println("Tried to delete the controller.conf config file.");
-        }
-
-        contactsStorageFile.delete();
-        disposeSettingsWindow();
+    public void verifyMocks() {
+        verify(config, model, contact, storage, mainWindow);
     }
 
-    /**
-     * Dispose the settings window manually if it's still available. Otherwise,
-     * tests could fail because other tests would expect settingsWindow to be
-     * newly instantiated.
-     */
-    private void disposeSettingsWindow() {
-        if (controller.settingsWindow != null) {
-            controller.settingsWindow.dispose();
-        }
+    private void setMocksInReplayMode() {
+        replay(config, model, contact, storage, mainWindow);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorOnNull() {
+        setMocksInReplayMode();
+        controller = new Controller(null);
+    }
+
+    @Test
+    public void testConstructorOnAssertion() {
+        setMocksInReplayMode();
+        controller = new Controller(config);
+        assertSame(config, controller.config);
     }
 
     @Test
     public void testConstructorOnInstatiation() {
+        setMocksInReplayMode();
         assertTrue(controller.conversationWindows.isEmpty());
     }
 
     @Test
     public void testChangeName() {
-        expect(model.getContactList()).andReturn(new ContactList());
-        App.model = model;
-        replay(contact, model);
-
         String name = "Timmeeee";
+        config.setProperty(ClientConfigKey.participantName, name);
+        expectLastCall();
+        mainWindow.setUsername(name);
+        expectLastCall();
+        setMocksInReplayMode();
 
-        Config.createDefaultConfig(CONFIG_FILE);
-        Config.loadConfig(CONFIG_FILE);
-        MainWindow mainWindow = new MainWindow();
-        AppTest.setAppMainWindow(mainWindow);
         controller.changeName(name);
-
-        testChangeNameOnWritingConfigProperty(name);
-        testChangeNameOnUpdatingGui(name);
-
-        verify(contact, model);
-    }
-
-    private void testChangeNameOnWritingConfigProperty(String name) {
-        assertEquals(name, Config.getProperty(Config.Key.participantName));
-    }
-
-    private void testChangeNameOnUpdatingGui(String name) {
-        assertEquals(name, MainWindowTest.getNameButton().getText());
     }
 
     @Test
     public void testAddContactOnInvocingModelOnNull() {
         model.addContact(anyObject(Contact.class));
         expectLastCall().once();
-        expect(model.getContactListStorage()).andReturn(new Storage<ContactList>(CONTACTS_STORAGE_FILE)).anyTimes();
-        expect(model.getContactList()).andReturn(new ContactList());
-        replay(model);
+        expect(model.getContactListStorage()).andReturn(storage).anyTimes();
+        expect(model.getContactList()).andReturn(contactList);
+        storage.store(contactList);
+        expectLastCall();
+        setMocksInReplayMode();
 
-        AppTest.setAppMdoel(model);
         controller.addContact(null); // should just invoke model
-
-        verify(model);
     }
 
     @Test
     public void testSetServerUrl() {
-        expect(model.getContactList()).andReturn(new ContactList());
-        App.model = model;
-        replay(contact, model);
+        config.setProperty(ClientConfigKey.serverUrl, URL);
+        expectLastCall();
+        setMocksInReplayMode();
 
-        String serverUrl = "https://www.inchat.org:443/myserver/?name=user&password=verySecure";
-
-        if (!new File(CONFIG_FILE).exists()) {
-            Config.createDefaultConfig(CONFIG_FILE);
-        }
-        
-        Config.loadConfig(CONFIG_FILE);
-        MainWindow mainWindow = new MainWindow();
-        AppTest.setAppMainWindow(mainWindow);
-
-        controller.setServerUrl(serverUrl);
-        assertEquals(serverUrl, Config.getProperty(Config.Key.serverUrl));
-
-        verify(contact, model);
+        controller.setServerUrl(URL);
     }
 
     @Test
     public void testAddContact() {
         model.addContact(anyObject(Contact.class));
         expectLastCall().once();
-        expect(model.getContactListStorage()).andReturn(new Storage<ContactList>(CONTACTS_STORAGE_FILE)).anyTimes();
-        expect(model.getContactList()).andReturn(new ContactList());
-        replay(model, contact);
+        expect(model.getContactListStorage()).andReturn(storage).anyTimes();
+        expect(model.getContactList()).andReturn(contactList);
+        storage.store(contactList);
+        expectLastCall();
+        setMocksInReplayMode();
 
-        assertFalse(contactsStorageFile.exists());
-        AppTest.setAppMdoel(model);
         controller.addContact(contact);
-        assertTrue(contactsStorageFile.exists());
-
-        verify(model);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testOpenConversationWindowOnNull() {
+        setMocksInReplayMode();
         controller.openConversationWindow(null);
     }
 
     @Test
     public void testOpenConversationWindow() {
         expect(contact.getName()).andReturn("myname");
-        replay(contact);
+        setMocksInReplayMode();
 
         assertTrue(controller.conversationWindows.isEmpty());
         controller.openConversationWindow(contact);
         assertEquals(1, controller.conversationWindows.size());
         assertTrue(controller.conversationWindows.get(0).isVisible());
         assertSame(contact, controller.conversationWindows.get(0).getContact());
-
-        verify(contact);
-    }
-
-    @Test
-    public void testLoadContactStorageOnNewFile() {
-        App.model = new Model();
-        assertNull(App.model.contactListStorage);
-        assertFalse(contactsStorageFile.exists());
-
-        controller.readContactListStorage();
-        assertNotNull(App.model.contactListStorage);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testWriteContactStorageOnNotExistingStorage() {
-        App.model = new Model();
+        expect(model.getContactListStorage()).andReturn(null);
+        setMocksInReplayMode();
+
         controller.writeContactListStorage();
     }
 
     @Test
     public void testWriteContactStorage() {
-        assertFalse(contactsStorageFile.exists());
-        testLoadContactStorageOnNewFile();
+        expect(model.getContactListStorage()).andReturn(storage).times(2);
+        expect(model.getContactList()).andReturn(contactList);
+        storage.store(contactList);
+        expectLastCall();
+        setMocksInReplayMode();
 
         controller.writeContactListStorage();
-        assertTrue(contactsStorageFile.exists());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessageOnNulls() {
+        setMocksInReplayMode();
         controller.sendMessage(null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessageOnNullTarget() {
+        setMocksInReplayMode();
         controller.sendMessage(null, "message");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessageOnEmptyMessage() {
+        setMocksInReplayMode();
         controller.sendMessage(contact, "");
     }
 
@@ -236,6 +208,8 @@ public class ControllerTest {
 
     @Test
     public void testShowInfoWindow() {
+        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
+        setMocksInReplayMode();
         assertNull(controller.infoWindow);
 
         controller.showInfoWindow();
@@ -245,6 +219,8 @@ public class ControllerTest {
 
     @Test
     public void testShowInfoWindowOnReusingExistingWindow() {
+        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
+        setMocksInReplayMode();
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
         assertFalse(window.isVisible());
@@ -257,6 +233,9 @@ public class ControllerTest {
 
     @Test
     public void testCloseInfoWindow() {
+        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
+        setMocksInReplayMode();
+
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
         controller.infoWindow.setVisible(true);
@@ -270,6 +249,7 @@ public class ControllerTest {
 
     @Test
     public void testShowSettingsWindow() {
+        setMocksInReplayMode();
         assertNull(controller.settingsWindow);
 
         controller.showSettingsWindow();
@@ -281,6 +261,7 @@ public class ControllerTest {
 
     @Test
     public void testShowSettingsWindowOnReusingExistingWindow() {
+        setMocksInReplayMode();
         SettingsWindow window = new SettingsWindow();
         controller.settingsWindow = window;
         assertFalse(window.isVisible());
@@ -293,6 +274,14 @@ public class ControllerTest {
 
     @Test
     public void testShowIdentityNameInSettingsWindow() {
+        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
+        expect(config.getProperty(ClientConfigKey.serverUrl)).andReturn(NAME);
+        config.setProperty(ClientConfigKey.participantName, NAME);
+        expectLastCall().anyTimes();
+        mainWindow.setUsername(NAME);
+        expectLastCall().anyTimes();
+        setMocksInReplayMode();
+
         assertNull(controller.settingsWindow);
 
         controller.showNameInSettingsWindow();
@@ -304,18 +293,25 @@ public class ControllerTest {
 
     @Test
     public void testShowIdentityNameInSettingsWindowOnReusingExistingWindow() {
-        SettingsWindow window = new SettingsWindow();
-        controller.settingsWindow = window;
-        assertFalse(controller.settingsWindow.isVisible());
+        SettingsWindow settingsWindow = createMock(SettingsWindow.class);
+        settingsWindow.openIdentityMenuWithFocusedName();
+        expectLastCall();
+        settingsWindow.setVisible(true);
+        expectLastCall();
+        setMocksInReplayMode();
+        replay(settingsWindow);
 
+        controller.settingsWindow = settingsWindow;
         controller.showNameInSettingsWindow();
 
-        assertSame(window, controller.settingsWindow);
-        assertTrue(controller.settingsWindow.isVisible());
+        assertSame(settingsWindow, controller.settingsWindow);
+        verify(settingsWindow);
     }
 
     @Test
     public void testCloseSettingsWindow() {
+        setMocksInReplayMode();
+
         SettingsWindow window = new SettingsWindow();
         controller.settingsWindow = window;
         controller.settingsWindow.setVisible(true);

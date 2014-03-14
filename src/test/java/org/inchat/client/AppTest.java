@@ -20,7 +20,7 @@ package org.inchat.client;
 
 import java.io.File;
 import org.inchat.client.ui.MainWindow;
-import org.inchat.common.crypto.KeyPairStore;
+import org.inchat.common.Config;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -28,32 +28,28 @@ import org.junit.Before;
 
 public class AppTest {
 
-    private final String CONFIG_DIRECTORY = "./inchat-client-test-dir/";
+    private final String CONFIG_DIRECTORY = "./";
     private final String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
-    private final String DATABASE_FILE = CONFIG_DIRECTORY + "client.db";
+    private File configFile;
 
     @Before
     public void setUp() {
         App.CONFIG_DIRECTORY = CONFIG_DIRECTORY;
         App.CONFIG_FILE = CONFIG_FILE;
-        App.DATABASE_FILE = DATABASE_FILE;
+
+        configFile = new File(CONFIG_FILE);
     }
 
     @After
     public void cleanUp() {
-        new File(CONFIG_FILE).delete();
-        new File(DATABASE_FILE).delete();
-
-        String keystoreFilename = "keypair";
-        new File(CONFIG_DIRECTORY + keystoreFilename + KeyPairStore.PRIVATE_KEY_FILE_EXTENSION).delete();
-        new File(CONFIG_DIRECTORY + keystoreFilename + KeyPairStore.PUBILC_KEY_FILE_EXTENSION).delete();
-        new File(CONFIG_DIRECTORY + keystoreFilename + KeyPairStore.SALT_FILE_EXTENSION).delete();
-        
-        new File(CONFIG_DIRECTORY).delete();        
+        configFile.delete();
     }
 
     @Test
-    public void testConstructorOnCreatingControllerAndModel() {
+    public void testLoadConfigControllerModel() {
+        App.loadConfigControllerModel();
+
+        assertNotNull(App.config);
         assertNotNull(App.controller);
         assertNotNull(App.model);
     }
@@ -65,17 +61,10 @@ public class AppTest {
     }
 
     @Test
-    public void testLoadConfigOnCreatingDirectory() {
-        App.loadConfig();
-
-        assertTrue(new File(CONFIG_DIRECTORY).exists());
-    }
-
-    @Test
     public void testLoadConfigOnCreatingConfigFile() {
-        App.loadConfig();
+        App.loadConfigControllerModel();
 
-        assertTrue(new File(CONFIG_DIRECTORY).exists());
+        assertTrue(configFile.exists());
     }
 
     @Test
@@ -91,6 +80,15 @@ public class AppTest {
     @Test
     public void testGetMainWindow() {
         assertSame(App.mainWindow, App.getMainWindow());
+    }
+
+    @Test
+    public void testGetConfig() {
+        assertSame(App.config, App.getConfig());
+    }
+
+    public static void setAppConfig(Config config) {
+        App.config = config;
     }
 
     /**

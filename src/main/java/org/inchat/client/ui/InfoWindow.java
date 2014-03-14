@@ -19,8 +19,8 @@
 package org.inchat.client.ui;
 
 import org.inchat.client.App;
+import org.inchat.client.ClientConfigKey;
 import org.inchat.client.util.ClipboardAccess;
-import org.inchat.common.Config;
 
 /**
  * This window shows information about the user.
@@ -37,7 +37,7 @@ public class InfoWindow extends javax.swing.JFrame {
     }
 
     private void loadName() {
-        nameTextField.setText(Config.getProperty(Config.Key.participantName));
+        nameTextField.setText(App.getConfig().getProperty(ClientConfigKey.participantName));
     }
 
     private void loadUrl() {

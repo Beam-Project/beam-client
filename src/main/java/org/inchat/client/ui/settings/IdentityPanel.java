@@ -23,7 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.inchat.client.App;
-import org.inchat.common.Config;
+import org.inchat.client.ClientConfigKey;
 
 public class IdentityPanel extends javax.swing.JPanel {
 
@@ -36,11 +36,11 @@ public class IdentityPanel extends javax.swing.JPanel {
     }
 
     private void loadName() {
-        nameTextField.setText(Config.getProperty(Config.Key.participantName));
+        nameTextField.setText(App.getConfig().getProperty(ClientConfigKey.participantName));
     }
 
     private void loadServerUrl() {
-        serverUrlTextField.setText(Config.getProperty(Config.Key.serverUrl));
+        serverUrlTextField.setText(App.getConfig().getProperty(ClientConfigKey.serverUrl));
     }
 
     /**
@@ -168,7 +168,7 @@ public class IdentityPanel extends javax.swing.JPanel {
 
     private void serverUrlTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverUrlTextFieldPropertyChange
         String serverUrl = serverUrlTextField.getText().trim();
-        
+
         if (isServerUrlValid(serverUrl)) {
             App.getController().setServerUrl(serverUrl);
         }

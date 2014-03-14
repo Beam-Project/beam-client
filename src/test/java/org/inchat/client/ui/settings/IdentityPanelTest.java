@@ -19,9 +19,9 @@
 package org.inchat.client.ui.settings;
 
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import static org.easymock.EasyMock.*;
 import org.inchat.client.AppTest;
+import org.inchat.client.ClientConfigKey;
 import org.inchat.client.Controller;
 import org.inchat.common.Config;
 import org.junit.After;
@@ -31,29 +31,29 @@ import org.junit.Before;
 
 public class IdentityPanelTest {
 
-    private final String CONFIG_FILE = "identity.conf";
     private final String NAME = "Mr/Mrs Garrison";
     private final String SERVER_URL = "http://my-server.inchat.org:1234";
     private IdentityPanel panel;
+    private Config config;
     private Controller controller;
 
     @Before
     public void setUp() {
-        Config.createDefaultConfig(CONFIG_FILE);
-        Config.loadConfig(CONFIG_FILE);
-        Config.setProperty(Config.Key.participantName, NAME);
-        Config.setProperty(Config.Key.serverUrl, SERVER_URL);
-
+        config = createMock(Config.class);
         controller = createMock(Controller.class);
+        AppTest.setAppConfig(config);
         AppTest.setAppController(controller);
+
+        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
+        expect(config.getProperty(ClientConfigKey.serverUrl)).andReturn(SERVER_URL);
+        replay(config);
 
         panel = new IdentityPanel();
     }
 
     @After
-    public void cleanUp() {
-        File config = new File(CONFIG_FILE);
-        config.delete();
+    public void verifyMocks() {
+        verify(config);
     }
 
     @Test

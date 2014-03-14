@@ -21,6 +21,8 @@ package org.inchat.client;
 import static org.easymock.EasyMock.*;
 import org.inchat.client.storage.Storage;
 import org.inchat.common.Contact;
+import org.inchat.common.Participant;
+import org.inchat.common.crypto.EccKeyPairGenerator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -39,6 +41,20 @@ public class ModelTest {
     @Test
     public void testModelOnInitialization() {
         assertEquals(0, model.contactList.size());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetParticipantOnNull() {
+        model.setParticipant(null);
+    }
+
+    @Test
+    public void testSetAndGetParticipantOnAssignment() {
+        Participant participant = new Participant(EccKeyPairGenerator.generate());
+        model.setParticipant(participant);
+        assertSame(participant, model.participant);
+
+        assertSame(participant, model.getParticipant());
     }
 
     @Test(expected = IllegalArgumentException.class)

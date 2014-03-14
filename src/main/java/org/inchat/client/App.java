@@ -20,14 +20,15 @@ package org.inchat.client;
 
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.io.File;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.inchat.client.ui.Frames;
 import org.inchat.client.ui.MainWindow;
 import org.inchat.client.ui.SetUpDialog;
 import org.inchat.common.Config;
-import org.inchat.common.crypto.KeyPairStore;
+import org.inchat.common.Participant;
+import org.inchat.common.crypto.EccKeyPairGenerator;
+import org.inchat.common.util.Base64;
 
 /**
  * The main class of this application.
@@ -38,16 +39,16 @@ public class App {
     public final static Color ERROR_BACKGROUND = new Color(255, 153, 153);
     static String CONFIG_DIRECTORY = System.getProperty("user.home") + "/.inchat-client/";
     static String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
-    static String DATABASE_FILE = CONFIG_DIRECTORY + "client.db";
     static String CONTACTS_STORAGE_FILE = CONFIG_DIRECTORY + "contacts.storage";
-    static Controller controller = new Controller();
-    static Model model = new Model();
+    static Config config;
+    static Controller controller;
+    static Model model;
     static MainWindow mainWindow;
 
     public static void main(String args[]) {
         setNativeLookAndFeel();
         showMainWindow();
-        loadConfig();
+        loadConfigControllerModel();
         loadParticipant();
         readContactList();
     }
@@ -80,40 +81,40 @@ public class App {
         });
     }
 
-    static void loadConfig() {
-        File configFile = new File(CONFIG_FILE).getAbsoluteFile();
-
-        if (!configFile.getParentFile().exists()) {
-            configFile.getParentFile().mkdirs();
-        }
-
-        if (!configFile.exists()) {
-            Config.createDefaultConfig(CONFIG_FILE);
-        }
-
-        Config.loadConfig(CONFIG_FILE);
+    static void loadConfigControllerModel() {
+        config = new Config(CONFIG_FILE);
+        controller = new Controller(config);
+        model = new Model();
     }
 
     static void loadParticipant() {
-        if (!isProfileExisting()) {
-            SetUpDialog dialog = new SetUpDialog();
-            Frames.setIcons(dialog);
-            dialog.setLocationRelativeTo(null);
-            dialog.setVisible(true);
+        if (config.isKeyExisting(ClientConfigKey.publicKey)) {
+            //TODO load participant to model
+        } else {
+            showSetUpDialog();
+            generateAndStoreParticipant();
         }
-
-        Config.loadOrCreateParticipant();
     }
-    
+
+    private static void showSetUpDialog() {
+        SetUpDialog dialog = new SetUpDialog();
+        Frames.setIcons(dialog);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+    }
+
+    private static void generateAndStoreParticipant() {
+        Participant participant = new Participant(EccKeyPairGenerator.generate());
+
+        String publicKey = Base64.encode(participant.getPublicKeyAsBytes());
+        String privateKey = Base64.encode(participant.getPrivateKeyAsBytes());
+
+        config.setProperty(ClientConfigKey.publicKey, publicKey);
+        config.setProperty(ClientConfigKey.privateKey, privateKey);
+    }
+
     static void readContactList() {
         controller.readContactListStorage();
-    }
-
-    private static boolean isProfileExisting() {
-        String keyPairFilename = Config.getProperty(Config.Key.keyPairFilename);
-        File publicKey = new File(CONFIG_DIRECTORY + keyPairFilename + KeyPairStore.PUBILC_KEY_FILE_EXTENSION);
-
-        return publicKey.exists();
     }
 
     public static Controller getController() {
@@ -126,6 +127,10 @@ public class App {
 
     public static MainWindow getMainWindow() {
         return mainWindow;
+    }
+
+    public static Config getConfig() {
+        return config;
     }
 
 }

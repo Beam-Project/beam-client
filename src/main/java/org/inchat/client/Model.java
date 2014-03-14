@@ -20,12 +20,30 @@ package org.inchat.client;
 
 import org.inchat.client.storage.Storage;
 import org.inchat.common.Contact;
+import org.inchat.common.Participant;
 import org.inchat.common.util.Exceptions;
 
 public class Model {
 
+    Participant participant;
     Storage<ContactList> contactListStorage;
     ContactList contactList = new ContactList();
+
+    /**
+     * Sets the given {@link Participant} to this {@link Model}.
+     *
+     * @param participant This may not be null.
+     * @throws IllegalArgumentException If the argument is null.
+     */
+    public void setParticipant(Participant participant) {
+        Exceptions.verifyArgumentNotNull(participant);
+
+        this.participant = participant;
+    }
+
+    public Participant getParticipant() {
+        return participant;
+    }
 
     public void addContact(Contact contact) {
         Exceptions.verifyArgumentNotNull(contact);

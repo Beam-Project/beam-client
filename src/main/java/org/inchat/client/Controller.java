@@ -40,18 +40,25 @@ import org.inchat.common.util.Exceptions;
 public class Controller {
 
     public final static String FORMAT_VERSION = "1.0";
+    Config config;
     List<ConversationWindow> conversationWindows = new ArrayList<>();
     InfoWindow infoWindow;
     SettingsWindow settingsWindow;
     CryptoPacker cryptoPacker;
 
+    public Controller(Config config) {
+        Exceptions.verifyArgumentNotNull(config);
+
+        this.config = config;
+    }
+
     public void changeName(String name) {
-        Config.setProperty(Config.Key.participantName, name);
+        config.setProperty(ClientConfigKey.participantName, name);
         App.getMainWindow().setUsername(name);
     }
 
     public void setServerUrl(String serverUrl) {
-        Config.setProperty(Config.Key.serverUrl, serverUrl);
+        config.setProperty(ClientConfigKey.serverUrl, serverUrl);
     }
 
     public void addContact(Contact contact) {
@@ -98,7 +105,7 @@ public class Controller {
 
         Message plaintext = assemblePlaintextMessage(target, content);
         byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext, target.getServer());
-        byte[] response = sendCiphertextToNextServer(ciphertext, Config.getProperty(Config.Key.serverUrl));
+        byte[] response = sendCiphertextToNextServer(ciphertext, config.getProperty(ClientConfigKey.serverUrl));
         System.out.println("response: " + new String(response));
     }
 

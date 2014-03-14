@@ -18,11 +18,11 @@
  */
 package org.inchat.client.ui;
 
-import java.io.File;
 import javax.swing.JButton;
 import static org.easymock.EasyMock.*;
 import org.inchat.client.App;
 import org.inchat.client.AppTest;
+import org.inchat.client.ClientConfigKey;
 import org.inchat.client.Controller;
 import org.inchat.client.Model;
 import org.inchat.common.Config;
@@ -30,172 +30,131 @@ import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Ignore;
 
 public class MainWindowTest {
 
-    private final String CONFIG_FILE = "MainWindow.conf";
+    private int height = 425;
+    private int width = 375;
+    private String name = "spock";
     private MainWindow window;
     private Controller controller;
+    private Model model;
+    private Config config;
 
     @Before
     public void setUp() {
-        cleanUp();
-
-        Config.createDefaultConfig(CONFIG_FILE);
-        Config.loadConfig(CONFIG_FILE);
-
+        config = createMock(Config.class);
         controller = createMock(Controller.class);
+        model = new Model();
+
+        AppTest.setAppConfig(config);
+        AppTest.setAppMdoel(model);
         AppTest.setAppController(controller);
+
+        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(name);
+        expect(config.getProperty(ClientConfigKey.windowPositionX)).andReturn("10");
+        expect(config.getProperty(ClientConfigKey.windowPositionY)).andReturn("100");
+        expect(config.getProperty(ClientConfigKey.windowWidth)).andReturn("" + width);
+        expect(config.getProperty(ClientConfigKey.windowHeight)).andReturn("" + height);
+        replay(config, controller);
 
         window = new MainWindow();
     }
 
-    /**
-     * This method deletes the config file. In this very test class, @After and
-     * config.delete() does not seem to work properly, no idea why. It could be
-     * a bug somewhere. To avoid this problem, the cleanUp() method is manually
-     * invoked after each test.
-     */
     @After
-    public void cleanUp() {
-        File config = new File(CONFIG_FILE);
-
-        // A simple config.delete() does not the job here - no idea why.
-        // With this workaround, the config file gets deleted after all.
-        while (!config.delete() && config.exists()) {
-            System.out.println("Could not delete the config file - try again...");
-        }
+    public void verifyMocks() {
+        verify(config, controller);
     }
 
     @Test
     public void testConstructorOnSettingModelList() {
-        Model model = new Model();
-        AppTest.setAppMdoel(model);
-
-        window = new MainWindow();
-
         assertSame(model.getContactList(), window.contactList.getModel());
-
-        cleanUp();
     }
 
     @Test
     public void testSetPositionOnNewSetting() {
         assertTrue(window.getX() > 0);
         assertTrue(window.getY() > 0);
-
-        cleanUp();
     }
 
-    @Ignore // This test does sometimes work, sometimes not. The code itself works.
     @Test
     public void testSetPositionOnSize() {
-        int width = 350;
-        int height = 450;
-        Config.setProperty(Config.Key.windowWidth, "" + width);
-        Config.setProperty(Config.Key.windowHeight, "" + height);
-
-        window = new MainWindow();
-
         assertEquals(width, window.getWidth());
         assertEquals(height, window.getHeight());
-
-        cleanUp();
     }
 
     @Test
     public void testSetPositionOnIllegalSize() {
-        int width = 1;
-        int height = 1;
-        Config.setProperty(Config.Key.windowWidth, "" + width);
-        Config.setProperty(Config.Key.windowHeight, "" + height);
+        width = 1;
+        height = 2;
 
-        window = new MainWindow();
+        setUp();
 
         assertTrue(window.getWidth() > width);
         assertTrue(window.getHeight() > height);
-
-        cleanUp();
-    }
-
-    @Test
-    public void testSetOfProfileSpecificValuesOnNewSetting() {
-        assertTrue(window.nameButton.getText().isEmpty());
-
-        cleanUp();
     }
 
     @Test
     public void testSetOfProfileSpecificValuesOnExistingSetting() {
-        Config.setProperty(Config.Key.participantName, "spock");
-        window = new MainWindow();
-        assertEquals("spock", window.nameButton.getText());
-
-        cleanUp();
+        assertEquals(name, window.nameButton.getText());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnNull() {
         window.setUsername(null);
-
-        cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnEmptyString() {
         window.setUsername("");
-
-        cleanUp();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetUsernameOnSpaceString() {
         window.setUsername("   ");
-
-        cleanUp();
     }
 
     @Test
     public void testSetUsername() {
-        String name = "Timmee";
+        name = "Timmee";
         window.setUsername(name);
         assertEquals(name, window.nameButton.getText());
-
-        cleanUp();
     }
 
     @Test
     public void testInfoButtonOnShowingInvokingMethod() {
+        controller = createMock(Controller.class);
+        AppTest.setAppController(controller);
+
         controller.showInfoWindow();
         expectLastCall();
         replay(controller);
 
         window.infoButton.doClick();
-
-        verify(controller);
     }
 
     @Test
     public void testNameButtonOnShowingInvokingMethod() {
+        controller = createMock(Controller.class);
+        AppTest.setAppController(controller);
+
         controller.showNameInSettingsWindow();
         expectLastCall();
         replay(controller);
 
         window.nameButton.doClick();
-
-        verify(controller);
     }
 
     @Test
     public void testSettingsButtonOnShowingInvokingMethod() {
+        controller = createMock(Controller.class);
+        AppTest.setAppController(controller);
+
         controller.showSettingsWindow();
         expectLastCall();
         replay(controller);
 
         window.settingsButton.doClick();
-
-        verify(controller);
     }
 
     /**

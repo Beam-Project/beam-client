@@ -19,7 +19,7 @@
 package org.inchat.client.ui;
 
 import org.inchat.client.App;
-import org.inchat.common.Config;
+import org.inchat.client.ClientConfigKey;
 import org.inchat.common.Contact;
 import org.inchat.common.util.Exceptions;
 
@@ -45,9 +45,14 @@ public class MainWindow extends javax.swing.JFrame {
         initalizeContactList();
     }
 
+    private void setProfileSpecificValues() {
+        String name = App.getConfig().getProperty(ClientConfigKey.participantName);
+        nameButton.setText(name != null ? name : "");
+    }
+
     private void setPosition() {
-        String xValue = Config.getProperty(Config.Key.windowPositionX);
-        String yValue = Config.getProperty(Config.Key.windowPositionY);
+        String xValue = App.getConfig().getProperty(ClientConfigKey.windowPositionX);
+        String yValue = App.getConfig().getProperty(ClientConfigKey.windowPositionY);
 
         if (xValue != null && yValue != null) {
             int xPosition = Integer.valueOf(xValue);
@@ -59,8 +64,8 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void setSize() {
-        String preferredWidth = Config.getProperty(Config.Key.windowWidth);
-        String preferredHeight = Config.getProperty(Config.Key.windowHeight);
+        String preferredWidth = App.getConfig().getProperty(ClientConfigKey.windowWidth);
+        String preferredHeight = App.getConfig().getProperty(ClientConfigKey.windowHeight);
 
         if (preferredWidth != null && preferredHeight != null) {
             int width = Integer.valueOf(preferredWidth);
@@ -74,9 +79,9 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
 
-    private void setProfileSpecificValues() {
-        String name = Config.getProperty(Config.Key.participantName);
-        nameButton.setText(name != null ? name : "");
+    @SuppressWarnings("unchecked")
+    private void initalizeContactList() {
+        contactList.setModel(App.getModel().getContactList());
     }
 
     public void setUsername(String name) {
@@ -85,11 +90,6 @@ public class MainWindow extends javax.swing.JFrame {
         Exceptions.verifyArgumentNotEmpty(name);
 
         nameButton.setText(name);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initalizeContactList() {
-        contactList.setModel(App.getModel().getContactList());
     }
 
     /**
@@ -116,11 +116,11 @@ public class MainWindow extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(260, 400));
         setPreferredSize(new java.awt.Dimension(260, 400));
         addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                formComponentMoved(evt);
-            }
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
+            }
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                formComponentMoved(evt);
             }
         });
 
@@ -245,8 +245,8 @@ public class MainWindow extends javax.swing.JFrame {
         int xPosition = evt.getComponent().getX();
         int yPosition = evt.getComponent().getY();
 
-        Config.setProperty(Config.Key.windowPositionX, "" + xPosition);
-        Config.setProperty(Config.Key.windowPositionY, "" + yPosition);
+        App.getConfig().setProperty(ClientConfigKey.windowPositionX, "" + xPosition);
+        App.getConfig().setProperty(ClientConfigKey.windowPositionY, "" + yPosition);
     }//GEN-LAST:event_formComponentMoved
 
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
@@ -270,8 +270,8 @@ public class MainWindow extends javax.swing.JFrame {
         int width = evt.getComponent().getWidth();
         int height = evt.getComponent().getHeight();
 
-        Config.setProperty(Config.Key.windowWidth, "" + width);
-        Config.setProperty(Config.Key.windowHeight, "" + height);
+        App.getConfig().setProperty(ClientConfigKey.windowWidth, "" + width);
+        App.getConfig().setProperty(ClientConfigKey.windowHeight, "" + height);
     }//GEN-LAST:event_formComponentResized
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed

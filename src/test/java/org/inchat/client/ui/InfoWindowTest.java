@@ -18,16 +18,11 @@
  */
 package org.inchat.client.ui;
 
-import java.io.File;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 import org.inchat.client.AppTest;
+import org.inchat.client.ClientConfigKey;
 import org.inchat.client.Controller;
 import org.inchat.common.Config;
-import org.inchat.common.crypto.KeyPairStore;
-import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
@@ -37,40 +32,31 @@ public class InfoWindowTest {
     private final String CONFIG_FILE = "infoWindow.conf";
     private final String NAME = "infoName";
     private InfoWindow window;
+    private Config config;
     private MainWindow mainWindow;
     private Controller controller;
 
     @Before
     public void setUp() {
+        config = createMock(Config.class);
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
+
+        AppTest.setAppConfig(config);
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
-
-        Config.createDefaultConfig(CONFIG_FILE);
-        Config.loadConfig(CONFIG_FILE);
-        Config.loadOrCreateParticipant();
-
-        window = new InfoWindow();
-    }
-
-    @After
-    public void cleanUp() {
-        new File(CONFIG_FILE).delete();
-        
-        new File("keypair" + KeyPairStore.PRIVATE_KEY_FILE_EXTENSION).delete();
-        new File("keypair" + KeyPairStore.PUBILC_KEY_FILE_EXTENSION).delete();
-        new File("keypair" + KeyPairStore.SALT_FILE_EXTENSION).delete();
     }
 
     @Test
     public void testControllerOnLoadingName() {
-        Config.setProperty(Config.Key.participantName, NAME);
+        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
+        replay(config);
 
         window = new InfoWindow();
-        assertEquals(NAME, window.nameTextField.getText());
-    }
 
+        assertEquals(NAME, window.nameTextField.getText());
+        verify(config);
+    }
 
     @Test
     public void testCloseButtonOnDisposingWindow() {
@@ -78,6 +64,7 @@ public class InfoWindowTest {
         expectLastCall();
         replay(controller);
 
+        window = new InfoWindow();
         window.closeButton.doClick();
 
         verify(controller);
