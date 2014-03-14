@@ -92,19 +92,15 @@ public class SettingsWindowTest {
 
         window.menuList.setSelectedIndex(SettingsWindow.GENERAL_MENU_INDEX);
         assertSame(window.getGeneralPanel(), window.contentPanel.getComponent(0));
-        assertTrue(window.contentPanel.isValid());
 
         window.menuList.setSelectedIndex(SettingsWindow.IDENTITY_MENU_INDEX);
         assertSame(window.getIdentityPanel(), window.contentPanel.getComponent(0));
-        assertTrue(window.contentPanel.isValid());
 
         window.menuList.setSelectedIndex(SettingsWindow.SECURITY_MENU_INDEX);
         assertSame(window.getSecurityPanel(), window.contentPanel.getComponent(0));
-        assertTrue(window.contentPanel.isValid());
 
         window.menuList.setSelectedIndex(SettingsWindow.NETWORK_MENU_INDEX);
         assertSame(window.getNetworkPanel(), window.contentPanel.getComponent(0));
-        assertTrue(window.contentPanel.isValid());
 
         verify(config, controller);
     }
