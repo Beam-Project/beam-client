@@ -22,8 +22,10 @@ import org.inchat.common.ConfigKey;
 
 public enum ClientConfigKey implements ConfigKey {
 
-    publicKey,
-    privateKey,
+    keyPairPassword,
+    keyPairSalt,
+    encryptedPublicKey,
+    encryptedPrivateKey,
     participantName,
     serverUrl,
     windowPositionX,
