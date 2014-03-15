@@ -62,17 +62,12 @@ public class Storage<T extends Serializable> {
     public void store(T objectToStore) {
         Exceptions.verifyArgumentNotNull(objectToStore);
 
-        try {
-            serialize(objectToStore);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(storagePath)) {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(objectToStore);
         } catch (IOException ex) {
             throw new StorageException("Could not serialize and store the given object: " + ex.getMessage());
         }
-    }
-
-    private void serialize(T objectToStore) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(storagePath);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        objectOutputStream.writeObject(objectToStore);
     }
 
     /**
@@ -88,18 +83,13 @@ public class Storage<T extends Serializable> {
     public T restore(Class<T> classType) {
         Exceptions.verifyArgumentNotNull(classType);
 
-        try {
-            return deserialize(classType);
+        try (FileInputStream fileInputStream = new FileInputStream(storagePath)) {
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            Object restoredObject = objectInputStream.readObject();
+            return classType.cast(restoredObject);
         } catch (IOException | ClassNotFoundException | ClassCastException ex) {
             throw new StorageException("Could not restore the requested object: " + ex.getMessage());
         }
-    }
-
-    private T deserialize(Class<T> classType) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(storagePath);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        Object restoredObject = objectInputStream.readObject();
-        return classType.cast(restoredObject);
     }
 
     /**
