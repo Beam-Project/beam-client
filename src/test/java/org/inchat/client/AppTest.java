@@ -19,8 +19,12 @@
 package org.inchat.client;
 
 import java.io.File;
+import java.security.KeyPair;
 import org.inchat.client.ui.MainWindow;
 import org.inchat.common.Config;
+import org.inchat.common.crypto.EccKeyPairGenerator;
+import org.inchat.common.crypto.EncryptedKeyPair;
+import org.inchat.common.crypto.KeyPairCryptor;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -28,6 +32,7 @@ import org.junit.Before;
 
 public class AppTest {
 
+    private final String PASSWORD = "password";
     private final String CONFIG_DIRECTORY = "./";
     private final String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
     private File configFile;
@@ -65,6 +70,25 @@ public class AppTest {
         App.loadConfigControllerModel();
 
         assertTrue(configFile.exists());
+    }
+    
+    @Test
+    public void testLoadParticipantFromConfigFile() {
+        App.loadConfigControllerModel();
+        KeyPair keyPair = EccKeyPairGenerator.generate();
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(PASSWORD, keyPair);
+        
+        App.config.setProperty(ClientConfigKey.keyPairPassword, PASSWORD);
+        App.config.setProperty(ClientConfigKey.keyPairSalt, encryptedKeyPair.getSalt());
+        App.config.setProperty(ClientConfigKey.encryptedPublicKey, encryptedKeyPair.getEncryptedPublicKey());
+        App.config.setProperty(ClientConfigKey.encryptedPrivateKey, encryptedKeyPair.getEncryptedPrivateKey());
+        
+        App.loadParticipant();
+        
+        assertArrayEquals(keyPair.getPublic().getEncoded(),
+                App.model.getParticipant().getPublicKeyAsBytes());
+        assertArrayEquals(keyPair.getPrivate().getEncoded(),
+                App.model.getParticipant().getPrivateKeyAsBytes());
     }
 
     @Test

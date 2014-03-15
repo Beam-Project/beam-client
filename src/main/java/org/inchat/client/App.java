@@ -20,6 +20,7 @@ package org.inchat.client;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.security.KeyPair;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.inchat.client.ui.Frames;
@@ -28,13 +29,15 @@ import org.inchat.client.ui.SetUpDialog;
 import org.inchat.common.Config;
 import org.inchat.common.Participant;
 import org.inchat.common.crypto.EccKeyPairGenerator;
-import org.inchat.common.util.Base64;
+import org.inchat.common.crypto.EncryptedKeyPair;
+import org.inchat.common.crypto.KeyPairCryptor;
 
 /**
  * The main class of this application.
  */
 public class App {
 
+    public final static String DEFAULT_KEY_PAIR_PASSWORD = "default-password";
     public final static Color DEFAULT_BACKGROUND = null; // is really null
     public final static Color ERROR_BACKGROUND = new Color(255, 153, 153);
     static String CONFIG_DIRECTORY = System.getProperty("user.home") + "/.inchat-client/";
@@ -88,12 +91,29 @@ public class App {
     }
 
     static void loadParticipant() {
-        if (config.isKeyExisting(ClientConfigKey.publicKey)) {
-            //TODO load participant to model
+        if (isEncryptedKeyPairStored()) {
+            readAndDecryptParticipantFromConfig();
         } else {
             showSetUpDialog();
             generateAndStoreParticipant();
         }
+    }
+
+    private static boolean isEncryptedKeyPairStored() {
+        return config.isKeyExisting(ClientConfigKey.keyPairSalt)
+                && config.isKeyExisting(ClientConfigKey.encryptedPublicKey)
+                && config.isKeyExisting(ClientConfigKey.encryptedPrivateKey);
+    }
+
+    private static void readAndDecryptParticipantFromConfig() {
+        String password = config.getProperty(ClientConfigKey.keyPairPassword);
+        String salt = config.getProperty(ClientConfigKey.keyPairSalt);
+        String encryptedPublicKey = config.getProperty(ClientConfigKey.encryptedPublicKey);
+        String encryptedPrivateKey = config.getProperty(ClientConfigKey.encryptedPrivateKey);
+
+        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(encryptedPublicKey, encryptedPrivateKey, salt);
+        KeyPair keyPair = KeyPairCryptor.decrypt(password, encryptedKeyPair);
+        model.setParticipant(new Participant(keyPair));
     }
 
     private static void showSetUpDialog() {
@@ -105,12 +125,14 @@ public class App {
 
     private static void generateAndStoreParticipant() {
         Participant participant = new Participant(EccKeyPairGenerator.generate());
+        
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(DEFAULT_KEY_PAIR_PASSWORD, participant.getKeyPair());
+        App.config.setProperty(ClientConfigKey.keyPairPassword, DEFAULT_KEY_PAIR_PASSWORD);
+        App.config.setProperty(ClientConfigKey.keyPairSalt, encryptedKeyPair.getSalt());
+        App.config.setProperty(ClientConfigKey.encryptedPublicKey, encryptedKeyPair.getEncryptedPublicKey());
+        App.config.setProperty(ClientConfigKey.encryptedPrivateKey, encryptedKeyPair.getEncryptedPrivateKey());
 
-        String publicKey = Base64.encode(participant.getPublicKeyAsBytes());
-        String privateKey = Base64.encode(participant.getPrivateKeyAsBytes());
-
-        config.setProperty(ClientConfigKey.publicKey, publicKey);
-        config.setProperty(ClientConfigKey.privateKey, privateKey);
+        model.setParticipant(participant);
     }
 
     static void readContactList() {
