@@ -30,6 +30,7 @@ import org.inchat.common.util.Exceptions;
 public class MainWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
+    final String DEFAULT_USERNAME = "Your Name";
     private final int DOUBLE_CLICK_NUMBER = 2;
     private final int MINIMAL_WINDOW_WIDTH_IN_PX = 260;
     private final int MINIMAL_WINDOW_HEIGHT_IN_PX = 400;
@@ -45,9 +46,9 @@ public class MainWindow extends javax.swing.JFrame {
         initalizeContactList();
     }
 
-    private void setProfileSpecificValues() {
+    void setProfileSpecificValues() {
         String name = App.getConfig().getProperty(ClientConfigKey.participantName);
-        nameButton.setText(name != null ? name : "");
+        nameButton.setText(name != null ? name : DEFAULT_USERNAME);
     }
 
     private void setPosition() {
@@ -135,7 +136,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         nameButton.setFont(new java.awt.Font("Ubuntu", 1, 12)); // NOI18N
-        nameButton.setText("Name");
+        nameButton.setText("Your Name");
         nameButton.setBorderPainted(false);
         nameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -181,7 +182,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(nameButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(addUserButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(infoButton)
@@ -218,7 +219,7 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
             .addComponent(contactListScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
