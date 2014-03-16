@@ -106,6 +106,7 @@ public class MainWindow extends javax.swing.JFrame {
         avatarButton = new javax.swing.JButton();
         nameButton = new javax.swing.JButton();
         statusButton = new javax.swing.JButton();
+        topPanelHorizontalFiller = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         addUserButton = new javax.swing.JButton();
         infoButton = new javax.swing.JButton();
         settingsButton = new javax.swing.JButton();
@@ -123,8 +124,10 @@ public class MainWindow extends javax.swing.JFrame {
                 formComponentMoved(evt);
             }
         });
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
-        topPanel.setPreferredSize(new java.awt.Dimension(260, 46));
+        topPanel.setPreferredSize(new java.awt.Dimension(355, 34));
+        topPanel.setLayout(new javax.swing.BoxLayout(topPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         avatarButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/avatar.png"))); // NOI18N
         avatarButton.setBorderPainted(false);
@@ -133,19 +136,28 @@ public class MainWindow extends javax.swing.JFrame {
                 avatarButtonActionPerformed(evt);
             }
         });
+        topPanel.add(avatarButton);
 
         nameButton.setFont(nameButton.getFont().deriveFont(nameButton.getFont().getStyle() | java.awt.Font.BOLD, nameButton.getFont().getSize()-1));
         nameButton.setText("Your Name");
         nameButton.setBorderPainted(false);
+        nameButton.setMaximumSize(new java.awt.Dimension(200, 34));
+        nameButton.setMinimumSize(new java.awt.Dimension(73, 34));
         nameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nameButtonActionPerformed(evt);
             }
         });
+        topPanel.add(nameButton);
 
         statusButton.setFont(statusButton.getFont().deriveFont((statusButton.getFont().getStyle() | java.awt.Font.ITALIC), statusButton.getFont().getSize()-1));
         statusButton.setText("Offline");
         statusButton.setBorderPainted(false);
+        statusButton.setMaximumSize(new java.awt.Dimension(46, 34));
+        statusButton.setMinimumSize(new java.awt.Dimension(46, 34));
+        statusButton.setPreferredSize(new java.awt.Dimension(46, 34));
+        topPanel.add(statusButton);
+        topPanel.add(topPanelHorizontalFiller);
 
         addUserButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/addContact.png"))); // NOI18N
         addUserButton.setBorderPainted(false);
@@ -154,6 +166,7 @@ public class MainWindow extends javax.swing.JFrame {
                 addUserButtonActionPerformed(evt);
             }
         });
+        topPanel.add(addUserButton);
 
         infoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/infoButton.png"))); // NOI18N
         infoButton.setBorderPainted(false);
@@ -162,6 +175,7 @@ public class MainWindow extends javax.swing.JFrame {
                 infoButtonActionPerformed(evt);
             }
         });
+        topPanel.add(infoButton);
 
         settingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/menu.png"))); // NOI18N
         settingsButton.setBorderPainted(false);
@@ -170,36 +184,9 @@ public class MainWindow extends javax.swing.JFrame {
                 settingsButtonActionPerformed(evt);
             }
         });
+        topPanel.add(settingsButton);
 
-        javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
-        topPanel.setLayout(topPanelLayout);
-        topPanelLayout.setHorizontalGroup(
-            topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topPanelLayout.createSequentialGroup()
-                .addComponent(avatarButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nameButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(statusButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(addUserButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(infoButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(settingsButton))
-        );
-        topPanelLayout.setVerticalGroup(
-            topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topPanelLayout.createSequentialGroup()
-                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addUserButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(settingsButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(avatarButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nameButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(infoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(statusButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+        getContentPane().add(topPanel);
 
         contactList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -214,21 +201,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
         contactListScrollPane.setViewportView(contactList);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
-            .addComponent(contactListScrollPane, javax.swing.GroupLayout.Alignment.TRAILING)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contactListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
-        );
+        getContentPane().add(contactListScrollPane);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -288,5 +261,6 @@ public class MainWindow extends javax.swing.JFrame {
     javax.swing.JButton settingsButton;
     javax.swing.JButton statusButton;
     private javax.swing.JPanel topPanel;
+    private javax.swing.Box.Filler topPanelHorizontalFiller;
     // End of variables declaration//GEN-END:variables
 }
