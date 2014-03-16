@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.inchat</groupId>
-    <artifactId>inchat-client</artifactId>
+    <groupId>org.beamproject</groupId>
+    <artifactId>beam-client</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
     
@@ -17,7 +17,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>org.inchat.client.App</mainClass>
+                            <mainClass>org.beamproject.client.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -50,7 +50,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <file>src/main/java/org/inchat/client/ui/AboutWindow.java</file>
+                    <file>src/main/java/org/beamproject/client/ui/AboutWindow.java</file>
                     <replacements>
                         <replacement>
                             <token>String POM_VERSION = "[\.a-zA-Z0-9]*";</token>
@@ -65,7 +65,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>inchat-common</artifactId>
+            <artifactId>beam-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -86,4 +86,5 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
+    <name>beam-client</name>
 </project>
