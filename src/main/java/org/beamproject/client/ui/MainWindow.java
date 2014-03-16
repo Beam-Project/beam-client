@@ -115,7 +115,8 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Beam");
-        setMinimumSize(new java.awt.Dimension(260, 400));
+        setMinimumSize(new java.awt.Dimension(270, 500));
+        setPreferredSize(new java.awt.Dimension(270, 400));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
@@ -126,12 +127,12 @@ public class MainWindow extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
 
-        topPanel.setPreferredSize(new java.awt.Dimension(355, 34));
         topPanel.setLayout(new javax.swing.BoxLayout(topPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         avatarButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/avatar.png"))); // NOI18N
         avatarButton.setBorderPainted(false);
         avatarButton.setFocusPainted(false);
+        avatarButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
         avatarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 avatarButtonActionPerformed(evt);
@@ -143,8 +144,9 @@ public class MainWindow extends javax.swing.JFrame {
         nameButton.setText("Your Name");
         nameButton.setBorderPainted(false);
         nameButton.setFocusPainted(false);
-        nameButton.setMaximumSize(new java.awt.Dimension(200, 34));
-        nameButton.setMinimumSize(new java.awt.Dimension(73, 34));
+        nameButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        nameButton.setMaximumSize(new java.awt.Dimension(200, 36));
+        nameButton.setMinimumSize(new java.awt.Dimension(73, 36));
         nameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nameButtonActionPerformed(evt);
@@ -156,15 +158,17 @@ public class MainWindow extends javax.swing.JFrame {
         statusButton.setText("Offline");
         statusButton.setBorderPainted(false);
         statusButton.setFocusPainted(false);
-        statusButton.setMaximumSize(new java.awt.Dimension(46, 34));
-        statusButton.setMinimumSize(new java.awt.Dimension(46, 34));
-        statusButton.setPreferredSize(new java.awt.Dimension(46, 34));
+        statusButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        statusButton.setMaximumSize(new java.awt.Dimension(48, 36));
+        statusButton.setMinimumSize(new java.awt.Dimension(48, 36));
+        statusButton.setPreferredSize(new java.awt.Dimension(48, 36));
         topPanel.add(statusButton);
         topPanel.add(topPanelHorizontalFiller);
 
         addUserButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/addContact.png"))); // NOI18N
         addUserButton.setBorderPainted(false);
         addUserButton.setFocusPainted(false);
+        addUserButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
         addUserButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addUserButtonActionPerformed(evt);
@@ -175,6 +179,7 @@ public class MainWindow extends javax.swing.JFrame {
         infoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/infoButton.png"))); // NOI18N
         infoButton.setBorderPainted(false);
         infoButton.setFocusPainted(false);
+        infoButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
         infoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 infoButtonActionPerformed(evt);
@@ -185,6 +190,7 @@ public class MainWindow extends javax.swing.JFrame {
         settingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/menu.png"))); // NOI18N
         settingsButton.setBorderPainted(false);
         settingsButton.setFocusPainted(false);
+        settingsButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
         settingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 settingsButtonActionPerformed(evt);
