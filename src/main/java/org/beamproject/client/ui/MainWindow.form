@@ -48,6 +48,7 @@
               <Image iconType="3" name="/org/beamproject/client/ui/avatar.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="avatarButtonActionPerformed"/>
@@ -62,6 +63,7 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Your Name"/>
             <Property name="borderPainted" type="boolean" value="false"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[200, 34]"/>
             </Property>
@@ -85,6 +87,7 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Offline"/>
             <Property name="borderPainted" type="boolean" value="false"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[46, 34]"/>
             </Property>
@@ -115,6 +118,7 @@
               <Image iconType="3" name="/org/beamproject/client/ui/addContact.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addUserButtonActionPerformed"/>
@@ -126,6 +130,7 @@
               <Image iconType="3" name="/org/beamproject/client/ui/infoButton.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="infoButtonActionPerformed"/>
@@ -140,6 +145,7 @@
               <Image iconType="3" name="/org/beamproject/client/ui/menu.png"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
+            <Property name="focusPainted" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="settingsButtonActionPerformed"/>
