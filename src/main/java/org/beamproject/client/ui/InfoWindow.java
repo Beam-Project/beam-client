@@ -74,7 +74,7 @@ public class InfoWindow extends javax.swing.JFrame {
         setTitle("Info");
         setResizable(false);
 
-        myIdentityLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        myIdentityLabel.setFont(myIdentityLabel.getFont().deriveFont(myIdentityLabel.getFont().getStyle() | java.awt.Font.BOLD));
         myIdentityLabel.setText("My Identity");
 
         nameLabel.setText("Name:");
@@ -99,7 +99,7 @@ public class InfoWindow extends javax.swing.JFrame {
             }
         });
 
-        statisticsLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        statisticsLabel.setFont(statisticsLabel.getFont().deriveFont(statisticsLabel.getFont().getStyle() | java.awt.Font.BOLD));
         statisticsLabel.setText("Statistics");
 
         storedContactsLabel.setText("Stored Contacts:");

@@ -43,7 +43,7 @@ public class SecurityPanel extends javax.swing.JPanel {
         keyRingRadioButton = new javax.swing.JRadioButton();
         storeUnencryptedRadioButton = new javax.swing.JRadioButton();
 
-        masterPasswordLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        masterPasswordLabel.setFont(masterPasswordLabel.getFont().deriveFont(masterPasswordLabel.getFont().getStyle() | java.awt.Font.BOLD));
         masterPasswordLabel.setText("Master Password");
 
         askForPasswordRadioButton.setText("Ask for the password at the application start");

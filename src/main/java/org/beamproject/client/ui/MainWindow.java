@@ -134,7 +134,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        nameButton.setFont(new java.awt.Font("Ubuntu", 1, 12)); // NOI18N
+        nameButton.setFont(nameButton.getFont().deriveFont(nameButton.getFont().getStyle() | java.awt.Font.BOLD, nameButton.getFont().getSize()-1));
         nameButton.setText("Your Name");
         nameButton.setBorderPainted(false);
         nameButton.addActionListener(new java.awt.event.ActionListener() {
@@ -143,7 +143,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        statusButton.setFont(new java.awt.Font("Ubuntu", 2, 12)); // NOI18N
+        statusButton.setFont(statusButton.getFont().deriveFont((statusButton.getFont().getStyle() | java.awt.Font.ITALIC), statusButton.getFont().getSize()-1));
         statusButton.setText("Offline");
         statusButton.setBorderPainted(false);
 

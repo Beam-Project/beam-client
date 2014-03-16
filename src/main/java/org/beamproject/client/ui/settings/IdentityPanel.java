@@ -72,7 +72,7 @@ public class IdentityPanel extends javax.swing.JPanel {
             }
         });
 
-        keyMaterialLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        keyMaterialLabel.setFont(keyMaterialLabel.getFont().deriveFont(keyMaterialLabel.getFont().getStyle() | java.awt.Font.BOLD));
         keyMaterialLabel.setText("Key Material");
 
         publicKeyLabel.setText("Public Key:");
@@ -82,13 +82,13 @@ public class IdentityPanel extends javax.swing.JPanel {
         privateKeyLabel.setText("Private Key:");
 
         privateKeyTextField.setEditable(false);
-        privateKeyTextField.setFont(new java.awt.Font("Ubuntu", 2, 13)); // NOI18N
+        privateKeyTextField.setFont(privateKeyTextField.getFont().deriveFont((privateKeyTextField.getFont().getStyle() | java.awt.Font.ITALIC)));
         privateKeyTextField.setText("encrypted");
 
         decryptPrivateKeyButton.setText("Decrypt...");
         decryptPrivateKeyButton.setEnabled(false);
 
-        connectionLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        connectionLabel.setFont(connectionLabel.getFont().deriveFont(connectionLabel.getFont().getStyle() | java.awt.Font.BOLD));
         connectionLabel.setText("Connection");
 
         serverUrlLabel.setText("Server URL:");

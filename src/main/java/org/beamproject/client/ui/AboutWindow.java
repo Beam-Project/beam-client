@@ -131,28 +131,28 @@ public class AboutWindow extends javax.swing.JFrame {
         logoLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/aboutWindowLogo.png"))); // NOI18N
         logoLabel.setText("                      ");
 
-        thankYouLabel.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        thankYouLabel.setFont(thankYouLabel.getFont().deriveFont(thankYouLabel.getFont().getSize()+1f));
         thankYouLabel.setForeground(new java.awt.Color(254, 254, 254));
         thankYouLabel.setText("<html>Thank you for using Beam!</html>");
 
-        introLabel.setFont(new java.awt.Font("Ubuntu", 0, 18)); // NOI18N
+        introLabel.setFont(introLabel.getFont().deriveFont(introLabel.getFont().getSize()+5f));
         introLabel.setForeground(new java.awt.Color(254, 254, 254));
         introLabel.setText("<html><b>Beam</b> – a userfiendly messenger.<br />Open Source, independent, anonymous and uniquely secure.</html>");
 
-        helpUsLabel.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        helpUsLabel.setFont(helpUsLabel.getFont().deriveFont(helpUsLabel.getFont().getSize()+1f));
         helpUsLabel.setForeground(new java.awt.Color(254, 254, 254));
         helpUsLabel.setText("<html>Help us to make Beam better and contribute code, spend us a beer or run a Beam server. The latter is surprisingly easy! Visit beamproject.org to learn more.</html>");
 
-        versionLabel.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        versionLabel.setFont(versionLabel.getFont().deriveFont(versionLabel.getFont().getSize()-1f));
         versionLabel.setForeground(new java.awt.Color(175, 175, 175));
         versionLabel.setText("Version");
         versionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        copyrightLabel.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
+        copyrightLabel.setFont(copyrightLabel.getFont().deriveFont(copyrightLabel.getFont().getSize()-1f));
         copyrightLabel.setText("<html>This software was developed by the team behind beamproject.org and released under the terms of the GPLv3 or later. © 2014 beamproject.org.</html>");
         copyrightLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        linkLabel.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        linkLabel.setFont(linkLabel.getFont().deriveFont(linkLabel.getFont().getSize()+1f));
         linkLabel.setForeground(new java.awt.Color(2, 2, 122));
         linkLabel.setText("www.beamproject.org");
         linkLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));

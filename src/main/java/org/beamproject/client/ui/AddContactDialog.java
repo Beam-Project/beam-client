@@ -51,20 +51,17 @@ public class AddContactDialog extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        titleLabel = new javax.swing.JLabel();
         introductionLabel = new javax.swing.JLabel();
         urlScrollPane = new javax.swing.JScrollPane();
         urlTextArea = new javax.swing.JTextArea();
         addButton = new javax.swing.JButton();
+        abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add a Contact");
         setResizable(false);
 
-        titleLabel.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        titleLabel.setText("Add a Contact");
-
-        introductionLabel.setText("Copy & Paste the Beam URL of the contact you want to add here.");
+        introductionLabel.setText("Copy & Paste the Beam URL of the contact you want to add:");
 
         urlTextArea.setColumns(20);
         urlTextArea.setLineWrap(true);
@@ -83,32 +80,43 @@ public class AddContactDialog extends javax.swing.JFrame {
             }
         });
 
+        abortButton.setText("Abort");
+        abortButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                abortButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(addButton)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(urlScrollPane, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(titleLabel, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(introductionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(urlScrollPane)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(introductionLabel)
+                        .addGap(0, 109, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(addButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(abortButton)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(titleLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(introductionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(urlScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(addButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(urlScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addButton)
+                    .addComponent(abortButton))
+                .addContainerGap())
         );
 
         pack();
@@ -141,6 +149,10 @@ public class AddContactDialog extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_urlTextAreaKeyPressed
 
+    private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
+        dispose();
+    }//GEN-LAST:event_abortButtonActionPerformed
+
     void verifyUrlTextArea() {
         try {
             contact = UrlAssembler.toContactByServerAndClientUrl(urlTextArea.getText());
@@ -153,9 +165,9 @@ public class AddContactDialog extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton abortButton;
     javax.swing.JButton addButton;
     private javax.swing.JLabel introductionLabel;
-    private javax.swing.JLabel titleLabel;
     private javax.swing.JScrollPane urlScrollPane;
     javax.swing.JTextArea urlTextArea;
     // End of variables declaration//GEN-END:variables

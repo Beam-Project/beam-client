@@ -122,7 +122,7 @@ public class ConversationWindow extends javax.swing.JFrame {
         setTitle("Conversation");
         setMinimumSize(new java.awt.Dimension(400, 400));
 
-        namesLabel.setFont(new java.awt.Font("Ubuntu", 1, 13)); // NOI18N
+        namesLabel.setFont(namesLabel.getFont().deriveFont(namesLabel.getFont().getStyle() | java.awt.Font.BOLD));
         namesLabel.setText("Names");
 
         messageTextArea.setColumns(20);
