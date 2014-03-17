@@ -130,9 +130,20 @@ public class MainWindow extends javax.swing.JFrame {
         topPanel.setLayout(new javax.swing.BoxLayout(topPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         avatarButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/avatar.png"))); // NOI18N
-        avatarButton.setBorderPainted(false);
+        avatarButton.setContentAreaFilled(false);
         avatarButton.setFocusPainted(false);
         avatarButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        avatarButton.setMaximumSize(new java.awt.Dimension(30, 30));
+        avatarButton.setMinimumSize(new java.awt.Dimension(30, 30));
+        avatarButton.setPreferredSize(new java.awt.Dimension(30, 30));
+        avatarButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                avatarButtonMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                avatarButtonMouseEntered(evt);
+            }
+        });
         avatarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 avatarButtonActionPerformed(evt);
@@ -142,11 +153,19 @@ public class MainWindow extends javax.swing.JFrame {
 
         nameButton.setFont(nameButton.getFont().deriveFont(nameButton.getFont().getStyle() | java.awt.Font.BOLD, nameButton.getFont().getSize()-1));
         nameButton.setText("Your Name");
-        nameButton.setBorderPainted(false);
+        nameButton.setContentAreaFilled(false);
         nameButton.setFocusPainted(false);
         nameButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        nameButton.setMaximumSize(new java.awt.Dimension(200, 36));
-        nameButton.setMinimumSize(new java.awt.Dimension(73, 36));
+        nameButton.setMaximumSize(new java.awt.Dimension(200, 30));
+        nameButton.setMinimumSize(new java.awt.Dimension(50, 30));
+        nameButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                nameButtonMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                nameButtonMouseEntered(evt);
+            }
+        });
         nameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nameButtonActionPerformed(evt);
@@ -156,19 +175,38 @@ public class MainWindow extends javax.swing.JFrame {
 
         statusButton.setFont(statusButton.getFont().deriveFont((statusButton.getFont().getStyle() | java.awt.Font.ITALIC), statusButton.getFont().getSize()-1));
         statusButton.setText("Offline");
-        statusButton.setBorderPainted(false);
+        statusButton.setContentAreaFilled(false);
         statusButton.setFocusPainted(false);
         statusButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        statusButton.setMaximumSize(new java.awt.Dimension(48, 36));
-        statusButton.setMinimumSize(new java.awt.Dimension(48, 36));
-        statusButton.setPreferredSize(new java.awt.Dimension(48, 36));
+        statusButton.setMaximumSize(new java.awt.Dimension(48, 30));
+        statusButton.setMinimumSize(new java.awt.Dimension(48, 30));
+        statusButton.setPreferredSize(new java.awt.Dimension(48, 30));
+        statusButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                statusButtonMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                statusButtonMouseEntered(evt);
+            }
+        });
         topPanel.add(statusButton);
         topPanel.add(topPanelHorizontalFiller);
 
         addUserButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/addContact.png"))); // NOI18N
-        addUserButton.setBorderPainted(false);
+        addUserButton.setContentAreaFilled(false);
         addUserButton.setFocusPainted(false);
         addUserButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        addUserButton.setMaximumSize(new java.awt.Dimension(30, 30));
+        addUserButton.setMinimumSize(new java.awt.Dimension(30, 30));
+        addUserButton.setPreferredSize(new java.awt.Dimension(30, 30));
+        addUserButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                addUserButtonMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                addUserButtonMouseEntered(evt);
+            }
+        });
         addUserButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addUserButtonActionPerformed(evt);
@@ -177,9 +215,20 @@ public class MainWindow extends javax.swing.JFrame {
         topPanel.add(addUserButton);
 
         infoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/infoButton.png"))); // NOI18N
-        infoButton.setBorderPainted(false);
+        infoButton.setContentAreaFilled(false);
         infoButton.setFocusPainted(false);
         infoButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        infoButton.setMaximumSize(new java.awt.Dimension(30, 30));
+        infoButton.setMinimumSize(new java.awt.Dimension(30, 30));
+        infoButton.setPreferredSize(new java.awt.Dimension(30, 30));
+        infoButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                infoButtonMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                infoButtonMouseEntered(evt);
+            }
+        });
         infoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 infoButtonActionPerformed(evt);
@@ -188,9 +237,20 @@ public class MainWindow extends javax.swing.JFrame {
         topPanel.add(infoButton);
 
         settingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/ui/menu.png"))); // NOI18N
-        settingsButton.setBorderPainted(false);
+        settingsButton.setContentAreaFilled(false);
         settingsButton.setFocusPainted(false);
         settingsButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        settingsButton.setMaximumSize(new java.awt.Dimension(30, 30));
+        settingsButton.setMinimumSize(new java.awt.Dimension(30, 30));
+        settingsButton.setPreferredSize(new java.awt.Dimension(30, 30));
+        settingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                settingsButtonMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                settingsButtonMouseEntered(evt);
+            }
+        });
         settingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 settingsButtonActionPerformed(evt);
@@ -262,6 +322,54 @@ public class MainWindow extends javax.swing.JFrame {
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
         App.getController().showInfoWindow();
     }//GEN-LAST:event_infoButtonActionPerformed
+
+    private void avatarButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_avatarButtonMouseEntered
+        avatarButton.setContentAreaFilled(true);
+    }//GEN-LAST:event_avatarButtonMouseEntered
+
+    private void avatarButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_avatarButtonMouseExited
+        avatarButton.setContentAreaFilled(false);
+    }//GEN-LAST:event_avatarButtonMouseExited
+
+    private void nameButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameButtonMouseEntered
+        nameButton.setContentAreaFilled(true);
+    }//GEN-LAST:event_nameButtonMouseEntered
+
+    private void nameButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameButtonMouseExited
+        nameButton.setContentAreaFilled(false);
+    }//GEN-LAST:event_nameButtonMouseExited
+
+    private void statusButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseEntered
+        statusButton.setContentAreaFilled(true);
+    }//GEN-LAST:event_statusButtonMouseEntered
+
+    private void statusButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseExited
+        statusButton.setContentAreaFilled(false);
+    }//GEN-LAST:event_statusButtonMouseExited
+
+    private void addUserButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addUserButtonMouseEntered
+        addUserButton.setContentAreaFilled(true);
+    }//GEN-LAST:event_addUserButtonMouseEntered
+
+    private void addUserButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addUserButtonMouseExited
+        addUserButton.setContentAreaFilled(false);
+    }//GEN-LAST:event_addUserButtonMouseExited
+
+    private void infoButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_infoButtonMouseEntered
+        infoButton.setContentAreaFilled(true);
+    }//GEN-LAST:event_infoButtonMouseEntered
+
+    private void infoButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_infoButtonMouseExited
+        infoButton.setContentAreaFilled(false);
+    }//GEN-LAST:event_infoButtonMouseExited
+
+    private void settingsButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsButtonMouseEntered
+        settingsButton.setContentAreaFilled(true);
+    }//GEN-LAST:event_settingsButtonMouseEntered
+
+    private void settingsButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsButtonMouseExited
+        settingsButton.setContentAreaFilled(false);
+    }//GEN-LAST:event_settingsButtonMouseExited
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addUserButton;
