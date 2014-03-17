@@ -33,7 +33,7 @@ import org.junit.Before;
 
 public class MainWindowTest {
     
-    private int height = 425;
+    private int height = 500;
     private int width = 375;
     private String name = "spock";
     private MainWindow window;
