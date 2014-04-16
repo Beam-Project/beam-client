@@ -43,7 +43,7 @@ public class Components {
      * @throws IllegalArgumentException If the argument is null.
      */
     public static void setDefalutBackground(Component component) {
-        Exceptions.verifyArgumentNotNull(component);
+        Exceptions.verifyArgumentsNotNull(component);
 
         component.setBackground(App.DEFAULT_BACKGROUND);
     }
@@ -57,7 +57,7 @@ public class Components {
      * @throws IllegalArgumentException If the argument is null.
      */
     public static void setErrorBackground(Component component) {
-        Exceptions.verifyArgumentNotNull(component);
+        Exceptions.verifyArgumentsNotNull(component);
 
         component.setBackground(App.ERROR_BACKGROUND);
     }

@@ -41,7 +41,7 @@ public class Frames {
      * @throws IllegalArgumentException If the argument is null.
      */
     public static void setIcons(JFrame frame) {
-        Exceptions.verifyArgumentNotNull(frame);
+        Exceptions.verifyArgumentsNotNull(frame);
 
         List<Image> icons = new LinkedList<>();
 

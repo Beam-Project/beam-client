@@ -37,7 +37,7 @@ public class ClipboardAccess implements ClipboardOwner {
      * @throws IllegalArgumentException If the argument is null.
      */
     public void copyTextToClipboard(String content) {
-        Exceptions.verifyArgumentNotNull(content);
+        Exceptions.verifyArgumentsNotNull(content);
 
         StringSelection stringSelection = new StringSelection(content);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();

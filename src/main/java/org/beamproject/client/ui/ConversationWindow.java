@@ -88,7 +88,7 @@ public class ConversationWindow extends javax.swing.JFrame {
     }
 
     public void setContact(Contact contact) {
-        Exceptions.verifyArgumentNotNull(contact);
+        Exceptions.verifyArgumentsNotNull(contact);
 
         this.contact = contact;
         updateNames();

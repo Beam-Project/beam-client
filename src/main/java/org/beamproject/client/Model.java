@@ -36,7 +36,7 @@ public class Model {
      * @throws IllegalArgumentException If the argument is null.
      */
     public void setParticipant(Participant participant) {
-        Exceptions.verifyArgumentNotNull(participant);
+        Exceptions.verifyArgumentsNotNull(participant);
 
         this.participant = participant;
     }
@@ -46,7 +46,7 @@ public class Model {
     }
 
     public void addContact(Contact contact) {
-        Exceptions.verifyArgumentNotNull(contact);
+        Exceptions.verifyArgumentsNotNull(contact);
 
         contactList.addElement(contact);
     }
@@ -62,7 +62,7 @@ public class Model {
      * @throws IllegalArgumentException If the argument is null.
      */
     public void setContactListStorage(Storage<ContactList> storage) {
-        Exceptions.verifyArgumentNotNull(storage);
+        Exceptions.verifyArgumentsNotNull(storage);
 
         this.contactListStorage = storage;
     }

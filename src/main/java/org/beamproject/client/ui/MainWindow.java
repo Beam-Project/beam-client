@@ -86,9 +86,9 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     public void setUsername(String name) {
-        Exceptions.verifyArgumentNotEmpty(name);
+        Exceptions.verifyArgumentsNotEmpty(name);
         name = name.trim();
-        Exceptions.verifyArgumentNotEmpty(name);
+        Exceptions.verifyArgumentsNotEmpty(name);
 
         nameButton.setText(name);
     }

@@ -47,7 +47,7 @@ public class Controller {
     CryptoPacker cryptoPacker;
 
     public Controller(Config config) {
-        Exceptions.verifyArgumentNotNull(config);
+        Exceptions.verifyArgumentsNotNull(config);
 
         this.config = config;
     }
@@ -100,8 +100,8 @@ public class Controller {
     }
 
     public void sendMessage(Contact target, String content) {
-        Exceptions.verifyArgumentNotNull(target);
-        Exceptions.verifyArgumentNotEmpty(content);
+        Exceptions.verifyArgumentsNotNull(target);
+        Exceptions.verifyArgumentsNotEmpty(content);
 
         Message plaintext = assemblePlaintextMessage(target, content);
         byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext, target.getServer());

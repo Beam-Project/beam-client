@@ -46,7 +46,7 @@ public class Storage<T extends Serializable> {
      * @throws IllegalArgumentException If the argument is null or empty.
      */
     public Storage(String storagePath) {
-        Exceptions.verifyArgumentNotEmpty(storagePath);
+        Exceptions.verifyArgumentsNotEmpty(storagePath);
 
         this.storagePath = storagePath;
     }
@@ -60,7 +60,7 @@ public class Storage<T extends Serializable> {
      * written.
      */
     public void store(T objectToStore) {
-        Exceptions.verifyArgumentNotNull(objectToStore);
+        Exceptions.verifyArgumentsNotNull(objectToStore);
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(storagePath)) {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -81,7 +81,7 @@ public class Storage<T extends Serializable> {
      * @throws StorageException If anything goes wrong while restoring.
      */
     public T restore(Class<T> classType) {
-        Exceptions.verifyArgumentNotNull(classType);
+        Exceptions.verifyArgumentsNotNull(classType);
 
         try (FileInputStream fileInputStream = new FileInputStream(storagePath)) {
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
