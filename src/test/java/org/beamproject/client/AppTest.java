@@ -71,20 +71,20 @@ public class AppTest {
 
         assertTrue(configFile.exists());
     }
-    
+
     @Test
     public void testLoadParticipantFromConfigFile() {
         App.loadConfigControllerModel();
         KeyPair keyPair = EccKeyPairGenerator.generate();
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(PASSWORD, keyPair);
-        
+
         App.config.setProperty(ClientConfigKey.keyPairPassword, PASSWORD);
         App.config.setProperty(ClientConfigKey.keyPairSalt, encryptedKeyPair.getSalt());
         App.config.setProperty(ClientConfigKey.encryptedPublicKey, encryptedKeyPair.getEncryptedPublicKey());
         App.config.setProperty(ClientConfigKey.encryptedPrivateKey, encryptedKeyPair.getEncryptedPrivateKey());
-        
+
         App.loadParticipant();
-        
+
         assertArrayEquals(keyPair.getPublic().getEncoded(),
                 App.model.getParticipant().getPublicKeyAsBytes());
         assertArrayEquals(keyPair.getPrivate().getEncoded(),
