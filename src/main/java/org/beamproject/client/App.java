@@ -125,7 +125,7 @@ public class App {
 
     private static void generateAndStoreParticipant() {
         Participant participant = new Participant(EccKeyPairGenerator.generate());
-        
+
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(DEFAULT_KEY_PAIR_PASSWORD, participant.getKeyPair());
         App.config.setProperty(ClientConfigKey.keyPairPassword, DEFAULT_KEY_PAIR_PASSWORD);
         App.config.setProperty(ClientConfigKey.keyPairSalt, encryptedKeyPair.getSalt());
