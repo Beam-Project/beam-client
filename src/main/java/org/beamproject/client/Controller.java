@@ -18,6 +18,7 @@
  */
 package org.beamproject.client;
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 import org.beamproject.common.network.HttpConnector;
@@ -143,8 +144,13 @@ public class Controller {
     }
 
     public void showNameInSettingsWindow() {
-        getSettingsWindow().openIdentityMenuWithFocusedName();
-        getSettingsWindow().setVisible(true);
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                getSettingsWindow().openIdentityMenuWithFocusedName();
+                getSettingsWindow().setVisible(true);
+            }
+        });
     }
 
     public void closeSettingsWindow() {
