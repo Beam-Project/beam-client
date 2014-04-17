@@ -25,6 +25,7 @@ import org.beamproject.client.AppTest;
 import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
 import org.beamproject.client.ui.MainWindow;
+import org.beamproject.common.Participant;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -79,11 +80,11 @@ public class SettingsWindowTest {
     public void testMenuListOnSelectionChange() {
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
-
         controller.changeName(NAME);
         expectLastCall().anyTimes();
-
         controller.setServerUrl(URL);
+        expectLastCall().anyTimes();
+        controller.setServer(anyObject(Participant.class));
         expectLastCall().anyTimes();
         replay(controller);
 
@@ -108,10 +109,11 @@ public class SettingsWindowTest {
         controller = createMock(Controller.class);
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
-
         controller.changeName(NAME);
         expectLastCall().anyTimes();
         controller.setServerUrl(URL);
+        expectLastCall().anyTimes();
+        controller.setServer(anyObject(Participant.class));
         expectLastCall().anyTimes();
         replay(mainWindow, controller);
 
