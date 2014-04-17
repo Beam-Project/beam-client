@@ -33,7 +33,7 @@ import org.junit.Before;
 public class ModelTest {
 
     private Model model;
-    Contact contact;
+    private Contact contact;
 
     @Before
     public void setUp() {
@@ -115,9 +115,10 @@ public class ModelTest {
     }
 
     @Test
-    public void testGetParticipantUrlOnMissingParts() {
+    public void testGetParticipantUrl() {
         String username = "mr spock";
         App.getConfig().setProperty("participantName", username);
+        App.getConfig().removeProperty("encryptedServerPublicKey");
         String usernameAsBase58 = Base58.encode(username.getBytes());
         String userPart = "-user-";
         String serverPart = "-server-";
@@ -135,6 +136,40 @@ public class ModelTest {
 
         assertEquals("beam:" + serverPart + "." + userPart + "?name=" + usernameAsBase58, url);
         verify(model.participant, model.server);
+    }
+
+    public class ParticipantAccessException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+    };
+
+    @Test(expected = ParticipantAccessException.class)
+    public void testGetParticipantUrlOnUsingGetParticipant() {
+        model = new Model() {
+            @Override
+            public Participant getParticipant() {
+                throw new ParticipantAccessException();
+            }
+        };
+
+        model.getParticipantUrl();
+    }
+
+    public class ServerAccessException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+    };
+
+    @Test(expected = ServerAccessException.class)
+    public void testGetParticipantUrlOnUsingGetServer() {
+        model = new Model() {
+            @Override
+            public Participant getServer() {
+                throw new ServerAccessException();
+            }
+        };
+
+        model.getParticipantUrl();
     }
 
     @Test(expected = IllegalArgumentException.class)

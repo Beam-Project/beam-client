@@ -60,12 +60,12 @@ public class Model {
     }
 
     public String getParticipantUrl() {
-        if (participant == null || server == null) {
+        if (getParticipant() == null || getServer() == null) {
             return "";
         }
 
         String name = App.getConfig().participantName();
-        return UrlAssembler.toUrlByServerAndClient(server, participant, name);
+        return UrlAssembler.toUrlByServerAndClient(getServer(), getParticipant(), name);
     }
 
     /**
