@@ -169,4 +169,26 @@ public class ModelTest {
         assertSame(storage, model.getContactListStorage());
     }
 
+    /**
+     * Sets the given {@link Participant} to the given {@link Model}. This can
+     * be used for unit testing purposes.
+     *
+     * @param participant The participant to set. This can be null.
+     * @param model The model on that should be set.
+     */
+    public static void setParticipant(Participant participant, Model model) {
+        model.participant = participant;
+    }
+
+    /**
+     * Sets the given server to the given {@link Model}. This can be used for
+     * unit testing purposes.
+     *
+     * @param server The server to set. This can be null.
+     * @param model The model on that should be set.
+     */
+    public static void setServer(Participant server, Model model) {
+        model.server = server;
+    }
+
 }
