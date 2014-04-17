@@ -23,6 +23,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.beamproject.client.App;
+import org.beamproject.common.Participant;
+import org.beamproject.common.crypto.EccKeyPairGenerator;
+import org.beamproject.common.util.Base58;
 
 public class IdentityPanel extends javax.swing.JPanel {
 
@@ -31,11 +34,29 @@ public class IdentityPanel extends javax.swing.JPanel {
     public IdentityPanel() {
         initComponents();
         loadName();
+        loadUserPublicKey();
         loadServerUrl();
+        loadServerPublicKey();
     }
 
     private void loadName() {
         nameTextField.setText(App.getConfig().participantName());
+    }
+
+    private void loadUserPublicKey() {
+        Participant participant = App.getModel().getParticipant();
+
+        if (participant != null) {
+            userPublicKeyTextField.setText(participant.getPublicKeyAsBase58());
+        }
+    }
+
+    private void loadServerPublicKey() {
+        Participant server = App.getModel().getServer();
+
+        if (server != null) {
+            serverPublicKeyTextField.setText(server.getPublicKeyAsBase58());
+        }
     }
 
     private void loadServerUrl() {
@@ -54,14 +75,13 @@ public class IdentityPanel extends javax.swing.JPanel {
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         keyMaterialLabel = new javax.swing.JLabel();
-        publicKeyLabel = new javax.swing.JLabel();
-        publicKeyTextField = new javax.swing.JTextField();
-        privateKeyLabel = new javax.swing.JLabel();
-        privateKeyTextField = new javax.swing.JTextField();
-        decryptPrivateKeyButton = new javax.swing.JButton();
-        connectionLabel = new javax.swing.JLabel();
+        userPublicKeyLabel = new javax.swing.JLabel();
+        userPublicKeyTextField = new javax.swing.JTextField();
+        serverLabel = new javax.swing.JLabel();
         serverUrlLabel = new javax.swing.JLabel();
         serverUrlTextField = new javax.swing.JTextField();
+        serverPublicKeyLabel = new javax.swing.JLabel();
+        serverPublicKeyTextField = new javax.swing.JTextField();
 
         nameLabel.setText("Your Name:");
 
@@ -74,27 +94,26 @@ public class IdentityPanel extends javax.swing.JPanel {
         keyMaterialLabel.setFont(keyMaterialLabel.getFont().deriveFont(keyMaterialLabel.getFont().getStyle() | java.awt.Font.BOLD));
         keyMaterialLabel.setText("Key Material");
 
-        publicKeyLabel.setText("Public Key:");
+        userPublicKeyLabel.setText("Public Key:");
 
-        publicKeyTextField.setEditable(false);
+        userPublicKeyTextField.setEditable(false);
 
-        privateKeyLabel.setText("Private Key:");
+        serverLabel.setFont(serverLabel.getFont().deriveFont(serverLabel.getFont().getStyle() | java.awt.Font.BOLD));
+        serverLabel.setText("Server");
 
-        privateKeyTextField.setEditable(false);
-        privateKeyTextField.setFont(privateKeyTextField.getFont().deriveFont((privateKeyTextField.getFont().getStyle() | java.awt.Font.ITALIC)));
-        privateKeyTextField.setText("encrypted");
-
-        decryptPrivateKeyButton.setText("Decrypt...");
-        decryptPrivateKeyButton.setEnabled(false);
-
-        connectionLabel.setFont(connectionLabel.getFont().deriveFont(connectionLabel.getFont().getStyle() | java.awt.Font.BOLD));
-        connectionLabel.setText("Connection");
-
-        serverUrlLabel.setText("Server URL:");
+        serverUrlLabel.setText("URL:");
 
         serverUrlTextField.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 serverUrlTextFieldPropertyChange(evt);
+            }
+        });
+
+        serverPublicKeyLabel.setText("Public Key:");
+
+        serverPublicKeyTextField.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                serverPublicKeyTextFieldPropertyChange(evt);
             }
         });
 
@@ -103,32 +122,29 @@ public class IdentityPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(nameLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(nameTextField))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(keyMaterialLabel)
-                    .addComponent(connectionLabel))
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(userPublicKeyLabel))
+                    .addComponent(nameLabel))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(userPublicKeyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                    .addComponent(nameTextField)))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(privateKeyLabel)
-                            .addComponent(publicKeyLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(privateKeyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(decryptPrivateKeyButton))
-                            .addComponent(publicKeyTextField)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(serverUrlLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(serverUrlTextField))))
+                    .addComponent(serverPublicKeyLabel)
+                    .addComponent(serverUrlLabel))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(serverUrlTextField)
+                    .addComponent(serverPublicKeyTextField)))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(keyMaterialLabel)
+                    .addComponent(serverLabel))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,20 +156,19 @@ public class IdentityPanel extends javax.swing.JPanel {
                 .addComponent(keyMaterialLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(publicKeyLabel)
-                    .addComponent(publicKeyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(privateKeyLabel)
-                    .addComponent(privateKeyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(decryptPrivateKeyButton))
+                    .addComponent(userPublicKeyLabel)
+                    .addComponent(userPublicKeyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(connectionLabel)
+                .addComponent(serverLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(serverUrlLabel)
                     .addComponent(serverUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(serverPublicKeyLabel)
+                    .addComponent(serverPublicKeyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -173,7 +188,17 @@ public class IdentityPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_serverUrlTextFieldPropertyChange
 
-    boolean isNameValid(String name) {
+    private void serverPublicKeyTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverPublicKeyTextFieldPropertyChange
+        String serverPublicKey = serverPublicKeyTextField.getText().trim();
+
+        if (isServerPublicKeyValid(serverPublicKey)) {
+            byte[] publicKeyAsBytes = Base58.decode(serverPublicKey);
+            Participant server = new Participant(EccKeyPairGenerator.fromPublicKey(publicKeyAsBytes));
+            App.getController().setServer(server);
+        }
+    }//GEN-LAST:event_serverPublicKeyTextFieldPropertyChange
+
+    static boolean isNameValid(String name) {
         if (name == null) {
             return false;
         }
@@ -182,8 +207,7 @@ public class IdentityPanel extends javax.swing.JPanel {
         return !trimmedName.isEmpty() && trimmedName.equals(name);
     }
 
-    boolean isServerUrlValid(String serverUrl) {
-        //TODO Extract all validators into a seperate class
+    static boolean isServerUrlValid(String serverUrl) {
         try {
             URL validUrl = new URL(serverUrl.trim());
             URI validUri = validUrl.toURI();
@@ -193,17 +217,27 @@ public class IdentityPanel extends javax.swing.JPanel {
         }
     }
 
+    static boolean isServerPublicKeyValid(String serverPublicKey) {
+        try {
+            serverPublicKey = serverPublicKey.trim();
+            byte[] publicKeyBytes = Base58.decode(serverPublicKey);
+            Participant server = new Participant(EccKeyPairGenerator.fromPublicKey(publicKeyBytes));
+            return server.getPublicKey().getEncoded() != null;
+        } catch (IllegalStateException | IllegalArgumentException | NullPointerException ex) {
+            return false;
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel connectionLabel;
-    private javax.swing.JButton decryptPrivateKeyButton;
     private javax.swing.JLabel keyMaterialLabel;
     private javax.swing.JLabel nameLabel;
     javax.swing.JTextField nameTextField;
-    private javax.swing.JLabel privateKeyLabel;
-    private javax.swing.JTextField privateKeyTextField;
-    private javax.swing.JLabel publicKeyLabel;
-    private javax.swing.JTextField publicKeyTextField;
+    private javax.swing.JLabel serverLabel;
+    private javax.swing.JLabel serverPublicKeyLabel;
+    javax.swing.JTextField serverPublicKeyTextField;
     private javax.swing.JLabel serverUrlLabel;
     javax.swing.JTextField serverUrlTextField;
+    private javax.swing.JLabel userPublicKeyLabel;
+    javax.swing.JTextField userPublicKeyTextField;
     // End of variables declaration//GEN-END:variables
 }
