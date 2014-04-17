@@ -31,7 +31,7 @@ import org.beamproject.common.util.Exceptions;
 public class MainWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
-    final String DEFAULT_USERNAME = "Your Name";
+    final String DEFAULT_USERNAME = "Beamer";
     private final int DOUBLE_CLICK_NUMBER = 2;
     final static int MINIMAL_WINDOW_WIDTH_IN_PX = 270;
     final static int MINIMAL_WINDOW_HEIGHT_IN_PX = 500;
