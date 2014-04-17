@@ -107,8 +107,11 @@ public class SetUpDialogTest {
     public void testSkipForNowCheckBox() {
         replay(controller);
 
+        assertTrue(dialog.serverUrlTextField.isEditable());
+        dialog.serverUrlTextField.setText("invalid url");
         dialog.skipForNowCheckBox.doClick();
         assertFalse(dialog.serverUrlTextField.isEditable());
+        assertTrue(dialog.serverUrlTextField.getText().isEmpty());
 
         verify(controller);
     }

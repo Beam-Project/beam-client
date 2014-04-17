@@ -56,10 +56,10 @@ public class SetUpDialog extends javax.swing.JFrame {
         textLabel = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
-        doneButton = new javax.swing.JButton();
         serverUrlLabel = new javax.swing.JLabel();
         serverUrlTextField = new javax.swing.JTextField();
         skipForNowCheckBox = new javax.swing.JCheckBox();
+        doneButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Name");
@@ -72,19 +72,19 @@ public class SetUpDialog extends javax.swing.JFrame {
 
         nameLabel.setText("Your Name:");
 
+        serverUrlLabel.setText("Server URL:");
+
+        skipForNowCheckBox.setText("Skip for now");
+        skipForNowCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                skipForNowCheckBoxItemStateChanged(evt);
+            }
+        });
+
         doneButton.setText("Done");
         doneButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 doneButtonActionPerformed(evt);
-            }
-        });
-
-        serverUrlLabel.setText("Server URL:");
-
-        skipForNowCheckBox.setText("Skip for now");
-        skipForNowCheckBox.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                skipForNowCheckBoxPropertyChange(evt);
             }
         });
 
@@ -99,13 +99,11 @@ public class SetUpDialog extends javax.swing.JFrame {
                     .addComponent(textLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
                     .addComponent(doneButton, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(nameLabel)
-                                .addGap(18, 18, 18))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(serverUrlLabel)
-                                .addGap(16, 16, 16)))
+                            .addComponent(nameLabel)
+                            .addComponent(serverUrlLabel))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nameTextField)
                             .addGroup(layout.createSequentialGroup()
@@ -126,11 +124,10 @@ public class SetUpDialog extends javax.swing.JFrame {
                     .addComponent(nameLabel)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(skipForNowCheckBox)
                     .addComponent(serverUrlLabel)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(serverUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(skipForNowCheckBox)))
+                    .addComponent(serverUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(doneButton)
                 .addContainerGap())
@@ -151,7 +148,6 @@ public class SetUpDialog extends javax.swing.JFrame {
         }
 
         if (skipForNowCheckBox.isSelected()) {
-            Components.setDefalutBackground(serverUrlTextField);
             urlDone = true;
         } else {
             verifyServerUrl();
@@ -167,9 +163,11 @@ public class SetUpDialog extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_doneButtonActionPerformed
 
-    private void skipForNowCheckBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_skipForNowCheckBoxPropertyChange
-        serverUrlTextField.setEditable(skipForNowCheckBox.isSelected());
-    }//GEN-LAST:event_skipForNowCheckBoxPropertyChange
+    private void skipForNowCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_skipForNowCheckBoxItemStateChanged
+        serverUrlTextField.setEditable(!skipForNowCheckBox.isSelected());
+        Components.setDefalutBackground(serverUrlTextField);
+        serverUrlTextField.setText("");
+    }//GEN-LAST:event_skipForNowCheckBoxItemStateChanged
 
     void verifyName() {
         name = nameTextField.getText().trim();
