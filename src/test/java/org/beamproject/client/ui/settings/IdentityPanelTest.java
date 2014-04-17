@@ -40,7 +40,6 @@ public class IdentityPanelTest {
         ConfigTest.loadDefaultConfig();
         App.getConfig().setProperty("participantName", NAME);
         App.getConfig().setProperty("serverUrl", SERVER_URL);
-
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
 
