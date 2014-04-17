@@ -18,9 +18,13 @@
  */
 package org.beamproject.client;
 
+import java.security.KeyPair;
+import static org.beamproject.client.App.config;
 import org.beamproject.client.storage.Storage;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Participant;
+import org.beamproject.common.crypto.EncryptedKeyPair;
+import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.network.UrlAssembler;
 import org.beamproject.common.util.Exceptions;
 
@@ -44,7 +48,24 @@ public class Model {
     }
 
     public Participant getParticipant() {
+        if (participant == null
+                && App.getConfig().encryptedPublicKey() != null
+                && App.getConfig().encryptedPrivateKey() != null) {
+            EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedPublicKey(), config.encryptedPrivateKey(), config.keyPairSalt());
+            KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
+            setParticipant(new Participant(keyPair));
+        }
+
         return participant;
+    }
+
+    public String getParticipantUrl() {
+        if (participant == null || server == null) {
+            return "";
+        }
+
+        String name = App.getConfig().participantName();
+        return UrlAssembler.toUrlByServerAndClient(server, participant, name);
     }
 
     /**
@@ -60,16 +81,14 @@ public class Model {
     }
 
     public Participant getServer() {
-        return server;
-    }
-
-    public String getParticipantUrl() {
-        if (participant == null || server == null) {
-            return "";
+        if (server == null
+                && App.getConfig().encryptedServerPublicKey() != null) {
+            EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedServerPublicKey(), "", config.serverSalt());
+            KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
+            setServer(new Participant(keyPair));
         }
 
-        String name = App.getConfig().participantName();
-        return UrlAssembler.toUrlByServerAndClient(server, participant, name);
+        return server;
     }
 
     public void addContact(Contact contact) {
