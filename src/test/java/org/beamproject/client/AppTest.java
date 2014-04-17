@@ -18,26 +18,18 @@
  */
 package org.beamproject.client;
 
-import java.security.KeyPair;
 import org.beamproject.client.ui.MainWindow;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
-import org.beamproject.common.crypto.EncryptedKeyPair;
-import org.beamproject.common.crypto.KeyPairCryptor;
+import org.beamproject.common.Participant;
 import org.beamproject.common.util.ConfigWriter;
 import static org.easymock.EasyMock.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Before;
 
 public class AppTest {
 
-    private final String PASSWORD = "password";
-    private ConfigWriter writer;
-
-    @Before
+    @Test
     public void setUp() {
-        writer = createMock(ConfigWriter.class);
-        App.configWriter = writer;
+        ConfigTest.loadDefaultConfig();
     }
 
     @Test
@@ -56,22 +48,17 @@ public class AppTest {
     }
 
     @Test
-    public void testLoadParticipantFromConfigFile() {
-        App.loadControllerAndModel();
-        KeyPair keyPair = EccKeyPairGenerator.generate();
-        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(PASSWORD, keyPair);
+    public void testIsFirstStart() {
+        Model model = createMock(Model.class);
+        App.model = model;
+        expect(model.getParticipant()).andReturn(null);
+        expect(model.getParticipant()).andReturn(createMock(Participant.class));
+        replay(model);
 
-        App.config.setProperty("keyPairPassword", PASSWORD);
-        App.config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
-        App.config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
-        App.config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
+        assertTrue(App.isFirstStart());
+        assertFalse(App.isFirstStart());
 
-        App.loadParticipant();
-
-        assertArrayEquals(keyPair.getPublic().getEncoded(),
-                App.model.getParticipant().getPublicKeyAsBytes());
-        assertArrayEquals(keyPair.getPrivate().getEncoded(),
-                App.model.getParticipant().getPrivateKeyAsBytes());
+        verify(model);
     }
 
     @Test
@@ -96,6 +83,8 @@ public class AppTest {
 
     @Test
     public void testStoreConfig() {
+        ConfigWriter writer = createMock(ConfigWriter.class);
+        App.configWriter = writer;
         writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
         expectLastCall();
         replay(writer);

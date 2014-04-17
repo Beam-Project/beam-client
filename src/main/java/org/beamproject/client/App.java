@@ -38,7 +38,6 @@ import org.beamproject.common.util.ConfigWriter;
  */
 public class App {
 
-    public final static String DEFAULT_KEY_PAIR_PASSWORD = "default-password";
     public final static Color DEFAULT_BACKGROUND = null; // is really null
     public final static Color ERROR_BACKGROUND = new Color(255, 153, 153);
     static String CONTACTS_STORAGE_FILE = Config.FOLDER + "contacts.storage";
@@ -53,7 +52,7 @@ public class App {
         showMainWindow();
         loadControllerAndModel();
         loadParticipant();
-        readContactList();
+        loadContactList();
     }
 
     private static void setNativeLookAndFeel() {
@@ -79,7 +78,7 @@ public class App {
             public void run() {
                 mainWindow = new MainWindow();
                 Frames.setIcons(mainWindow);
-                mainWindow.setAutoRequestFocus(isEncryptedKeyPairStored());
+                mainWindow.setAutoRequestFocus(isFirstStart());
                 mainWindow.setVisible(true);
             }
         });
@@ -91,23 +90,15 @@ public class App {
     }
 
     static void loadParticipant() {
-        if (isEncryptedKeyPairStored()) {
-            readAndDecryptParticipantFromConfig();
-        } else {
+        if (isFirstStart()) {
             showSetUpDialog();
             generateParticipant();
             storeConfig();
         }
     }
 
-    private static boolean isEncryptedKeyPairStored() {
-        return config.encryptedPublicKey() != null && config.encryptedPrivateKey() != null;
-    }
-
-    private static void readAndDecryptParticipantFromConfig() {
-        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedPublicKey(), config.encryptedPrivateKey(), config.keyPairSalt());
-        KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
-        model.setParticipant(new Participant(keyPair));
+    static boolean isFirstStart() {
+        return model.getParticipant() == null;
     }
 
     private static void showSetUpDialog() {
@@ -119,9 +110,7 @@ public class App {
 
     private static void generateParticipant() {
         Participant participant = new Participant(EccKeyPairGenerator.generate());
-
-        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(DEFAULT_KEY_PAIR_PASSWORD, participant.getKeyPair());
-        config.setProperty("keyPairPassword", DEFAULT_KEY_PAIR_PASSWORD);
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), participant.getKeyPair());
         config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
         config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
@@ -129,7 +118,7 @@ public class App {
         model.setParticipant(participant);
     }
 
-    static void readContactList() {
+    static void loadContactList() {
         controller.readContactListStorage();
     }
 
