@@ -20,7 +20,6 @@ package org.beamproject.client;
 
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.security.KeyPair;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.aeonbits.owner.ConfigFactory;
