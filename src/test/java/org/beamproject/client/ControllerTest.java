@@ -24,7 +24,6 @@ import org.beamproject.client.storage.Storage;
 import org.beamproject.client.ui.InfoWindow;
 import org.beamproject.client.ui.MainWindow;
 import org.beamproject.client.ui.settings.GeneralPanel;
-import org.beamproject.client.ui.settings.IdentityPanel;
 import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.client.ui.settings.SettingsWindowTest;
 import org.beamproject.common.Contact;
@@ -191,8 +190,8 @@ public class ControllerTest {
     public void testSendMessage() {
         Participant server = new Participant(EccKeyPairGenerator.generate());
         Participant client = new Participant(EccKeyPairGenerator.generate());
-        Contact contact = new Contact(server, client, "john");
-        controller.sendMessage(contact, "hello");
+        Contact messageContact = new Contact(server, client, "john");
+        controller.sendMessage(messageContact, "hello");
     }
 
     @Test
@@ -254,23 +253,6 @@ public class ControllerTest {
         controller.showSettingsWindow();
 
         assertSame(window, controller.settingsWindow);
-        assertTrue(controller.settingsWindow.isVisible());
-    }
-
-    @Test
-    public void testShowIdentityNameInSettingsWindow() {
-        mainWindow.setUsername(App.getConfig().participantName());
-        expectLastCall().anyTimes();
-        writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
-        expectLastCall().times(3);
-        setMocksInReplayMode();
-
-        assertNull(controller.settingsWindow);
-        controller.showNameInSettingsWindow();
-        assertNotNull(controller.settingsWindow);
-
-        JPanel activeContentPanel = SettingsWindowTest.getContentPanel(controller.settingsWindow);
-        assertTrue(activeContentPanel.getComponent(0) instanceof IdentityPanel);
         assertTrue(controller.settingsWindow.isVisible());
     }
 
