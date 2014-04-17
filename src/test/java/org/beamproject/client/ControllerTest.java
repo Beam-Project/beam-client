@@ -108,6 +108,24 @@ public class ControllerTest {
     }
 
     @Test
+    public void testSetServer() {
+        Participant server = new Participant(EccKeyPairGenerator.generate());
+        writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
+        expectLastCall();
+        model.setServer(server);
+        expectLastCall();
+        setMocksInReplayMode();
+
+        App.getConfig().removeProperty("serverSalt");
+        App.getConfig().removeProperty("encryptedServerPublicKey");
+
+        controller.setServer(server);
+
+        assertTrue(App.getConfig().serverSalt().length() > 20);
+        assertTrue(App.getConfig().encryptedServerPublicKey().length() > 40);
+    }
+
+    @Test
     public void testSetServerUrl() {
         App.getConfig().setProperty("serverUrl", URL);
         writer.writeConfig(App.config, Config.FOLDER, Config.FILE);

@@ -29,7 +29,10 @@ import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Message;
 import org.beamproject.common.MessageField;
+import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.CryptoPacker;
+import org.beamproject.common.crypto.EncryptedKeyPair;
+import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.util.Exceptions;
 
 /**
@@ -47,6 +50,14 @@ public class Controller {
     public void changeName(String name) {
         App.getConfig().setProperty("participantName", name);
         App.getMainWindow().setUsername(name);
+        App.storeConfig();
+    }
+
+    public void setServer(Participant server) {
+        App.getModel().setServer(server);
+        EncryptedKeyPair encryptedPublicKey = KeyPairCryptor.encrypt(App.getConfig().keyPairPassword(), server.getKeyPair());
+        App.getConfig().setProperty("serverSalt", encryptedPublicKey.getSalt());
+        App.getConfig().setProperty("encryptedServerPublicKey", encryptedPublicKey.getEncryptedPublicKey());
         App.storeConfig();
     }
 
