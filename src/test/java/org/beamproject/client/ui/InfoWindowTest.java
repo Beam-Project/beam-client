@@ -18,11 +18,9 @@
  */
 package org.beamproject.client.ui;
 
-import org.aeonbits.owner.ConfigFactory;
 import org.beamproject.client.App;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
-import org.beamproject.client.Config;
 import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
 import org.beamproject.client.Model;
