@@ -150,7 +150,7 @@ public class App {
     }
 
     public static void storeConfig() {
-       configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
+        configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
     }
 
 }

@@ -21,11 +21,10 @@ package org.beamproject.client.ui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JButton;
-import org.aeonbits.owner.ConfigFactory;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.App;
 import org.beamproject.client.AppTest;
-import org.beamproject.client.Config;
+import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
 import org.beamproject.client.Model;
 import static org.beamproject.client.ui.MainWindow.WINDOW_TO_SCREEN_SIDE_MARGIN_IN_PX;
@@ -41,10 +40,10 @@ public class MainWindowTest {
 
     @Before
     public void setUp() {
+        ConfigTest.loadDefaultConfig();
         writer = createMock(ConfigWriter.class);
         AppTest.setAppConfigWriter(writer);
-        AppTest.setAppConfig(ConfigFactory.create(Config.class));
-        AppTest.setAppMdoel(new Model());
+        AppTest.setAppModel(new Model());
 
         window = new MainWindow();
     }

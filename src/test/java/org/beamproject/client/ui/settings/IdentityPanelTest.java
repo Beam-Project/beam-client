@@ -19,11 +19,11 @@
 package org.beamproject.client.ui.settings;
 
 import java.beans.PropertyChangeListener;
+import org.beamproject.client.App;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
-import org.beamproject.client.Config;
+import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
-import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -33,26 +33,18 @@ public class IdentityPanelTest {
     private final String NAME = "Mr/Mrs Garrison";
     private final String SERVER_URL = "http://my-server.beamproject.org:1234";
     private IdentityPanel panel;
-    private Config config;
     private Controller controller;
 
     @Before
     public void setUp() {
-        config = createMock(Config.class);
+        ConfigTest.loadDefaultConfig();
+        App.getConfig().setProperty("participantName", NAME);
+        App.getConfig().setProperty("serverUrl", SERVER_URL);
+
         controller = createMock(Controller.class);
-        AppTest.setAppConfig(config);
         AppTest.setAppController(controller);
 
-        expect(config.participantName()).andReturn(NAME);
-        expect(config.serverUrl()).andReturn(SERVER_URL);
-        replay(config);
-
         panel = new IdentityPanel();
-    }
-
-    @After
-    public void verifyMocks() {
-        verify(config);
     }
 
     @Test

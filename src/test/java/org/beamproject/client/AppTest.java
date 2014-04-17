@@ -141,7 +141,7 @@ public class AppTest {
      *
      * @param model The new model.
      */
-    public static void setAppMdoel(Model model) {
+    public static void setAppModel(Model model) {
         App.model = model;
     }
 

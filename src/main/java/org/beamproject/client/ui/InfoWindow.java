@@ -40,7 +40,7 @@ public class InfoWindow extends javax.swing.JFrame {
     }
 
     private void loadUrl() {
-        urlTextField.setText("n/a");
+        urlTextField.setText(App.getModel().getParticipantUrl());
     }
 
     /**
@@ -71,6 +71,7 @@ public class InfoWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Info");
+        setLocationByPlatform(true);
         setResizable(false);
 
         myIdentityLabel.setFont(myIdentityLabel.getFont().deriveFont(myIdentityLabel.getFont().getStyle() | java.awt.Font.BOLD));

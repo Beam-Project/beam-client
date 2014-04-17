@@ -120,6 +120,7 @@ public class ConversationWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Conversation");
+        setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(400, 400));
 
         namesLabel.setFont(namesLabel.getFont().deriveFont(namesLabel.getFont().getStyle() | java.awt.Font.BOLD));

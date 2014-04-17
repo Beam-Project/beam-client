@@ -23,7 +23,9 @@ import org.beamproject.client.App;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
 import org.beamproject.client.Config;
+import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
+import org.beamproject.client.Model;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
@@ -34,22 +36,37 @@ public class InfoWindowTest {
     private InfoWindow window;
     private MainWindow mainWindow;
     private Controller controller;
+    private Model model;
 
     @Before
     public void setUp() {
+        ConfigTest.loadDefaultConfig();
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
+        model = createMock(Model.class);
 
-        AppTest.setAppConfig(ConfigFactory.create(Config.class));
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
+        AppTest.setAppModel(model);
     }
 
     @Test
-    public void testControllerOnLoadingName() {
+    public void testConstructorOnLoadingName() {
         App.getConfig().setProperty("participantName", NAME);
         window = new InfoWindow();
         assertEquals(NAME, window.nameTextField.getText());
+    }
+
+    @Test
+    public void testConstructorOnLoadingUrl() {
+        String url = "beam:server.user?name=mrbeam";
+        expect(model.getParticipantUrl()).andReturn(url);
+        replay(model);
+
+        window = new InfoWindow();
+        assertEquals(url, window.urlTextField.getText());
+
+        verify(model);
     }
 
     @Test

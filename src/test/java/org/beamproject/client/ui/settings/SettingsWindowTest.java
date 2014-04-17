@@ -19,9 +19,10 @@
 package org.beamproject.client.ui.settings;
 
 import javax.swing.JPanel;
+import org.beamproject.client.App;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
-import org.beamproject.client.Config;
+import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
 import org.beamproject.client.ui.MainWindow;
 import org.junit.After;
@@ -35,15 +36,16 @@ public class SettingsWindowTest {
     private final String URL = "http://beamproject.org";
     private SettingsWindow window;
     private MainWindow mainWindow;
-    private Config config;
     private Controller controller;
 
     @Before
     public void setUp() {
-        config = createMock(Config.class);
+        ConfigTest.loadDefaultConfig();
+        App.getConfig().setProperty("participantName", NAME);
+        App.getConfig().setProperty("serverUrl", URL);
+
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
-        AppTest.setAppConfig(config);
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
         replay(mainWindow, controller);
@@ -85,10 +87,6 @@ public class SettingsWindowTest {
         expectLastCall().anyTimes();
         replay(controller);
 
-        expect(config.participantName()).andReturn(NAME).anyTimes();
-        expect(config.serverUrl()).andReturn(URL);
-        replay(config);
-
         window.menuList.setSelectedIndex(SettingsWindow.GENERAL_MENU_INDEX);
         assertSame(window.getGeneralPanel(), window.contentPanel.getComponent(0));
 
@@ -101,7 +99,7 @@ public class SettingsWindowTest {
         window.menuList.setSelectedIndex(SettingsWindow.NETWORK_MENU_INDEX);
         assertSame(window.getNetworkPanel(), window.contentPanel.getComponent(0));
 
-        verify(config, controller);
+        verify(controller);
     }
 
     @Test
@@ -111,13 +109,11 @@ public class SettingsWindowTest {
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
 
-        expect(config.participantName()).andReturn(NAME);
-        expect(config.serverUrl()).andReturn(URL);
         controller.changeName(NAME);
         expectLastCall().anyTimes();
         controller.setServerUrl(URL);
         expectLastCall().anyTimes();
-        replay(mainWindow, controller, config);
+        replay(mainWindow, controller);
 
         window.openIdentityMenuWithFocusedName();
 
@@ -126,7 +122,7 @@ public class SettingsWindowTest {
         String selectedText = panel.nameTextField.getSelectedText();
         assertEquals(NAME, selectedText);
 
-        verify(mainWindow, controller, config);
+        verify(mainWindow, controller);
     }
 
     @Test
@@ -159,10 +155,6 @@ public class SettingsWindowTest {
 
     @Test
     public void testGetIdentityPanel() {
-        expect(config.participantName()).andReturn(NAME).times(2);
-        expect(config.serverUrl()).andReturn(URL);
-        replay(config);
-
         assertNull(window.identityPanel);
         assertNotNull(window.getIdentityPanel());
         assertSame(window.identityPanel, window.getIdentityPanel());

@@ -27,11 +27,11 @@ import org.beamproject.common.util.ConfigBase;
  *
  * @see ConfigBase
  */
-@Sources({"file:~/.beam/client.conf"})
+@Sources({"file:~/.beam/client.conf${developmentExtension}"})
 public interface Config extends ConfigBase {
 
     public final static String FOLDER = System.getProperty("user.home") + "/.beam/";
-    public final static String FILE =  "client.conf";
+    public final static String FILE = "client.conf";
 
     @DefaultValue("keypair-password")
     String keyPairPassword();
@@ -43,7 +43,7 @@ public interface Config extends ConfigBase {
 
     String encryptedPrivateKey();
 
-    @DefaultValue("Mr. Beam")
+    @DefaultValue("Beamer")
     String participantName();
 
     String serverUrl();
