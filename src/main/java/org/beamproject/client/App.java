@@ -79,6 +79,7 @@ public class App {
             public void run() {
                 mainWindow = new MainWindow();
                 Frames.setIcons(mainWindow);
+                mainWindow.setAutoRequestFocus(isEncryptedKeyPairStored());
                 mainWindow.setVisible(true);
             }
         });
@@ -112,7 +113,7 @@ public class App {
     private static void showSetUpDialog() {
         SetUpDialog dialog = new SetUpDialog();
         Frames.setIcons(dialog);
-        dialog.setLocationRelativeTo(mainWindow);
+        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
 
@@ -149,7 +150,7 @@ public class App {
     }
 
     public static void storeConfig() {
-        configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
+       configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
     }
 
 }
