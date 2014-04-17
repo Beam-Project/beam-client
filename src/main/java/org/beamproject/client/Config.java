@@ -46,6 +46,11 @@ public interface Config extends ConfigBase {
     @DefaultValue("Beamer")
     String participantName();
 
+    @DefaultValue("server-salt")
+    String serverSalt();
+    
+    String encryptedServerPublicKey();
+    
     String serverUrl();
 
     @DefaultValue("-1")
