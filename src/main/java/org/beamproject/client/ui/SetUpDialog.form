@@ -3,7 +3,9 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
-    <Property name="title" type="java.lang.String" value="Name"/>
+    <Property name="title" type="java.lang.String" value="Hi There!"/>
+    <Property name="alwaysOnTop" type="boolean" value="true"/>
+    <Property name="locationByPlatform" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
@@ -30,7 +32,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="titleLabel" max="32767" attributes="0"/>
                   <Component id="textLabel" pref="542" max="32767" attributes="0"/>
-                  <Component id="doneButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="letsBeamButton" alignment="1" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -71,7 +73,7 @@
                   <Component id="serverUrlTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
-              <Component id="doneButton" min="-2" max="-2" attributes="0"/>
+              <Component id="letsBeamButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -116,6 +118,7 @@
     <Component class="javax.swing.JCheckBox" name="skipForNowCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" value="Skip for now"/>
+        <Property name="focusTraversalPolicyProvider" type="boolean" value="true"/>
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="skipForNowCheckBoxItemStateChanged"/>
@@ -124,12 +127,12 @@
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JButton" name="doneButton">
+    <Component class="javax.swing.JButton" name="letsBeamButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Done"/>
+        <Property name="text" type="java.lang.String" value="Let&apos;s Beam!"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="doneButtonActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="letsBeamButtonActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>

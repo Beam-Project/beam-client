@@ -59,17 +59,15 @@ public class SetUpDialogTest {
     }
 
     private void expectInvalidName() {
-        dialog.verifyName();
+        dialog.isNameValid();
         assertEquals(App.ERROR_BACKGROUND, dialog.nameTextField.getBackground());
-        assertFalse(dialog.isNameValid);
 
     }
 
     @Test
     public void testVerifyNameOnValidUser() {
         dialog.nameTextField.setText(NAME);
-        dialog.verifyName();
-        assertTrue(dialog.isNameValid);
+        dialog.isNameValid();
     }
 
     @Test
@@ -91,16 +89,14 @@ public class SetUpDialogTest {
     }
 
     private void expectInvalidServerUrl() {
-        dialog.verifyServerUrl();
+        dialog.isServerUrlValid();
         assertEquals(App.ERROR_BACKGROUND, dialog.serverUrlTextField.getBackground());
-        assertFalse(dialog.isServerUrlValid);
     }
 
     @Test
     public void testVerifyServerUrlOnValidUrl() {
         dialog.serverUrlTextField.setText(SERVER_URL);
-        dialog.verifyServerUrl();
-        assertTrue(dialog.isServerUrlValid);
+        dialog.isServerUrlValid();
     }
 
     @Test
@@ -117,62 +113,70 @@ public class SetUpDialogTest {
     }
 
     @Test
-    public void testDoneButtonOnInvocatingWithInvalidName() {
+    public void testLetsBeamButtonOnInvocatingWithInvalidName() {
         controller.setServerUrl(SERVER_URL);
         expectLastCall();
         replay(controller);
 
         dialog.serverUrlTextField.setText(SERVER_URL);
-        dialog.doneButton.doClick();
+        dialog.letsBeamButton.doClick();
         assertFalse(dialog.isDisposed);
 
         verify(controller);
     }
 
     @Test
-    public void testDoneButtonOnInvocatingWithInvaidUrl() {
+    public void testLetsBeamButtonOnInvocatingWithInvaidUrl() {
         controller.changeName(NAME);
         expectLastCall();
         replay(controller);
 
         dialog.nameTextField.setText(NAME);
         dialog.serverUrlTextField.setText("invalid url");
-        dialog.doneButton.doClick();
+        dialog.letsBeamButton.doClick();
         assertFalse(dialog.isDisposed);
 
         verify(controller);
     }
 
     @Test
-    public void testDoneButtonOnInvocatingWithSkippedUrl() {
+    public void testLetsBeamButtonOnInvocatingWithSkippedUrl() {
+        MainWindow mainWindow = createMock(MainWindow.class);
+        AppTest.setAppMainWindow(mainWindow);
+        mainWindow.requestFocus();
+        expectLastCall();
         controller.changeName(NAME);
         expectLastCall();
-        replay(controller);
+        replay(controller, mainWindow);
 
         dialog.nameTextField.setText(NAME);
         dialog.serverUrlTextField.setText("invalid url");
         dialog.skipForNowCheckBox.setSelected(true);
-        dialog.doneButton.doClick();
+        dialog.letsBeamButton.doClick();
         assertTrue(dialog.isDisposed);
 
-        verify(controller);
+        verify(controller, mainWindow);
     }
 
     @Test
-    public void testDoneButtonOnControllerInvocation() {
+    public void testLetsBeamButtonOnControllerInvocation() {
+        MainWindow mainWindow = createMock(MainWindow.class);
+        AppTest.setAppMainWindow(mainWindow);
+        mainWindow.requestFocus();
+        expectLastCall();
         String nameWithSpaces = NAME + "   ";
         controller.changeName(NAME);
         expectLastCall().once();
         controller.setServerUrl(SERVER_URL);
         expectLastCall().once();
-        replay(controller);
+        replay(controller, mainWindow);
 
         dialog.nameTextField.setText(nameWithSpaces);
         dialog.serverUrlTextField.setText(SERVER_URL);
-        dialog.doneButton.doClick();
+        dialog.letsBeamButton.doClick();
         assertTrue(dialog.isDisposed);
 
-        verify(controller);
+        verify(controller, mainWindow);
     }
 
     private class SetUpDialogTester extends SetUpDialog {
