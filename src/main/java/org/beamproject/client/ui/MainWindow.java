@@ -18,6 +18,8 @@
  */
 package org.beamproject.client.ui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import org.beamproject.client.App;
 import org.beamproject.common.Contact;
 import org.beamproject.common.util.Exceptions;
@@ -33,6 +35,7 @@ public class MainWindow extends javax.swing.JFrame {
     private final int DOUBLE_CLICK_NUMBER = 2;
     final static int MINIMAL_WINDOW_WIDTH_IN_PX = 270;
     final static int MINIMAL_WINDOW_HEIGHT_IN_PX = 500;
+    final static int WINDOW_TO_SCREEN_SIDE_MARGIN_IN_PX = 10;
 
     /**
      * Creates new form MainWindow
@@ -40,25 +43,14 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
         initComponents();
         setParticipantName();
-        setPosition();
         setSize();
+        setPosition();
         initalizeContactList();
     }
 
     void setParticipantName() {
         String name = App.getConfig().participantName();
         nameButton.setText(name != null ? name : DEFAULT_USERNAME);
-    }
-
-    private void setPosition() {
-        int xPosition = App.getConfig().windowPositionX();
-        int yPosition = App.getConfig().windowPositionY();
-
-        if (xPosition >= 0 && yPosition >= 0) {
-            setLocation(xPosition, yPosition);
-        } else {
-            setLocationRelativeTo(null);
-        }
     }
 
     private void setSize() {
@@ -72,6 +64,25 @@ public class MainWindow extends javax.swing.JFrame {
                 repaint();
             }
         }
+    }
+
+    private void setPosition() {
+        int xPosition = App.getConfig().windowPositionX();
+        int yPosition = App.getConfig().windowPositionY();
+
+        if (xPosition >= 0 && yPosition >= 0) {
+            setLocation(xPosition, yPosition);
+        } else {
+            setWindowToLowerRightCorner();
+        }
+    }
+
+    private void setWindowToLowerRightCorner() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int xPostion = screenSize.width - getWidth() - WINDOW_TO_SCREEN_SIDE_MARGIN_IN_PX;
+        int yPostion = screenSize.height - getHeight() - WINDOW_TO_SCREEN_SIDE_MARGIN_IN_PX;
+
+        setLocation(xPostion, yPostion);
     }
 
     @SuppressWarnings("unchecked")
@@ -109,6 +120,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Beam");
+        setLocationByPlatform(true);
         setMinimumSize(new java.awt.Dimension(270, 500));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {

@@ -18,6 +18,8 @@
  */
 package org.beamproject.client.ui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import javax.swing.JButton;
 import org.aeonbits.owner.ConfigFactory;
 import static org.easymock.EasyMock.*;
@@ -26,6 +28,7 @@ import org.beamproject.client.AppTest;
 import org.beamproject.client.Config;
 import org.beamproject.client.Controller;
 import org.beamproject.client.Model;
+import static org.beamproject.client.ui.MainWindow.WINDOW_TO_SCREEN_SIDE_MARGIN_IN_PX;
 import org.beamproject.common.util.ConfigWriter;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -53,8 +56,22 @@ public class MainWindowTest {
 
     @Test
     public void testSetPositionOnNewSetting() {
-        assertTrue(window.getX() > 0);
-        assertTrue(window.getY() > 0);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int xPostion = screenSize.width - window.getWidth() - WINDOW_TO_SCREEN_SIDE_MARGIN_IN_PX;
+        int yPostion = screenSize.height - window.getHeight() - WINDOW_TO_SCREEN_SIDE_MARGIN_IN_PX;
+
+        assertEquals(xPostion, window.getX());
+        assertEquals(yPostion, window.getY());
+    }
+
+    @Test
+    public void testSetPositionOnExistingSetting() {
+        App.getConfig().setProperty("windowPositionX", "100");
+        App.getConfig().setProperty("windowPositionY", "200");
+
+        window = new MainWindow();
+        assertEquals(100, window.getX());
+        assertEquals(200, window.getY());
     }
 
     @Test
