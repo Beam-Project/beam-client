@@ -265,6 +265,7 @@ public class ControllerTest {
         
         assertNull(controller.settingsWindow);
         controller.showNameInSettingsWindow();
+        assertNotNull(controller.settingsWindow);
         
         JPanel activeContentPanel = SettingsWindowTest.getContentPanel(controller.settingsWindow);
         assertTrue(activeContentPanel.getComponent(0) instanceof IdentityPanel);
