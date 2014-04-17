@@ -59,10 +59,10 @@ public class SetUpDialog extends javax.swing.JFrame {
         doneButton = new javax.swing.JButton();
         serverUrlLabel = new javax.swing.JLabel();
         serverUrlTextField = new javax.swing.JTextField();
+        skipForNowCheckBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Name");
-        setAlwaysOnTop(true);
         setResizable(false);
 
         titleLabel.setFont(titleLabel.getFont().deriveFont(titleLabel.getFont().getStyle() | java.awt.Font.BOLD, titleLabel.getFont().getSize()+5));
@@ -80,6 +80,13 @@ public class SetUpDialog extends javax.swing.JFrame {
         });
 
         serverUrlLabel.setText("Server URL:");
+
+        skipForNowCheckBox.setText("Skip for now");
+        skipForNowCheckBox.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                skipForNowCheckBoxPropertyChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -100,8 +107,11 @@ public class SetUpDialog extends javax.swing.JFrame {
                                 .addComponent(serverUrlLabel)
                                 .addGap(16, 16, 16)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(serverUrlTextField)
-                            .addComponent(nameTextField))))
+                            .addComponent(nameTextField)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(serverUrlTextField)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(skipForNowCheckBox)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -118,7 +128,9 @@ public class SetUpDialog extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(serverUrlLabel)
-                    .addComponent(serverUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(serverUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(skipForNowCheckBox)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(doneButton)
                 .addContainerGap())
@@ -128,15 +140,36 @@ public class SetUpDialog extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void doneButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doneButtonActionPerformed
-        verifyName();
-        verifyServerUrl();
+        boolean nameDone = false;
+        boolean urlDone = false;
 
-        if (isNameValid && isServerUrlValid) {
+        verifyName();
+
+        if (isNameValid) {
             App.getController().changeName(name);
-            App.getController().setServerUrl(serverUrl);
+            nameDone = true;
+        }
+
+        if (skipForNowCheckBox.isSelected()) {
+            Components.setDefalutBackground(serverUrlTextField);
+            urlDone = true;
+        } else {
+            verifyServerUrl();
+
+            if (isServerUrlValid) {
+                App.getController().setServerUrl(serverUrl);
+                urlDone = true;
+            }
+        }
+
+        if (nameDone && urlDone) {
             dispose();
         }
     }//GEN-LAST:event_doneButtonActionPerformed
+
+    private void skipForNowCheckBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_skipForNowCheckBoxPropertyChange
+        serverUrlTextField.setEditable(skipForNowCheckBox.isSelected());
+    }//GEN-LAST:event_skipForNowCheckBoxPropertyChange
 
     void verifyName() {
         name = nameTextField.getText().trim();
@@ -151,10 +184,9 @@ public class SetUpDialog extends javax.swing.JFrame {
     }
 
     void verifyServerUrl() {
-        //TODO Extract all validators into a seperate class
         try {
             URL validUrl = new URL(serverUrlTextField.getText());
-            URI validUri = validUrl.toURI();
+            URI validUri = validUrl.toURI(); // Needed to check if the URI is valid.
 
             Components.setDefalutBackground(serverUrlTextField);
             isServerUrlValid = true;
@@ -171,6 +203,7 @@ public class SetUpDialog extends javax.swing.JFrame {
     javax.swing.JTextField nameTextField;
     private javax.swing.JLabel serverUrlLabel;
     javax.swing.JTextField serverUrlTextField;
+    javax.swing.JCheckBox skipForNowCheckBox;
     private javax.swing.JLabel textLabel;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables

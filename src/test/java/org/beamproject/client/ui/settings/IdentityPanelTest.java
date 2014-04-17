@@ -21,9 +21,8 @@ package org.beamproject.client.ui.settings;
 import java.beans.PropertyChangeListener;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
-import org.beamproject.client.ClientConfigKey;
+import org.beamproject.client.Config;
 import org.beamproject.client.Controller;
-import org.beamproject.common.Config;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -44,8 +43,8 @@ public class IdentityPanelTest {
         AppTest.setAppConfig(config);
         AppTest.setAppController(controller);
 
-        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
-        expect(config.getProperty(ClientConfigKey.serverUrl)).andReturn(SERVER_URL);
+        expect(config.participantName()).andReturn(NAME);
+        expect(config.serverUrl()).andReturn(SERVER_URL);
         replay(config);
 
         panel = new IdentityPanel();

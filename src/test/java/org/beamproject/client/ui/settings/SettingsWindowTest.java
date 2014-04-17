@@ -21,10 +21,9 @@ package org.beamproject.client.ui.settings;
 import javax.swing.JPanel;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
-import org.beamproject.client.ClientConfigKey;
+import org.beamproject.client.Config;
 import org.beamproject.client.Controller;
 import org.beamproject.client.ui.MainWindow;
-import org.beamproject.common.Config;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -86,8 +85,8 @@ public class SettingsWindowTest {
         expectLastCall().anyTimes();
         replay(controller);
 
-        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME).anyTimes();
-        expect(config.getProperty(ClientConfigKey.serverUrl)).andReturn(URL);
+        expect(config.participantName()).andReturn(NAME).anyTimes();
+        expect(config.serverUrl()).andReturn(URL);
         replay(config);
 
         window.menuList.setSelectedIndex(SettingsWindow.GENERAL_MENU_INDEX);
@@ -112,8 +111,8 @@ public class SettingsWindowTest {
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
 
-        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
-        expect(config.getProperty(ClientConfigKey.serverUrl)).andReturn(URL);
+        expect(config.participantName()).andReturn(NAME);
+        expect(config.serverUrl()).andReturn(URL);
         controller.changeName(NAME);
         expectLastCall().anyTimes();
         controller.setServerUrl(URL);
@@ -160,8 +159,8 @@ public class SettingsWindowTest {
 
     @Test
     public void testGetIdentityPanel() {
-        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME).times(2);
-        expect(config.getProperty(ClientConfigKey.serverUrl)).andReturn(URL);
+        expect(config.participantName()).andReturn(NAME).times(2);
+        expect(config.serverUrl()).andReturn(URL);
         replay(config);
 
         assertNull(window.identityPanel);

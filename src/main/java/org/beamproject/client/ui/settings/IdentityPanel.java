@@ -23,7 +23,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.beamproject.client.App;
-import org.beamproject.client.ClientConfigKey;
 
 public class IdentityPanel extends javax.swing.JPanel {
 
@@ -36,11 +35,11 @@ public class IdentityPanel extends javax.swing.JPanel {
     }
 
     private void loadName() {
-        nameTextField.setText(App.getConfig().getProperty(ClientConfigKey.participantName));
+        nameTextField.setText(App.getConfig().participantName());
     }
 
     private void loadServerUrl() {
-        serverUrlTextField.setText(App.getConfig().getProperty(ClientConfigKey.serverUrl));
+        serverUrlTextField.setText(App.getConfig().serverUrl());
     }
 
     /**

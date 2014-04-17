@@ -19,56 +19,36 @@
 package org.beamproject.client.ui;
 
 import javax.swing.JButton;
+import org.aeonbits.owner.ConfigFactory;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.App;
 import org.beamproject.client.AppTest;
-import org.beamproject.client.ClientConfigKey;
+import org.beamproject.client.Config;
 import org.beamproject.client.Controller;
 import org.beamproject.client.Model;
-import org.beamproject.common.Config;
-import org.junit.After;
+import org.beamproject.common.util.ConfigWriter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
 public class MainWindowTest {
 
-    private int height = 500;
-    private int width = 375;
-    private String name = "spock";
     private MainWindow window;
-    private Controller controller;
-    private Model model;
-    private Config config;
+    private ConfigWriter writer;
 
     @Before
     public void setUp() {
-        config = createMock(Config.class);
-        controller = createMock(Controller.class);
-        model = new Model();
-
-        AppTest.setAppConfig(config);
-        AppTest.setAppMdoel(model);
-        AppTest.setAppController(controller);
-
-        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(name);
-        expect(config.getProperty(ClientConfigKey.windowPositionX)).andReturn("10");
-        expect(config.getProperty(ClientConfigKey.windowPositionY)).andReturn("100");
-        expect(config.getProperty(ClientConfigKey.windowWidth)).andReturn("" + width);
-        expect(config.getProperty(ClientConfigKey.windowHeight)).andReturn("" + height);
-        replay(config, controller);
+        writer = createMock(ConfigWriter.class);
+        AppTest.setAppConfigWriter(writer);
+        AppTest.setAppConfig(ConfigFactory.create(Config.class));
+        AppTest.setAppMdoel(new Model());
 
         window = new MainWindow();
     }
 
-    @After
-    public void verifyMocks() {
-        verify(config, controller);
-    }
-
     @Test
     public void testConstructorOnSettingModelList() {
-        assertSame(model.getContactList(), window.contactList.getModel());
+        assertSame(App.getModel().getContactList(), window.contactList.getModel());
     }
 
     @Test
@@ -78,39 +58,23 @@ public class MainWindowTest {
     }
 
     @Test
-    public void testSetPositionOnSize() {
-        assertEquals(width, window.getWidth());
-        assertEquals(height, window.getHeight());
-    }
-
-    @Test
-    public void testSetPositionOnIllegalSize() {
-        width = 1;
-        height = 2;
-
-        setUp();
-
-        assertTrue(window.getWidth() > width);
-        assertTrue(window.getHeight() > height);
+    public void testSetSizeOnMinimalSizes() {
+        assertEquals(MainWindow.MINIMAL_WINDOW_WIDTH_IN_PX, window.getWidth());
+        assertEquals(MainWindow.MINIMAL_WINDOW_HEIGHT_IN_PX, window.getHeight());
     }
 
     @Test
     public void testSetProfileSpecificValuesOnExistingSetting() {
-        assertEquals(name, window.nameButton.getText());
+        assertEquals(App.getConfig().participantName(), window.nameButton.getText());
     }
 
     @Test
     public void testSetProfileSpecificValuesOnInexistingSetting() {
-        config = createMock(Config.class);
-        AppTest.setAppConfig(config);
-        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(null);
-        replay(config);
+        App.getConfig().setProperty("participantName", null);
 
         window.nameButton.setText("a name");
-        window.setProfileSpecificValues();
+        window.setParticipantName();
         assertEquals(window.DEFAULT_USERNAME, window.nameButton.getText());
-
-        verify(config);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -130,45 +94,48 @@ public class MainWindowTest {
 
     @Test
     public void testSetUsername() {
-        name = "Timmee";
+        String name = "Timmee";
         window.setUsername(name);
         assertEquals(name, window.nameButton.getText());
     }
 
     @Test
     public void testInfoButtonOnShowingInvokingMethod() {
-        controller = createMock(Controller.class);
+        Controller controller = createMock(Controller.class);
         AppTest.setAppController(controller);
-
         controller.showInfoWindow();
         expectLastCall();
         replay(controller);
 
         window.infoButton.doClick();
+
+        verify(controller);
     }
 
     @Test
     public void testNameButtonOnShowingInvokingMethod() {
-        controller = createMock(Controller.class);
+        Controller controller = createMock(Controller.class);
         AppTest.setAppController(controller);
-
         controller.showNameInSettingsWindow();
         expectLastCall();
         replay(controller);
 
         window.nameButton.doClick();
+
+        verify(controller);
     }
 
     @Test
     public void testSettingsButtonOnShowingInvokingMethod() {
-        controller = createMock(Controller.class);
+        Controller controller = createMock(Controller.class);
         AppTest.setAppController(controller);
-
         controller.showSettingsWindow();
         expectLastCall();
         replay(controller);
 
         window.settingsButton.doClick();
+
+        verify(controller);
     }
 
     /**

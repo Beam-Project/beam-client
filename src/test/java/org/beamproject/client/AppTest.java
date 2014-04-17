@@ -18,14 +18,13 @@
  */
 package org.beamproject.client;
 
-import java.io.File;
 import java.security.KeyPair;
 import org.beamproject.client.ui.MainWindow;
-import org.beamproject.common.Config;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
-import org.junit.After;
+import org.beamproject.common.util.ConfigWriter;
+import static org.easymock.EasyMock.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -33,26 +32,23 @@ import org.junit.Before;
 public class AppTest {
 
     private final String PASSWORD = "password";
-    private final String CONFIG_DIRECTORY = "./";
-    private final String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
-    private File configFile;
+    private ConfigWriter writer;
 
     @Before
     public void setUp() {
-        App.CONFIG_DIRECTORY = CONFIG_DIRECTORY;
-        App.CONFIG_FILE = CONFIG_FILE;
-
-        configFile = new File(CONFIG_FILE);
-    }
-
-    @After
-    public void cleanUp() {
-        configFile.delete();
+        writer = createMock(ConfigWriter.class);
+        App.configWriter = writer;
     }
 
     @Test
-    public void testLoadConfigControllerModel() {
-        App.loadConfigControllerModel();
+    public void testStaticInits() {
+        assertNotNull(App.configWriter);
+        assertNotNull(App.config);
+    }
+
+    @Test
+    public void testLoadControllerAndModel() {
+        App.loadControllerAndModel();
 
         assertNotNull(App.config);
         assertNotNull(App.controller);
@@ -60,28 +56,15 @@ public class AppTest {
     }
 
     @Test
-    public void testOnPahtInitialization() {
-        assertNotNull(App.CONFIG_DIRECTORY);
-        assertNotNull(App.CONFIG_FILE);
-    }
-
-    @Test
-    public void testLoadConfigOnCreatingConfigFile() {
-        App.loadConfigControllerModel();
-
-        assertTrue(configFile.exists());
-    }
-
-    @Test
     public void testLoadParticipantFromConfigFile() {
-        App.loadConfigControllerModel();
+        App.loadControllerAndModel();
         KeyPair keyPair = EccKeyPairGenerator.generate();
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(PASSWORD, keyPair);
 
-        App.config.setProperty(ClientConfigKey.keyPairPassword, PASSWORD);
-        App.config.setProperty(ClientConfigKey.keyPairSalt, encryptedKeyPair.getSalt());
-        App.config.setProperty(ClientConfigKey.encryptedPublicKey, encryptedKeyPair.getEncryptedPublicKey());
-        App.config.setProperty(ClientConfigKey.encryptedPrivateKey, encryptedKeyPair.getEncryptedPrivateKey());
+        App.config.setProperty("keyPairPassword", PASSWORD);
+        App.config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
+        App.config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
+        App.config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
 
         App.loadParticipant();
 
@@ -111,8 +94,35 @@ public class AppTest {
         assertSame(App.config, App.getConfig());
     }
 
+    @Test
+    public void testStoreConfig() {
+        writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
+        expectLastCall();
+        replay(writer);
+
+        App.storeConfig();
+
+        verify(writer);
+    }
+
+    /**
+     * Overwrites the existing {@link Config} in {@link App} for unit testing
+     * purposes.
+     *
+     * @param config The new config.
+     */
     public static void setAppConfig(Config config) {
         App.config = config;
+    }
+
+    /**
+     * Overwrites the existing {@link ConfigWriter} in {@link App} for unit
+     * testing purposes.
+     *
+     * @param configWriter The new config writer.
+     */
+    public static void setAppConfigWriter(ConfigWriter configWriter) {
+        App.configWriter = configWriter;
     }
 
     /**

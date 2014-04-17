@@ -19,7 +19,6 @@
 package org.beamproject.client.ui;
 
 import org.beamproject.client.App;
-import org.beamproject.client.ClientConfigKey;
 import org.beamproject.client.util.ClipboardAccess;
 
 /**
@@ -37,7 +36,7 @@ public class InfoWindow extends javax.swing.JFrame {
     }
 
     private void loadName() {
-        nameTextField.setText(App.getConfig().getProperty(ClientConfigKey.participantName));
+        nameTextField.setText(App.getConfig().participantName());
     }
 
     private void loadUrl() {

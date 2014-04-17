@@ -26,7 +26,6 @@ import org.beamproject.client.ui.ConversationWindow;
 import org.beamproject.client.ui.Frames;
 import org.beamproject.client.ui.InfoWindow;
 import org.beamproject.client.ui.settings.SettingsWindow;
-import org.beamproject.common.Config;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Message;
 import org.beamproject.common.MessageField;
@@ -40,25 +39,20 @@ import org.beamproject.common.util.Exceptions;
 public class Controller {
 
     public final static String FORMAT_VERSION = "1.0";
-    Config config;
     List<ConversationWindow> conversationWindows = new ArrayList<>();
     InfoWindow infoWindow;
     SettingsWindow settingsWindow;
     CryptoPacker cryptoPacker;
 
-    public Controller(Config config) {
-        Exceptions.verifyArgumentsNotNull(config);
-
-        this.config = config;
-    }
-
     public void changeName(String name) {
-        config.setProperty(ClientConfigKey.participantName, name);
+        App.getConfig().setProperty("participantName", name);
         App.getMainWindow().setUsername(name);
+        App.storeConfig();
     }
 
     public void setServerUrl(String serverUrl) {
-        config.setProperty(ClientConfigKey.serverUrl, serverUrl);
+        App.getConfig().setProperty("serverUrl", serverUrl);
+        App.storeConfig();
     }
 
     public void addContact(Contact contact) {
@@ -105,7 +99,7 @@ public class Controller {
 
         Message plaintext = assemblePlaintextMessage(target, content);
         byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext, target.getServer());
-        byte[] response = sendCiphertextToNextServer(ciphertext, config.getProperty(ClientConfigKey.serverUrl));
+        byte[] response = sendCiphertextToNextServer(ciphertext, App.getConfig().serverUrl());
         System.out.println("response: " + new String(response));
     }
 

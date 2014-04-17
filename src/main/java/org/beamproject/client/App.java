@@ -23,14 +23,15 @@ import java.awt.EventQueue;
 import java.security.KeyPair;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.aeonbits.owner.ConfigFactory;
 import org.beamproject.client.ui.Frames;
 import org.beamproject.client.ui.MainWindow;
 import org.beamproject.client.ui.SetUpDialog;
-import org.beamproject.common.Config;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
+import org.beamproject.common.util.ConfigWriter;
 
 /**
  * The main class of this application.
@@ -40,10 +41,9 @@ public class App {
     public final static String DEFAULT_KEY_PAIR_PASSWORD = "default-password";
     public final static Color DEFAULT_BACKGROUND = null; // is really null
     public final static Color ERROR_BACKGROUND = new Color(255, 153, 153);
-    static String CONFIG_DIRECTORY = System.getProperty("user.home") + "/.beam-client/";
-    static String CONFIG_FILE = CONFIG_DIRECTORY + "client.conf";
-    static String CONTACTS_STORAGE_FILE = CONFIG_DIRECTORY + "contacts.storage";
-    static Config config;
+    static String CONTACTS_STORAGE_FILE = Config.FOLDER + "contacts.storage";
+    static ConfigWriter configWriter = new ConfigWriter();
+    static Config config = ConfigFactory.create(Config.class);
     static Controller controller;
     static Model model;
     static MainWindow mainWindow;
@@ -51,7 +51,7 @@ public class App {
     public static void main(String args[]) {
         setNativeLookAndFeel();
         showMainWindow();
-        loadConfigControllerModel();
+        loadControllerAndModel();
         loadParticipant();
         readContactList();
     }
@@ -84,9 +84,8 @@ public class App {
         });
     }
 
-    static void loadConfigControllerModel() {
-        config = new Config(CONFIG_FILE);
-        controller = new Controller(config);
+    static void loadControllerAndModel() {
+        controller = new Controller();
         model = new Model();
     }
 
@@ -95,42 +94,36 @@ public class App {
             readAndDecryptParticipantFromConfig();
         } else {
             showSetUpDialog();
-            generateAndStoreParticipant();
+            generateParticipant();
+            storeConfig();
         }
     }
 
     private static boolean isEncryptedKeyPairStored() {
-        return config.isKeyExisting(ClientConfigKey.keyPairSalt)
-                && config.isKeyExisting(ClientConfigKey.encryptedPublicKey)
-                && config.isKeyExisting(ClientConfigKey.encryptedPrivateKey);
+        return config.encryptedPublicKey() != null && config.encryptedPrivateKey() != null;
     }
 
     private static void readAndDecryptParticipantFromConfig() {
-        String password = config.getProperty(ClientConfigKey.keyPairPassword);
-        String salt = config.getProperty(ClientConfigKey.keyPairSalt);
-        String encryptedPublicKey = config.getProperty(ClientConfigKey.encryptedPublicKey);
-        String encryptedPrivateKey = config.getProperty(ClientConfigKey.encryptedPrivateKey);
-
-        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(encryptedPublicKey, encryptedPrivateKey, salt);
-        KeyPair keyPair = KeyPairCryptor.decrypt(password, encryptedKeyPair);
+        EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedPublicKey(), config.encryptedPrivateKey(), config.keyPairSalt());
+        KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
         model.setParticipant(new Participant(keyPair));
     }
 
     private static void showSetUpDialog() {
         SetUpDialog dialog = new SetUpDialog();
         Frames.setIcons(dialog);
-        dialog.setLocationRelativeTo(null);
+        dialog.setLocationRelativeTo(mainWindow);
         dialog.setVisible(true);
     }
 
-    private static void generateAndStoreParticipant() {
+    private static void generateParticipant() {
         Participant participant = new Participant(EccKeyPairGenerator.generate());
 
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(DEFAULT_KEY_PAIR_PASSWORD, participant.getKeyPair());
-        App.config.setProperty(ClientConfigKey.keyPairPassword, DEFAULT_KEY_PAIR_PASSWORD);
-        App.config.setProperty(ClientConfigKey.keyPairSalt, encryptedKeyPair.getSalt());
-        App.config.setProperty(ClientConfigKey.encryptedPublicKey, encryptedKeyPair.getEncryptedPublicKey());
-        App.config.setProperty(ClientConfigKey.encryptedPrivateKey, encryptedKeyPair.getEncryptedPrivateKey());
+        config.setProperty("keyPairPassword", DEFAULT_KEY_PAIR_PASSWORD);
+        config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
+        config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
+        config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
 
         model.setParticipant(participant);
     }
@@ -153,6 +146,10 @@ public class App {
 
     public static Config getConfig() {
         return config;
+    }
+
+    public static void storeConfig() {
+        configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
     }
 
 }

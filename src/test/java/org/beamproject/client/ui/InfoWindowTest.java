@@ -18,44 +18,38 @@
  */
 package org.beamproject.client.ui;
 
+import org.aeonbits.owner.ConfigFactory;
+import org.beamproject.client.App;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
-import org.beamproject.client.ClientConfigKey;
+import org.beamproject.client.Config;
 import org.beamproject.client.Controller;
-import org.beamproject.common.Config;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
 public class InfoWindowTest {
 
-    private final String CONFIG_FILE = "infoWindow.conf";
     private final String NAME = "infoName";
     private InfoWindow window;
-    private Config config;
     private MainWindow mainWindow;
     private Controller controller;
 
     @Before
     public void setUp() {
-        config = createMock(Config.class);
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
 
-        AppTest.setAppConfig(config);
+        AppTest.setAppConfig(ConfigFactory.create(Config.class));
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
     }
 
     @Test
     public void testControllerOnLoadingName() {
-        expect(config.getProperty(ClientConfigKey.participantName)).andReturn(NAME);
-        replay(config);
-
+        App.getConfig().setProperty("participantName", NAME);
         window = new InfoWindow();
-
         assertEquals(NAME, window.nameTextField.getText());
-        verify(config);
     }
 
     @Test

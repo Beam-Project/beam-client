@@ -30,13 +30,14 @@ public class SetUpDialogTest {
 
     private final String NAME = "MYUSER";
     private final String SERVER_URL = "http://beamproject.org/:80/my-server/";
-    private SetUpDialog dialog;
+    private SetUpDialogTester dialog;
     private Controller controller;
 
     @Before
     public void setUp() {
-        dialog = new SetUpDialog();
+        dialog = new SetUpDialogTester();
         controller = createMock(Controller.class);
+        AppTest.setAppController(controller);
     }
 
     @Test
@@ -103,24 +104,53 @@ public class SetUpDialogTest {
     }
 
     @Test
-    public void testDoneButtonOnInvocatingWithInvalidName() {
+    public void testSkipForNowCheckBox() {
         replay(controller);
-        AppTest.setAppController(controller);
+
+        dialog.skipForNowCheckBox.doClick();
+        assertFalse(dialog.serverUrlTextField.isEditable());
+
+        verify(controller);
+    }
+
+    @Test
+    public void testDoneButtonOnInvocatingWithInvalidName() {
+        controller.setServerUrl(SERVER_URL);
+        expectLastCall();
+        replay(controller);
 
         dialog.serverUrlTextField.setText(SERVER_URL);
         dialog.doneButton.doClick();
+        assertFalse(dialog.isDisposed);
 
         verify(controller);
     }
 
     @Test
     public void testDoneButtonOnInvocatingWithInvaidUrl() {
+        controller.changeName(NAME);
+        expectLastCall();
         replay(controller);
-        AppTest.setAppController(controller);
 
         dialog.nameTextField.setText(NAME);
         dialog.serverUrlTextField.setText("invalid url");
         dialog.doneButton.doClick();
+        assertFalse(dialog.isDisposed);
+
+        verify(controller);
+    }
+
+    @Test
+    public void testDoneButtonOnInvocatingWithSkippedUrl() {
+        controller.changeName(NAME);
+        expectLastCall();
+        replay(controller);
+
+        dialog.nameTextField.setText(NAME);
+        dialog.serverUrlTextField.setText("invalid url");
+        dialog.skipForNowCheckBox.setSelected(true);
+        dialog.doneButton.doClick();
+        assertTrue(dialog.isDisposed);
 
         verify(controller);
     }
@@ -133,13 +163,26 @@ public class SetUpDialogTest {
         controller.setServerUrl(SERVER_URL);
         expectLastCall().once();
         replay(controller);
-        AppTest.setAppController(controller);
 
         dialog.nameTextField.setText(nameWithSpaces);
         dialog.serverUrlTextField.setText(SERVER_URL);
         dialog.doneButton.doClick();
+        assertTrue(dialog.isDisposed);
 
         verify(controller);
+    }
+
+    private class SetUpDialogTester extends SetUpDialog {
+
+        public SetUpDialogTester() {
+        }
+        private static final long serialVersionUID = 1L;
+        private boolean isDisposed = false;
+
+        @Override
+        public void dispose() {
+            isDisposed = true;
+        }
     }
 
 }

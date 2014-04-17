@@ -19,7 +19,6 @@
 package org.beamproject.client.ui;
 
 import org.beamproject.client.App;
-import org.beamproject.client.ClientConfigKey;
 import org.beamproject.common.Contact;
 import org.beamproject.common.util.Exceptions;
 
@@ -32,32 +31,30 @@ public class MainWindow extends javax.swing.JFrame {
     private static final long serialVersionUID = 1L;
     final String DEFAULT_USERNAME = "Your Name";
     private final int DOUBLE_CLICK_NUMBER = 2;
-    private final int MINIMAL_WINDOW_WIDTH_IN_PX = 260;
-    private final int MINIMAL_WINDOW_HEIGHT_IN_PX = 400;
+    final static int MINIMAL_WINDOW_WIDTH_IN_PX = 270;
+    final static int MINIMAL_WINDOW_HEIGHT_IN_PX = 500;
 
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
         initComponents();
-        setProfileSpecificValues();
+        setParticipantName();
         setPosition();
         setSize();
         initalizeContactList();
     }
 
-    void setProfileSpecificValues() {
-        String name = App.getConfig().getProperty(ClientConfigKey.participantName);
+    void setParticipantName() {
+        String name = App.getConfig().participantName();
         nameButton.setText(name != null ? name : DEFAULT_USERNAME);
     }
 
     private void setPosition() {
-        String xValue = App.getConfig().getProperty(ClientConfigKey.windowPositionX);
-        String yValue = App.getConfig().getProperty(ClientConfigKey.windowPositionY);
+        int xPosition = App.getConfig().windowPositionX();
+        int yPosition = App.getConfig().windowPositionY();
 
-        if (xValue != null && yValue != null) {
-            int xPosition = Integer.valueOf(xValue);
-            int yPosition = Integer.valueOf(yValue);
+        if (xPosition >= 0 && yPosition >= 0) {
             setLocation(xPosition, yPosition);
         } else {
             setLocationRelativeTo(null);
@@ -65,13 +62,10 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void setSize() {
-        String preferredWidth = App.getConfig().getProperty(ClientConfigKey.windowWidth);
-        String preferredHeight = App.getConfig().getProperty(ClientConfigKey.windowHeight);
+        int width = App.getConfig().windowWidth();
+        int height = App.getConfig().windowHeight();
 
-        if (preferredWidth != null && preferredHeight != null) {
-            int width = Integer.valueOf(preferredWidth);
-            int height = Integer.valueOf(preferredHeight);
-
+        if (width > 0 && height > 0) {
             if (width >= MINIMAL_WINDOW_WIDTH_IN_PX && height >= MINIMAL_WINDOW_HEIGHT_IN_PX) {
                 setSize(width, height);
                 revalidate();
@@ -289,8 +283,9 @@ public class MainWindow extends javax.swing.JFrame {
         int xPosition = evt.getComponent().getX();
         int yPosition = evt.getComponent().getY();
 
-        App.getConfig().setProperty(ClientConfigKey.windowPositionX, "" + xPosition);
-        App.getConfig().setProperty(ClientConfigKey.windowPositionY, "" + yPosition);
+        App.getConfig().setProperty("windowPositionX", "" + xPosition);
+        App.getConfig().setProperty("windowPositionY", "" + yPosition);
+        App.storeConfig();
     }//GEN-LAST:event_formComponentMoved
 
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
@@ -314,8 +309,9 @@ public class MainWindow extends javax.swing.JFrame {
         int width = evt.getComponent().getWidth();
         int height = evt.getComponent().getHeight();
 
-        App.getConfig().setProperty(ClientConfigKey.windowWidth, "" + width);
-        App.getConfig().setProperty(ClientConfigKey.windowHeight, "" + height);
+        App.getConfig().setProperty("windowWidth", "" + width);
+        App.getConfig().setProperty("windowHeight", "" + height);
+        App.storeConfig();
     }//GEN-LAST:event_formComponentResized
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
