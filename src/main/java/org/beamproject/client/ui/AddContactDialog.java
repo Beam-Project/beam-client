@@ -22,10 +22,6 @@ import org.beamproject.client.App;
 import org.beamproject.common.Contact;
 import org.beamproject.common.network.UrlAssembler;
 
-/**
- *
- * @author René Bernhardsgrütter <rene.bernhardsgruetter@posteo.ch>
- */
 public class AddContactDialog extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
