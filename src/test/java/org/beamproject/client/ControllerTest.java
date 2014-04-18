@@ -82,7 +82,6 @@ public class ControllerTest {
     @Test
     public void testSetUsername() {
         String username = "Timmeeee";
-        App.getConfig().setProperty("username", username);
         mainWindow.setUsername(username);
         expectLastCall();
         writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
@@ -90,6 +89,8 @@ public class ControllerTest {
         setMocksInReplayMode();
 
         controller.setUsername(username);
+        
+        assertEquals(username, App.getConfig().username());
     }
 
     @Test

@@ -48,7 +48,7 @@ public class Controller {
     CryptoPacker cryptoPacker;
 
     public void setUsername(String name) {
-        App.getConfig().setProperty("participantName", name);
+        App.getConfig().setProperty("username", name);
         App.getMainWindow().setUsername(name);
         App.storeConfig();
     }
