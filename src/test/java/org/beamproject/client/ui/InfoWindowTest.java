@@ -52,7 +52,7 @@ public class InfoWindowTest {
     public void testConstructorOnLoadingUsername() {
         App.getConfig().setProperty("username", USERNAME);
         window = new InfoWindow();
-        assertEquals(USERNAME, window.usernameTextField.getText());
+        assertEquals(USERNAME, window.usernameLabel.getText());
     }
 
     @Test
