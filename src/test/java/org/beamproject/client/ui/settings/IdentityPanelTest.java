@@ -28,6 +28,7 @@ import org.beamproject.client.Model;
 import org.beamproject.client.ModelTest;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
+import org.beamproject.common.util.Base58;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -78,6 +79,22 @@ public class IdentityPanelTest {
     }
 
     @Test
+    public void testUsernameTextFieldPropertyChangeOnValueChange() {
+        PropertyChangeListener listener = panel.usernameTextField.getPropertyChangeListeners()[2];
+        String changedUsername = "Mrs Garrison";
+        controller.setUsername(changedUsername);
+        expectLastCall();
+        replay(controller);
+
+        listener.propertyChange(null);
+        panel.usernameTextField.setText(USERNAME);
+        listener.propertyChange(null);
+        panel.usernameTextField.setText(changedUsername);
+        listener.propertyChange(null);
+
+        verify(controller);
+    }
+    @Test
     public void testUsernameTextFieldPropertyChange() {
         PropertyChangeListener listener = panel.usernameTextField.getPropertyChangeListeners()[2];
         String validUsername1 = "Mr Garrison";
@@ -105,6 +122,24 @@ public class IdentityPanelTest {
 
         verify(controller);
     }
+    
+    
+    @Test
+    public void testServerUrlTextFieldPropertyChangeOnValueChange() {
+        PropertyChangeListener listener = panel.serverUrlTextField.getPropertyChangeListeners()[2];
+        String url = "http://inchtat.org/myserver/is/very/cool";
+        controller.setServerUrl(url);
+        expectLastCall();
+        replay(controller);
+
+        listener.propertyChange(null);
+        panel.serverUrlTextField.setText(SERVER_URL);
+        listener.propertyChange(null);
+        panel.serverUrlTextField.setText(url);
+        listener.propertyChange(null);
+
+        verify(controller);
+    }
 
     @Test
     public void testServerUrlTextFieldPropertyChange() {
@@ -120,19 +155,34 @@ public class IdentityPanelTest {
 
         panel.serverUrlTextField.setText("   ");
         listener.propertyChange(null);
-
         panel.serverUrlTextField.setText("");
         listener.propertyChange(null);
-
         panel.serverUrlTextField.setText(validUrl1);
         listener.propertyChange(null);
-
         panel.serverUrlTextField.setText("    " + validUrl2 + "     ");
         listener.propertyChange(null);
 
         verify(controller);
     }
 
+    @Test
+    public void testServerPublicKeyTextFieldPropertyChangeOnValueChange() {
+        PropertyChangeListener listener = panel.serverPublicKeyTextField.getPropertyChangeListeners()[2];
+        String oldPublicKey = model.getServer().getPublicKeyAsBase58();
+        String newPublicKey = Participant.generate().getPublicKeyAsBase58();
+        Participant newServer = new Participant(EccKeyPairGenerator.fromPublicKey(Base58.decode(newPublicKey)));
+        controller.setServer(eq(newServer));
+        expectLastCall();
+        replay(controller);
+
+        listener.propertyChange(null);
+        panel.serverPublicKeyTextField.setText(oldPublicKey);
+        listener.propertyChange(null);
+        panel.serverPublicKeyTextField.setText(newPublicKey);
+        listener.propertyChange(null);
+
+        verify(controller);
+    }
     @Test
     public void testServerPublicKeyTextFieldPropertyChange() {
         PropertyChangeListener listener = panel.serverPublicKeyTextField.getPropertyChangeListeners()[2];
@@ -149,13 +199,10 @@ public class IdentityPanelTest {
 
         panel.serverPublicKeyTextField.setText("   ");
         listener.propertyChange(null);
-
         panel.serverPublicKeyTextField.setText("");
         listener.propertyChange(null);
-
         panel.serverPublicKeyTextField.setText(server1.getPublicKeyAsBase58());
         listener.propertyChange(null);
-
         panel.serverPublicKeyTextField.setText("    " + server2.getPublicKeyAsBase58() + "     ");
         listener.propertyChange(null);
 

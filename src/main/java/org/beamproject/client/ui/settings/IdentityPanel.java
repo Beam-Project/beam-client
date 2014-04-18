@@ -167,6 +167,10 @@ public class IdentityPanel extends javax.swing.JPanel {
     private void usernameTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_usernameTextFieldPropertyChange
         String name = usernameTextField.getText().trim();
 
+        if (App.getConfig().username().equals(name)) {
+            return;
+        }
+
         if (Validators.isUsernameValid(name)) {
             App.getController().setUsername(name);
         }
@@ -175,6 +179,10 @@ public class IdentityPanel extends javax.swing.JPanel {
     private void serverUrlTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverUrlTextFieldPropertyChange
         String serverUrl = serverUrlTextField.getText().trim();
 
+        if (App.getConfig().serverUrl().equals(serverUrl)) {
+            return;
+        }
+        
         if (Validators.isServerHttpUrlValid(serverUrl)) {
             App.getController().setServerUrl(serverUrl);
         }
@@ -182,6 +190,10 @@ public class IdentityPanel extends javax.swing.JPanel {
 
     private void serverPublicKeyTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverPublicKeyTextFieldPropertyChange
         String serverPublicKey = serverPublicKeyTextField.getText().trim();
+
+        if (App.getModel().getServer().getPublicKeyAsBase58().equals(serverPublicKey)) {
+            return;
+        }
 
         if (Validators.isServerPublicKeyValid(serverPublicKey)) {
             byte[] publicKeyAsBytes = Base58.decode(serverPublicKey);
