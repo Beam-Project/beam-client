@@ -51,6 +51,7 @@ public interface Config extends ConfigBase {
     
     String encryptedServerPublicKey();
     
+    @DefaultValue("")
     String serverUrl();
 
     @DefaultValue("-1")
