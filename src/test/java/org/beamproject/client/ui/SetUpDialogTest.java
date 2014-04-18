@@ -59,15 +59,14 @@ public class SetUpDialogTest {
     }
 
     private void expectInvalidUsername() {
-        dialog.isUsernameValid();
+        dialog.letsBeamButton.doClick();
         assertEquals(App.ERROR_BACKGROUND, dialog.usernameTextField.getBackground());
-
     }
 
     @Test
     public void testVerifyUsernameOnValidUser() {
         dialog.usernameTextField.setText(USERNAME);
-        dialog.isUsernameValid();
+        dialog.letsBeamButton.doClick();
     }
 
     @Test
@@ -89,14 +88,14 @@ public class SetUpDialogTest {
     }
 
     private void expectInvalidServerUrl() {
-        dialog.isServerUrlValid();
+        dialog.letsBeamButton.doClick();
         assertEquals(App.ERROR_BACKGROUND, dialog.serverUrlTextField.getBackground());
     }
 
     @Test
     public void testVerifyServerUrlOnValidUrl() {
         dialog.serverUrlTextField.setText(SERVER_URL);
-        dialog.isServerUrlValid();
+        dialog.letsBeamButton.doClick();
     }
 
     @Test

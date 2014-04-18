@@ -18,10 +18,6 @@
  */
 package org.beamproject.client.ui;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import org.beamproject.client.App;
 
 /**
@@ -31,8 +27,8 @@ import org.beamproject.client.App;
 public class SetUpDialog extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
-    private String username;
-    private String serverUrl;
+    private boolean isUsernameDone;
+    private boolean isServerUrlDone;
 
     public SetUpDialog() {
         initComponents();
@@ -130,58 +126,48 @@ public class SetUpDialog extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void letsBeamButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_letsBeamButtonActionPerformed
-        boolean nameDone = false;
-        boolean urlDone = false;
+        validateAndSaveUsername();
+        validateAndSaveServerUrl();
 
-        if (isUsernameValid()) {
-            App.getController().setUsername(username);
-            nameDone = true;
-        }
-
-        if (skipForNowCheckBox.isSelected()) {
-            urlDone = true;
-        } else if (isServerUrlValid()) {
-            App.getController().setServerUrl(serverUrl);
-            urlDone = true;
-        }
-
-        if (nameDone && urlDone) {
+        if (isUsernameDone && isServerUrlDone) {
             dispose();
             App.getMainWindow().requestFocus();
         }
     }//GEN-LAST:event_letsBeamButtonActionPerformed
+
+    private void validateAndSaveUsername() {
+        String username = usernameTextField.getText().trim();
+
+        if (Validators.isUsernameValid(username)) {
+            Components.setDefalutBackground(usernameTextField);
+            App.getController().setUsername(username);
+            isUsernameDone = true;
+        } else {
+            Components.setErrorBackground(usernameTextField);
+            isUsernameDone = false;
+        }
+    }
+
+    private void validateAndSaveServerUrl() {
+        String serverUrl = serverUrlTextField.getText().trim();
+
+        if (skipForNowCheckBox.isSelected()) {
+            isServerUrlDone = true;
+        } else if (Validators.isServerHttpUrlValid(serverUrl)) {
+            Components.setDefalutBackground(serverUrlTextField);
+            App.getController().setServerUrl(serverUrl);
+            isServerUrlDone = true;
+        } else {
+            Components.setErrorBackground(serverUrlTextField);
+            isServerUrlDone = false;
+        }
+    }
 
     private void skipForNowCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_skipForNowCheckBoxItemStateChanged
         serverUrlTextField.setEditable(!skipForNowCheckBox.isSelected());
         Components.setDefalutBackground(serverUrlTextField);
         serverUrlTextField.setText("");
     }//GEN-LAST:event_skipForNowCheckBoxItemStateChanged
-
-    boolean isUsernameValid() {
-        username = usernameTextField.getText().trim();
-
-        if (username.isEmpty()) {
-            Components.setErrorBackground(usernameTextField);
-            return false;
-        } else {
-            Components.setDefalutBackground(usernameTextField);
-            return true;
-        }
-    }
-
-    boolean isServerUrlValid() {
-        try {
-            URL validUrl = new URL(serverUrlTextField.getText());
-            URI validUri = validUrl.toURI(); // Needed to check if the URI is valid.
-
-            Components.setDefalutBackground(serverUrlTextField);
-            serverUrl = validUrl.toString();
-            return true;
-        } catch (MalformedURLException | URISyntaxException ex) {
-            Components.setErrorBackground(serverUrlTextField);
-            return false;
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton letsBeamButton;

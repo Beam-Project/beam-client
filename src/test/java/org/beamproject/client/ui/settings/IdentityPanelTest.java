@@ -78,16 +78,6 @@ public class IdentityPanelTest {
     }
 
     @Test
-    public void testIsUsernameValid() {
-        assertFalse(IdentityPanel.isUsernameValid(null));
-        assertFalse(IdentityPanel.isUsernameValid(""));
-        assertTrue(IdentityPanel.isUsernameValid("a"));
-        assertTrue(IdentityPanel.isUsernameValid("a sdlfkj sdlfja d"));
-        assertFalse(IdentityPanel.isUsernameValid(" a;klf spfa9difasd;flk23lkjsdf "));
-        assertTrue(IdentityPanel.isUsernameValid("@sldkfj!#Ralskgjsal'"));
-    }
-
-    @Test
     public void testUsernameTextFieldPropertyChange() {
         PropertyChangeListener listener = panel.usernameTextField.getPropertyChangeListeners()[2];
         String validUsername1 = "Mr Garrison";
@@ -117,16 +107,6 @@ public class IdentityPanelTest {
     }
 
     @Test
-    public void testIsServerUrlValid() {
-        assertFalse(IdentityPanel.isServerUrlValid(null));
-        assertFalse(IdentityPanel.isServerUrlValid(""));
-        assertFalse(IdentityPanel.isServerUrlValid("z "));
-        assertTrue(IdentityPanel.isServerUrlValid("http://org"));
-        assertTrue(IdentityPanel.isServerUrlValid(SERVER_URL));
-        assertTrue(IdentityPanel.isServerUrlValid("    \t   " + SERVER_URL + "    \t   "));
-    }
-
-    @Test
     public void testServerUrlTextFieldPropertyChange() {
         PropertyChangeListener listener = panel.serverUrlTextField.getPropertyChangeListeners()[2];
         String validUrl1 = "http://inchtat.org/myserver/is/very/cool";
@@ -151,25 +131,6 @@ public class IdentityPanelTest {
         listener.propertyChange(null);
 
         verify(controller);
-    }
-
-    @Test
-    public void testIsServerPublicKeyValid() {
-        Participant server = Participant.generate();
-        String validPublicKey = server.getPublicKeyAsBase58();
-        String invalidPublicKey1 = validPublicKey.replace('a', 'b');
-        String invalidPublicKey2 = validPublicKey.replace('a', ' ');
-        String invalidPublicKey3 = validPublicKey + "hello";
-        String invalidPublicKey4 = "beam:" + validPublicKey;
-
-        assertFalse(IdentityPanel.isServerPublicKeyValid(null));
-        assertFalse(IdentityPanel.isServerPublicKeyValid(""));
-        assertFalse(IdentityPanel.isServerPublicKeyValid("z "));
-        assertFalse(IdentityPanel.isServerPublicKeyValid(invalidPublicKey1));
-        assertFalse(IdentityPanel.isServerPublicKeyValid(invalidPublicKey2));
-        assertFalse(IdentityPanel.isServerPublicKeyValid(invalidPublicKey3));
-        assertFalse(IdentityPanel.isServerPublicKeyValid(invalidPublicKey4));
-        assertTrue(IdentityPanel.isServerPublicKeyValid(validPublicKey));
     }
 
     @Test

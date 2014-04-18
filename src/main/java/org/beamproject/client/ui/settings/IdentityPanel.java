@@ -18,11 +18,8 @@
  */
 package org.beamproject.client.ui.settings;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import org.beamproject.client.App;
+import org.beamproject.client.ui.Validators;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.util.Base58;
@@ -170,7 +167,7 @@ public class IdentityPanel extends javax.swing.JPanel {
     private void usernameTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_usernameTextFieldPropertyChange
         String name = usernameTextField.getText().trim();
 
-        if (isUsernameValid(name)) {
+        if (Validators.isUsernameValid(name)) {
             App.getController().setUsername(name);
         }
     }//GEN-LAST:event_usernameTextFieldPropertyChange
@@ -178,7 +175,7 @@ public class IdentityPanel extends javax.swing.JPanel {
     private void serverUrlTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverUrlTextFieldPropertyChange
         String serverUrl = serverUrlTextField.getText().trim();
 
-        if (isServerUrlValid(serverUrl)) {
+        if (Validators.isServerHttpUrlValid(serverUrl)) {
             App.getController().setServerUrl(serverUrl);
         }
     }//GEN-LAST:event_serverUrlTextFieldPropertyChange
@@ -186,42 +183,13 @@ public class IdentityPanel extends javax.swing.JPanel {
     private void serverPublicKeyTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverPublicKeyTextFieldPropertyChange
         String serverPublicKey = serverPublicKeyTextField.getText().trim();
 
-        if (isServerPublicKeyValid(serverPublicKey)) {
+        if (Validators.isServerPublicKeyValid(serverPublicKey)) {
             byte[] publicKeyAsBytes = Base58.decode(serverPublicKey);
             Participant server = new Participant(EccKeyPairGenerator.fromPublicKey(publicKeyAsBytes));
             App.getController().setServer(server);
         }
     }//GEN-LAST:event_serverPublicKeyTextFieldPropertyChange
 
-    static boolean isUsernameValid(String username) {
-        if (username == null) {
-            return false;
-        }
-
-        String trimmedName = username.trim();
-        return !trimmedName.isEmpty() && trimmedName.equals(username);
-    }
-
-    static boolean isServerUrlValid(String serverUrl) {
-        try {
-            URL validUrl = new URL(serverUrl.trim());
-            URI validUri = validUrl.toURI();
-            return true;
-        } catch (MalformedURLException | URISyntaxException | NullPointerException ex) {
-            return false;
-        }
-    }
-
-    static boolean isServerPublicKeyValid(String serverPublicKey) {
-        try {
-            serverPublicKey = serverPublicKey.trim();
-            byte[] publicKeyBytes = Base58.decode(serverPublicKey);
-            Participant server = new Participant(EccKeyPairGenerator.fromPublicKey(publicKeyBytes));
-            return server.getPublicKey().getEncoded() != null;
-        } catch (IllegalStateException | IllegalArgumentException | NullPointerException ex) {
-            return false;
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel keyMaterialLabel;
