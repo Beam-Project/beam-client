@@ -213,7 +213,7 @@ public class ControllerTest {
 
     @Test
     public void testShowInfoWindow() {
-        expect(model.getUserUrl()).andReturn("url");
+        expect(model.getUserUrl()).andReturn("url").times(2);
         setMocksInReplayMode();
         assertNull(controller.infoWindow);
         controller.showInfoWindow();
@@ -222,7 +222,7 @@ public class ControllerTest {
 
     @Test
     public void testShowInfoWindowOnReusingExistingWindow() {
-        expect(model.getUserUrl()).andReturn("url");
+        expect(model.getUserUrl()).andReturn("url").times(2);
         setMocksInReplayMode();
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
@@ -235,7 +235,7 @@ public class ControllerTest {
 
     @Test
     public void testCloseInfoWindow() {
-        expect(model.getUserUrl()).andReturn("url");
+        expect(model.getUserUrl()).andReturn("url").times(2);
         setMocksInReplayMode();
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
