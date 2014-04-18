@@ -28,7 +28,6 @@ import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.client.ui.settings.SettingsWindowTest;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Participant;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.util.ConfigWriter;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -108,7 +107,7 @@ public class ControllerTest {
 
     @Test
     public void testSetServer() {
-        Participant server = new Participant(EccKeyPairGenerator.generate());
+        Participant server = Participant.generate();
         writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
         expectLastCall();
         model.setServer(server);
@@ -205,8 +204,8 @@ public class ControllerTest {
     @Ignore // Only wirks if the server is running
     @Test
     public void testSendMessage() {
-        Participant server = new Participant(EccKeyPairGenerator.generate());
-        Participant user = new Participant(EccKeyPairGenerator.generate());
+        Participant server = Participant.generate();
+        Participant user = Participant.generate();
         Contact messageContact = new Contact(server, user, "john");
         controller.sendMessage(messageContact, "hello");
     }

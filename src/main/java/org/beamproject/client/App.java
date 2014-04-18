@@ -27,7 +27,6 @@ import org.beamproject.client.ui.Frames;
 import org.beamproject.client.ui.MainWindow;
 import org.beamproject.client.ui.SetUpDialog;
 import org.beamproject.common.Participant;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.util.ConfigWriter;
@@ -108,7 +107,7 @@ public class App {
     }
 
     private static void generateUser() {
-        Participant user = new Participant(EccKeyPairGenerator.generate());
+        Participant user = Participant.generate();
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), user.getKeyPair());
         config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());

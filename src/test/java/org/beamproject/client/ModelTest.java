@@ -69,7 +69,7 @@ public class ModelTest {
 
     @Test
     public void testGetUserWhenExistingInConfig() {
-        Participant user = new Participant(EccKeyPairGenerator.generate());
+        Participant user = Participant.generate();
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(App.getConfig().keyPairPassword(), user.getKeyPair());
         App.getConfig().setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         App.getConfig().setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
@@ -102,7 +102,7 @@ public class ModelTest {
 
     @Test
     public void testGetServerWhenExistingInConfig() {
-        Participant server = new Participant(EccKeyPairGenerator.generate());
+        Participant server = Participant.generate();
         Participant serverWithPublicKey = new Participant(EccKeyPairGenerator.fromPublicKey(server.getPublicKeyAsBytes()));
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(App.getConfig().keyPairPassword(), serverWithPublicKey.getKeyPair());
         App.getConfig().setProperty("serverSalt", encryptedKeyPair.getSalt());

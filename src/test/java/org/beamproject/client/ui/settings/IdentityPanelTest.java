@@ -48,8 +48,8 @@ public class IdentityPanelTest {
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
         model = new Model();
-        model.setUser(new Participant(EccKeyPairGenerator.generate()));
-        model.setServer(new Participant(EccKeyPairGenerator.generate()));
+        model.setUser(Participant.generate());
+        model.setServer(Participant.generate());
         AppTest.setAppModel(model);
 
         panel = new IdentityPanel();
@@ -155,7 +155,7 @@ public class IdentityPanelTest {
 
     @Test
     public void testIsServerPublicKeyValid() {
-        Participant server = new Participant(EccKeyPairGenerator.generate());
+        Participant server = Participant.generate();
         String validPublicKey = server.getPublicKeyAsBase58();
         String invalidPublicKey1 = validPublicKey.replace('a', 'b');
         String invalidPublicKey2 = validPublicKey.replace('a', ' ');
@@ -175,8 +175,8 @@ public class IdentityPanelTest {
     @Test
     public void testServerPublicKeyTextFieldPropertyChange() {
         PropertyChangeListener listener = panel.serverPublicKeyTextField.getPropertyChangeListeners()[2];
-        Participant server1Full = new Participant(EccKeyPairGenerator.generate());
-        Participant server2Full = new Participant(EccKeyPairGenerator.generate());
+        Participant server1Full = Participant.generate();
+        Participant server2Full = Participant.generate();
         Participant server1 = new Participant(EccKeyPairGenerator.fromPublicKey(server1Full.getPublicKeyAsBytes()));
         Participant server2 = new Participant(EccKeyPairGenerator.fromPublicKey(server2Full.getPublicKeyAsBytes()));
 

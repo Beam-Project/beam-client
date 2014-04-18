@@ -25,7 +25,6 @@ import org.beamproject.client.AppTest;
 import org.beamproject.client.Controller;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Participant;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.network.UrlAssembler;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -91,7 +90,7 @@ public class AddContactDialogTest {
 
     @Test
     public void testAddButtonOnTrimmingWithCorrectUrl() {
-        Participant user = new Participant(EccKeyPairGenerator.generate());
+        Participant user = Participant.generate();
         String url = UrlAssembler.toUrlByServerAndUser(user, user, "myname");
 
         controller.addContact(anyObject(Contact.class));
@@ -109,7 +108,7 @@ public class AddContactDialogTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAddButton() {
-        Participant user = new Participant(EccKeyPairGenerator.generate());
+        Participant user = Participant.generate();
         controller.addContact(anyObject(Contact.class));
         expectLastCall().andAnswer(new IAnswer() {
             @Override
