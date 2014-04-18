@@ -18,8 +18,11 @@
  */
 package org.beamproject.client.ui;
 
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import org.beamproject.client.App;
 import org.beamproject.client.util.ClipboardAccess;
+import org.beamproject.common.util.QrCode;
 
 /**
  * This window shows information about the user.
@@ -27,20 +30,35 @@ import org.beamproject.client.util.ClipboardAccess;
 public class InfoWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
+    static final int QR_CODE_DIMENSION_IN_PX = 250;
 
     public InfoWindow() {
         initComponents();
         setLocationRelativeTo(null);
         loadUsername();
-        loadUserUrl();
+        loadUserAddress();
+        loadQrCode();
     }
 
     private void loadUsername() {
         usernameLabel.setText(App.getConfig().username());
     }
 
-    private void loadUserUrl() {
+    private void loadUserAddress() {
         addressLabel.setText(App.getModel().getUserUrl());
+    }
+
+    private void loadQrCode() {
+        String userUrl = App.getModel().getUserUrl();
+
+        if (userUrl.isEmpty()) {
+            qrCodePanel.setVisible(false);
+            pack();
+        } else {
+            qrCodeLabel.setText("");
+            BufferedImage qrCode = QrCode.encode(userUrl, QR_CODE_DIMENSION_IN_PX);
+            qrCodeLabel.setIcon(new ImageIcon(qrCode));
+        }
     }
 
     /**
@@ -65,6 +83,8 @@ public class InfoWindow extends javax.swing.JFrame {
         receivedMessagesValueLabel = new javax.swing.JLabel();
         aboutButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
+        qrCodePanel = new javax.swing.JPanel();
+        qrCodeLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Info");
@@ -114,6 +134,14 @@ public class InfoWindow extends javax.swing.JFrame {
             }
         });
 
+        qrCodeLabel.setFont(qrCodeLabel.getFont().deriveFont((qrCodeLabel.getFont().getStyle() | java.awt.Font.ITALIC), qrCodeLabel.getFont().getSize()-1));
+        qrCodeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        qrCodeLabel.setText("QR code not available");
+        qrCodeLabel.setMaximumSize(new java.awt.Dimension(250, 250));
+        qrCodeLabel.setMinimumSize(new java.awt.Dimension(250, 250));
+        qrCodeLabel.setPreferredSize(new java.awt.Dimension(250, 250));
+        qrCodePanel.add(qrCodeLabel);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -121,16 +149,24 @@ public class InfoWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(qrCodePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
+                        .addComponent(addressTitleLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                        .addComponent(copyUrlButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(aboutButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(closeButton))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(addressTitleLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                                .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(27, 27, 27)
-                                .addComponent(copyUrlButton))
+                            .addComponent(usernameLabel)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(sentMessagesLabel)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -146,18 +182,9 @@ public class InfoWindow extends javax.swing.JFrame {
                                                     .addComponent(receivedMessagesValueLabel))
                                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(sentMessagesValueLabel))))))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(usernameLabel)
+                                                    .addComponent(sentMessagesValueLabel)))))))
                             .addComponent(statisticsLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(aboutButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeButton)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -170,6 +197,8 @@ public class InfoWindow extends javax.swing.JFrame {
                     .addComponent(addressTitleLabel)
                     .addComponent(copyUrlButton)
                     .addComponent(addressLabel))
+                .addGap(18, 18, 18)
+                .addComponent(qrCodePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(statisticsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -215,6 +244,8 @@ public class InfoWindow extends javax.swing.JFrame {
     private javax.swing.JLabel addressTitleLabel;
     javax.swing.JButton closeButton;
     private javax.swing.JButton copyUrlButton;
+    javax.swing.JLabel qrCodeLabel;
+    javax.swing.JPanel qrCodePanel;
     private javax.swing.JLabel receivedMessagesLabel;
     private javax.swing.JLabel receivedMessagesValueLabel;
     private javax.swing.JLabel sentMessagesLabel;
