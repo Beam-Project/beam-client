@@ -94,6 +94,7 @@ public class IdentityPanelTest {
 
         verify(controller);
     }
+
     @Test
     public void testUsernameTextFieldPropertyChange() {
         PropertyChangeListener listener = panel.usernameTextField.getPropertyChangeListeners()[2];
@@ -122,8 +123,7 @@ public class IdentityPanelTest {
 
         verify(controller);
     }
-    
-    
+
     @Test
     public void testServerUrlTextFieldPropertyChangeOnValueChange() {
         PropertyChangeListener listener = panel.serverUrlTextField.getPropertyChangeListeners()[2];
@@ -183,6 +183,19 @@ public class IdentityPanelTest {
 
         verify(controller);
     }
+
+    @Test
+    public void testServerPublicKeyTextFieldPropertyChangeOnMissingServer() {
+        PropertyChangeListener listener = panel.serverPublicKeyTextField.getPropertyChangeListeners()[2];
+        ModelTest.setServer(null, model);
+        replay(controller);
+
+        panel.serverPublicKeyTextField.setText("");
+        listener.propertyChange(null);
+
+        verify(controller);
+    }
+
     @Test
     public void testServerPublicKeyTextFieldPropertyChange() {
         PropertyChangeListener listener = panel.serverPublicKeyTextField.getPropertyChangeListeners()[2];
