@@ -40,7 +40,7 @@ public class InfoWindow extends javax.swing.JFrame {
     }
 
     private void loadUserUrl() {
-        urlTextField.setText(App.getModel().getUserUrl());
+        addressLabel.setText(App.getModel().getUserUrl());
     }
 
     /**
@@ -53,8 +53,8 @@ public class InfoWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         usernameLabel = new javax.swing.JLabel();
-        urlLabel = new javax.swing.JLabel();
-        urlTextField = new javax.swing.JTextField();
+        addressTitleLabel = new javax.swing.JLabel();
+        addressLabel = new javax.swing.JLabel();
         copyUrlButton = new javax.swing.JButton();
         statisticsLabel = new javax.swing.JLabel();
         storedContactsLabel = new javax.swing.JLabel();
@@ -74,9 +74,9 @@ public class InfoWindow extends javax.swing.JFrame {
         usernameLabel.setFont(usernameLabel.getFont().deriveFont(usernameLabel.getFont().getStyle() | java.awt.Font.BOLD));
         usernameLabel.setText("My Identity");
 
-        urlLabel.setText("URL:");
+        addressTitleLabel.setText("Beam address:");
 
-        urlTextField.setEditable(false);
+        addressLabel.setText("n/a");
 
         copyUrlButton.setText("Copy");
         copyUrlButton.addActionListener(new java.awt.event.ActionListener() {
@@ -100,7 +100,7 @@ public class InfoWindow extends javax.swing.JFrame {
 
         receivedMessagesValueLabel.setText("n/a");
 
-        aboutButton.setText("About");
+        aboutButton.setText("About Beam...");
         aboutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 aboutButtonActionPerformed(evt);
@@ -124,31 +124,30 @@ public class InfoWindow extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(urlLabel)
-                                .addGap(23, 23, 23)
-                                .addComponent(urlTextField)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(addressTitleLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                                .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
                                 .addComponent(copyUrlButton))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(sentMessagesLabel)
-                                .addGap(254, 254, 254))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(storedContactsLabel)
-                                        .addGap(31, 31, 31)
-                                        .addComponent(storedContactsValueLabel))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(receivedMessagesLabel)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(12, 12, 12)
-                                                .addComponent(receivedMessagesValueLabel))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(sentMessagesValueLabel)))))
-                                .addGap(0, 210, Short.MAX_VALUE))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sentMessagesLabel)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(storedContactsLabel)
+                                            .addGap(31, 31, 31)
+                                            .addComponent(storedContactsValueLabel))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(receivedMessagesLabel)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGap(12, 12, 12)
+                                                    .addComponent(receivedMessagesValueLabel))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(sentMessagesValueLabel))))))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(usernameLabel)
@@ -168,9 +167,9 @@ public class InfoWindow extends javax.swing.JFrame {
                 .addComponent(usernameLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(urlLabel)
-                    .addComponent(urlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(copyUrlButton))
+                    .addComponent(addressTitleLabel)
+                    .addComponent(copyUrlButton)
+                    .addComponent(addressLabel))
                 .addGap(18, 18, 18)
                 .addComponent(statisticsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -201,7 +200,7 @@ public class InfoWindow extends javax.swing.JFrame {
 
     private void copyUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyUrlButtonActionPerformed
         ClipboardAccess access = new ClipboardAccess();
-        access.copyTextToClipboard(urlTextField.getText());
+        access.copyTextToClipboard(addressLabel.getText());
     }//GEN-LAST:event_copyUrlButtonActionPerformed
 
     private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutButtonActionPerformed
@@ -212,6 +211,8 @@ public class InfoWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
+    javax.swing.JLabel addressLabel;
+    private javax.swing.JLabel addressTitleLabel;
     javax.swing.JButton closeButton;
     private javax.swing.JButton copyUrlButton;
     private javax.swing.JLabel receivedMessagesLabel;
@@ -221,8 +222,6 @@ public class InfoWindow extends javax.swing.JFrame {
     private javax.swing.JLabel statisticsLabel;
     private javax.swing.JLabel storedContactsLabel;
     private javax.swing.JLabel storedContactsValueLabel;
-    private javax.swing.JLabel urlLabel;
-    javax.swing.JTextField urlTextField;
     javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 }

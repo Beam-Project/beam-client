@@ -56,13 +56,13 @@ public class InfoWindowTest {
     }
 
     @Test
-    public void testConstructorOnLoadingUrl() {
+    public void testConstructorOnLoadingAddress() {
         String url = "beam:server.user?name=mrbeam";
         expect(model.getUserUrl()).andReturn(url);
         replay(model);
 
         window = new InfoWindow();
-        assertEquals(url, window.urlTextField.getText());
+        assertEquals(url, window.addressLabel.getText());
 
         verify(model);
     }
