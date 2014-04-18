@@ -42,15 +42,15 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow() {
         initComponents();
-        setParticipantName();
+        setUsername();
         setSize();
         setPosition();
         initalizeContactList();
     }
 
-    void setParticipantName() {
-        String name = App.getConfig().participantName();
-        nameButton.setText(name != null ? name : DEFAULT_USERNAME);
+    void setUsername() {
+        String usernmae = App.getConfig().username();
+        usernameButton.setText(usernmae != null ? usernmae : DEFAULT_USERNAME);
     }
 
     private void setSize() {
@@ -90,12 +90,12 @@ public class MainWindow extends javax.swing.JFrame {
         contactList.setModel(App.getModel().getContactList());
     }
 
-    public void setUsername(String name) {
-        Exceptions.verifyArgumentsNotEmpty(name);
-        name = name.trim();
-        Exceptions.verifyArgumentsNotEmpty(name);
+    public void setUsername(String username) {
+        Exceptions.verifyArgumentsNotEmpty(username);
+        username = username.trim();
+        Exceptions.verifyArgumentsNotEmpty(username);
 
-        nameButton.setText(name);
+        usernameButton.setText(username);
     }
 
     /**
@@ -109,7 +109,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         topPanel = new javax.swing.JPanel();
         avatarButton = new javax.swing.JButton();
-        nameButton = new javax.swing.JButton();
+        usernameButton = new javax.swing.JButton();
         statusButton = new javax.swing.JButton();
         topPanelHorizontalFiller = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         addUserButton = new javax.swing.JButton();
@@ -156,27 +156,27 @@ public class MainWindow extends javax.swing.JFrame {
         });
         topPanel.add(avatarButton);
 
-        nameButton.setFont(nameButton.getFont().deriveFont(nameButton.getFont().getStyle() | java.awt.Font.BOLD, nameButton.getFont().getSize()-1));
-        nameButton.setText("Your Name");
-        nameButton.setContentAreaFilled(false);
-        nameButton.setFocusPainted(false);
-        nameButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        nameButton.setMaximumSize(new java.awt.Dimension(200, 30));
-        nameButton.setMinimumSize(new java.awt.Dimension(50, 30));
-        nameButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                nameButtonMouseExited(evt);
-            }
+        usernameButton.setFont(usernameButton.getFont().deriveFont(usernameButton.getFont().getStyle() | java.awt.Font.BOLD, usernameButton.getFont().getSize()-1));
+        usernameButton.setText("Your Name");
+        usernameButton.setContentAreaFilled(false);
+        usernameButton.setFocusPainted(false);
+        usernameButton.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        usernameButton.setMaximumSize(new java.awt.Dimension(200, 30));
+        usernameButton.setMinimumSize(new java.awt.Dimension(50, 30));
+        usernameButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                nameButtonMouseEntered(evt);
+                usernameButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                usernameButtonMouseExited(evt);
             }
         });
-        nameButton.addActionListener(new java.awt.event.ActionListener() {
+        usernameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameButtonActionPerformed(evt);
+                usernameButtonActionPerformed(evt);
             }
         });
-        topPanel.add(nameButton);
+        topPanel.add(usernameButton);
 
         statusButton.setFont(statusButton.getFont().deriveFont((statusButton.getFont().getStyle() | java.awt.Font.ITALIC), statusButton.getFont().getSize()-1));
         statusButton.setText("Offline");
@@ -313,9 +313,9 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_contactListMouseClicked
 
-    private void nameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameButtonActionPerformed
+    private void usernameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameButtonActionPerformed
         App.getController().showNameInSettingsWindow();
-    }//GEN-LAST:event_nameButtonActionPerformed
+    }//GEN-LAST:event_usernameButtonActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         int width = evt.getComponent().getWidth();
@@ -338,13 +338,13 @@ public class MainWindow extends javax.swing.JFrame {
         avatarButton.setContentAreaFilled(false);
     }//GEN-LAST:event_avatarButtonMouseExited
 
-    private void nameButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameButtonMouseEntered
-        nameButton.setContentAreaFilled(true);
-    }//GEN-LAST:event_nameButtonMouseEntered
+    private void usernameButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameButtonMouseEntered
+        usernameButton.setContentAreaFilled(true);
+    }//GEN-LAST:event_usernameButtonMouseEntered
 
-    private void nameButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameButtonMouseExited
-        nameButton.setContentAreaFilled(false);
-    }//GEN-LAST:event_nameButtonMouseExited
+    private void usernameButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameButtonMouseExited
+        usernameButton.setContentAreaFilled(false);
+    }//GEN-LAST:event_usernameButtonMouseExited
 
     private void statusButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseEntered
         statusButton.setContentAreaFilled(true);
@@ -384,10 +384,10 @@ public class MainWindow extends javax.swing.JFrame {
     javax.swing.JList contactList;
     private javax.swing.JScrollPane contactListScrollPane;
     javax.swing.JButton infoButton;
-    javax.swing.JButton nameButton;
     javax.swing.JButton settingsButton;
     javax.swing.JButton statusButton;
     private javax.swing.JPanel topPanel;
     private javax.swing.Box.Filler topPanelHorizontalFiller;
+    javax.swing.JButton usernameButton;
     // End of variables declaration//GEN-END:variables
 }

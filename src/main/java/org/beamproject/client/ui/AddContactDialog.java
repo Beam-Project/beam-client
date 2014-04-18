@@ -143,7 +143,7 @@ public class AddContactDialog extends javax.swing.JFrame {
 
     void verifyUrlTextArea() {
         try {
-            contact = UrlAssembler.toContactByServerAndClientUrl(urlTextArea.getText());
+            contact = UrlAssembler.toContactByServerAndUserUrl(urlTextArea.getText());
             Components.setDefalutBackground(urlTextArea);
             isErrorInUrlTextArea = false;
         } catch (IllegalArgumentException ex) {

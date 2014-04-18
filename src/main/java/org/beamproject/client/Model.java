@@ -30,42 +30,42 @@ import org.beamproject.common.util.Exceptions;
 
 public class Model {
 
-    Participant participant;
+    Participant user;
     Participant server;
     Storage<ContactList> contactListStorage;
     ContactList contactList = new ContactList();
 
     /**
-     * Sets the given {@link Participant} to this {@link Model}.
+     * Sets the given user to this {@link Model}.
      *
-     * @param participant This may not be null.
+     * @param user This may not be null.
      * @throws IllegalArgumentException If the argument is null.
      */
-    public void setParticipant(Participant participant) {
-        Exceptions.verifyArgumentsNotNull(participant);
+    public void setUser(Participant user) {
+        Exceptions.verifyArgumentsNotNull(user);
 
-        this.participant = participant;
+        this.user = user;
     }
 
-    public Participant getParticipant() {
-        if (participant == null
+    public Participant getUser() {
+        if (user == null
                 && App.getConfig().encryptedPublicKey() != null
                 && App.getConfig().encryptedPrivateKey() != null) {
             EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedPublicKey(), config.encryptedPrivateKey(), config.keyPairSalt());
             KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
-            setParticipant(new Participant(keyPair));
+            setUser(new Participant(keyPair));
         }
 
-        return participant;
+        return user;
     }
 
-    public String getParticipantUrl() {
-        if (getParticipant() == null || getServer() == null) {
+    public String getUserUrl() {
+        if (getUser() == null || getServer() == null) {
             return "";
         }
 
-        String name = App.getConfig().participantName();
-        return UrlAssembler.toUrlByServerAndClient(getServer(), getParticipant(), name);
+        String name = App.getConfig().username();
+        return UrlAssembler.toUrlByServerAndUser(getServer(), getUser(), name);
     }
 
     /**

@@ -81,16 +81,16 @@ public class MainWindowTest {
 
     @Test
     public void testSetProfileSpecificValuesOnExistingSetting() {
-        assertEquals(App.getConfig().participantName(), window.nameButton.getText());
+        assertEquals(App.getConfig().username(), window.usernameButton.getText());
     }
 
     @Test
     public void testSetProfileSpecificValuesOnInexistingSetting() {
-        App.getConfig().setProperty("participantName", null);
+        App.getConfig().setProperty("username", null);
 
-        window.nameButton.setText("a name");
-        window.setParticipantName();
-        assertEquals(window.DEFAULT_USERNAME, window.nameButton.getText());
+        window.usernameButton.setText("a name");
+        window.setUsername();
+        assertEquals(window.DEFAULT_USERNAME, window.usernameButton.getText());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -112,7 +112,7 @@ public class MainWindowTest {
     public void testSetUsername() {
         String name = "Timmee";
         window.setUsername(name);
-        assertEquals(name, window.nameButton.getText());
+        assertEquals(name, window.usernameButton.getText());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class MainWindowTest {
         expectLastCall();
         replay(controller);
 
-        window.nameButton.doClick();
+        window.usernameButton.doClick();
 
         verify(controller);
     }
@@ -159,8 +159,8 @@ public class MainWindowTest {
      *
      * @return The button.
      */
-    public static JButton getNameButton() {
-        return App.getMainWindow().nameButton;
+    public static JButton getUsernameButton() {
+        return App.getMainWindow().usernameButton;
     }
 
 }

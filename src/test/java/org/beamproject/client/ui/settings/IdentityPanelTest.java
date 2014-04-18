@@ -34,7 +34,7 @@ import org.junit.Before;
 
 public class IdentityPanelTest {
 
-    private final String NAME = "Mr/Mrs Garrison";
+    private final String USERNAME = "Mr/Mrs Garrison";
     private final String SERVER_URL = "http://my-server.beamproject.org:1234";
     private IdentityPanel panel;
     private Controller controller;
@@ -43,12 +43,12 @@ public class IdentityPanelTest {
     @Before
     public void setUp() {
         ConfigTest.loadDefaultConfig();
-        App.getConfig().setProperty("participantName", NAME);
+        App.getConfig().setProperty("username", USERNAME);
         App.getConfig().setProperty("serverUrl", SERVER_URL);
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
         model = new Model();
-        model.setParticipant(new Participant(EccKeyPairGenerator.generate()));
+        model.setUser(new Participant(EccKeyPairGenerator.generate()));
         model.setServer(new Participant(EccKeyPairGenerator.generate()));
         AppTest.setAppModel(model);
 
@@ -57,60 +57,60 @@ public class IdentityPanelTest {
 
     @Test
     public void testLoadingFieldsWithServerAndParticipant() {
-        assertEquals(NAME, panel.nameTextField.getText());
-        assertEquals(model.getParticipant().getPublicKeyAsBase58(), panel.userPublicKeyTextField.getText());
+        assertEquals(USERNAME, panel.usernameTextField.getText());
+        assertEquals(model.getUser().getPublicKeyAsBase58(), panel.userPublicKeyTextField.getText());
         assertEquals(SERVER_URL, panel.serverUrlTextField.getText());
         assertEquals(model.getServer().getPublicKeyAsBase58(), panel.serverPublicKeyTextField.getText());
     }
 
     @Test
     public void testLoadingFieldsWithoutServerAndParticipant() {
-        ModelTest.setParticipant(null, model);
+        ModelTest.setUser(null, model);
         ModelTest.setServer(null, model);
-        App.getConfig().removeProperty("participantName");
+        App.getConfig().removeProperty("username");
         App.getConfig().removeProperty("serverUrl");
         panel = new IdentityPanel();
 
-        assertEquals("", panel.nameTextField.getText());
-        assertEquals("", panel.userPublicKeyTextField.getText());
-        assertEquals("", panel.serverUrlTextField.getText());
-        assertEquals("", panel.serverPublicKeyTextField.getText());
+        assertTrue(panel.usernameTextField.getText().isEmpty());
+        assertTrue(panel.userPublicKeyTextField.getText().isEmpty());
+        assertTrue(panel.serverUrlTextField.getText().isEmpty());
+        assertTrue(panel.serverPublicKeyTextField.getText().isEmpty());
     }
 
     @Test
-    public void testIsNameValid() {
-        assertFalse(IdentityPanel.isNameValid(null));
-        assertFalse(IdentityPanel.isNameValid(""));
-        assertTrue(IdentityPanel.isNameValid("a"));
-        assertTrue(IdentityPanel.isNameValid("a sdlfkj sdlfja d"));
-        assertFalse(IdentityPanel.isNameValid(" a;klf spfa9difasd;flk23lkjsdf "));
-        assertTrue(IdentityPanel.isNameValid("@sldkfj!#Ralskgjsal'"));
+    public void testIsUsernameValid() {
+        assertFalse(IdentityPanel.isUsernameValid(null));
+        assertFalse(IdentityPanel.isUsernameValid(""));
+        assertTrue(IdentityPanel.isUsernameValid("a"));
+        assertTrue(IdentityPanel.isUsernameValid("a sdlfkj sdlfja d"));
+        assertFalse(IdentityPanel.isUsernameValid(" a;klf spfa9difasd;flk23lkjsdf "));
+        assertTrue(IdentityPanel.isUsernameValid("@sldkfj!#Ralskgjsal'"));
     }
 
     @Test
-    public void testNameTextFieldPropertyChange() {
-        PropertyChangeListener listener = panel.nameTextField.getPropertyChangeListeners()[2];
-        String validName1 = "Mr Garrison";
-        String validName2 = "Mrs Garrison";
+    public void testUsernameTextFieldPropertyChange() {
+        PropertyChangeListener listener = panel.usernameTextField.getPropertyChangeListeners()[2];
+        String validUsername1 = "Mr Garrison";
+        String validUsername2 = "Mrs Garrison";
 
-        controller.changeName(validName1);
+        controller.setUsername(validUsername1);
         expectLastCall();
-        controller.changeName(validName2);
+        controller.setUsername(validUsername2);
         expectLastCall();
         replay(controller);
 
-        panel.nameTextField.setText("   ");
+        panel.usernameTextField.setText("   ");
         listener.propertyChange(null);
 
-        panel.nameTextField.setText("");
+        panel.usernameTextField.setText("");
         listener.propertyChange(null);
 
-        String changedName = "Mr Garrison";
-        panel.nameTextField.setText(changedName);
+        String changedUsername = "Mr Garrison";
+        panel.usernameTextField.setText(changedUsername);
         listener.propertyChange(null);
 
-        String changedNameToTrim = "  Mrs Garrison   ";
-        panel.nameTextField.setText(changedNameToTrim);
+        String changedUsernameToTrim = "  Mrs Garrison   ";
+        panel.usernameTextField.setText(changedUsernameToTrim);
         listener.propertyChange(null);
 
         verify(controller);

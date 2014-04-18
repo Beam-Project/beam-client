@@ -31,16 +31,16 @@ public class InfoWindow extends javax.swing.JFrame {
     public InfoWindow() {
         initComponents();
         setLocationRelativeTo(null);
-        loadName();
-        loadUrl();
+        loadUsername();
+        loadUserUrl();
     }
 
-    private void loadName() {
-        nameTextField.setText(App.getConfig().participantName());
+    private void loadUsername() {
+        usernameTextField.setText(App.getConfig().username());
     }
 
-    private void loadUrl() {
-        urlTextField.setText(App.getModel().getParticipantUrl());
+    private void loadUserUrl() {
+        urlTextField.setText(App.getModel().getUserUrl());
     }
 
     /**
@@ -53,9 +53,9 @@ public class InfoWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         myIdentityLabel = new javax.swing.JLabel();
-        nameLabel = new javax.swing.JLabel();
-        nameTextField = new javax.swing.JTextField();
-        copyNameButton = new javax.swing.JButton();
+        usernameLabel = new javax.swing.JLabel();
+        usernameTextField = new javax.swing.JTextField();
+        copyUsernameButton = new javax.swing.JButton();
         urlLabel = new javax.swing.JLabel();
         urlTextField = new javax.swing.JTextField();
         copyUrlButton = new javax.swing.JButton();
@@ -77,14 +77,14 @@ public class InfoWindow extends javax.swing.JFrame {
         myIdentityLabel.setFont(myIdentityLabel.getFont().deriveFont(myIdentityLabel.getFont().getStyle() | java.awt.Font.BOLD));
         myIdentityLabel.setText("My Identity");
 
-        nameLabel.setText("Name:");
+        usernameLabel.setText("Name:");
 
-        nameTextField.setEditable(false);
+        usernameTextField.setEditable(false);
 
-        copyNameButton.setText("Copy");
-        copyNameButton.addActionListener(new java.awt.event.ActionListener() {
+        copyUsernameButton.setText("Copy");
+        copyUsernameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                copyNameButtonActionPerformed(evt);
+                copyUsernameButtonActionPerformed(evt);
             }
         });
 
@@ -140,15 +140,15 @@ public class InfoWindow extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nameLabel)
+                                    .addComponent(usernameLabel)
                                     .addComponent(urlLabel))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(urlTextField)
-                                    .addComponent(nameTextField))
+                                    .addComponent(usernameTextField))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(copyNameButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(copyUsernameButton, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(copyUrlButton, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(sentMessagesLabel)
@@ -188,9 +188,9 @@ public class InfoWindow extends javax.swing.JFrame {
                 .addComponent(myIdentityLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nameLabel)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(copyNameButton))
+                    .addComponent(usernameLabel)
+                    .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(copyUsernameButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(urlLabel)
@@ -224,10 +224,10 @@ public class InfoWindow extends javax.swing.JFrame {
         App.getController().closeInfoWindow();
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void copyNameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyNameButtonActionPerformed
+    private void copyUsernameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyUsernameButtonActionPerformed
         ClipboardAccess access = new ClipboardAccess();
-        access.copyTextToClipboard(nameTextField.getText());
-    }//GEN-LAST:event_copyNameButtonActionPerformed
+        access.copyTextToClipboard(usernameTextField.getText());
+    }//GEN-LAST:event_copyUsernameButtonActionPerformed
 
     private void copyUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyUrlButtonActionPerformed
         ClipboardAccess access = new ClipboardAccess();
@@ -243,11 +243,9 @@ public class InfoWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
     javax.swing.JButton closeButton;
-    private javax.swing.JButton copyNameButton;
     private javax.swing.JButton copyUrlButton;
+    private javax.swing.JButton copyUsernameButton;
     private javax.swing.JLabel myIdentityLabel;
-    private javax.swing.JLabel nameLabel;
-    javax.swing.JTextField nameTextField;
     private javax.swing.JLabel receivedMessagesLabel;
     private javax.swing.JLabel receivedMessagesValueLabel;
     private javax.swing.JLabel sentMessagesLabel;
@@ -257,5 +255,7 @@ public class InfoWindow extends javax.swing.JFrame {
     private javax.swing.JLabel storedContactsValueLabel;
     private javax.swing.JLabel urlLabel;
     javax.swing.JTextField urlTextField;
+    private javax.swing.JLabel usernameLabel;
+    javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
 }

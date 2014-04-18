@@ -33,7 +33,7 @@ import org.junit.Before;
 
 public class SettingsWindowTest {
 
-    private final String NAME = "myName";
+    private final String USERNAME = "myName";
     private final String URL = "http://beamproject.org";
     private SettingsWindow window;
     private MainWindow mainWindow;
@@ -42,7 +42,7 @@ public class SettingsWindowTest {
     @Before
     public void setUp() {
         ConfigTest.loadDefaultConfig();
-        App.getConfig().setProperty("participantName", NAME);
+        App.getConfig().setProperty("username", USERNAME);
         App.getConfig().setProperty("serverUrl", URL);
 
         mainWindow = createMock(MainWindow.class);
@@ -80,7 +80,7 @@ public class SettingsWindowTest {
     public void testMenuListOnSelectionChange() {
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
-        controller.changeName(NAME);
+        controller.setUsername(USERNAME);
         expectLastCall().anyTimes();
         controller.setServerUrl(URL);
         expectLastCall().anyTimes();
@@ -104,12 +104,12 @@ public class SettingsWindowTest {
     }
 
     @Test
-    public void testShowIdentityNameWithFocusedName() {
+    public void testShowIdentityUsernameWithFocusedUsername() {
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
-        controller.changeName(NAME);
+        controller.setUsername(USERNAME);
         expectLastCall().anyTimes();
         controller.setServerUrl(URL);
         expectLastCall().anyTimes();
@@ -117,12 +117,12 @@ public class SettingsWindowTest {
         expectLastCall().anyTimes();
         replay(mainWindow, controller);
 
-        window.openIdentityMenuWithFocusedName();
+        window.openIdentityMenuWithFocusedUsername();
 
         assertTrue(window.contentPanel.getComponent(0) instanceof IdentityPanel);
         IdentityPanel panel = (IdentityPanel) window.contentPanel.getComponent(0);
-        String selectedText = panel.nameTextField.getSelectedText();
-        assertEquals(NAME, selectedText);
+        String selectedText = panel.usernameTextField.getSelectedText();
+        assertEquals(USERNAME, selectedText);
 
         verify(mainWindow, controller);
     }
@@ -131,7 +131,6 @@ public class SettingsWindowTest {
     public void testCloseButtonOnDisposingWindow() {
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
-
         controller.closeSettingsWindow();
         expectLastCall();
         replay(controller);

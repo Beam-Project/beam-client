@@ -19,11 +19,16 @@
 package org.beamproject.client;
 
 import org.aeonbits.owner.ConfigFactory;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class ConfigTest {
 
+    /**
+     * Loads the {@link Config} and puts it into the {@link App} for global
+     * access. It is configured that it never reads from possibly existing local
+     * config files.
+     * <p>
+     * This does not prevent form any possible writings!
+     */
     public static void loadDefaultConfig() {
         ConfigFactory.setProperty("developmentExtension", "INVALID-PATH");
         AppTest.setAppConfig(ConfigFactory.create(Config.class));

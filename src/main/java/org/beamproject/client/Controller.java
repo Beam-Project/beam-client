@@ -47,7 +47,7 @@ public class Controller {
     SettingsWindow settingsWindow;
     CryptoPacker cryptoPacker;
 
-    public void changeName(String name) {
+    public void setUsername(String name) {
         App.getConfig().setProperty("participantName", name);
         App.getMainWindow().setUsername(name);
         App.storeConfig();
@@ -143,7 +143,7 @@ public class Controller {
     }
 
     public void showNameInSettingsWindow() {
-        getSettingsWindow().openIdentityMenuWithFocusedName();
+        getSettingsWindow().openIdentityMenuWithFocusedUsername();
         getSettingsWindow().setVisible(true);
     }
 

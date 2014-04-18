@@ -30,7 +30,7 @@ import org.junit.Before;
 
 public class InfoWindowTest {
 
-    private final String NAME = "infoName";
+    private final String USERNAME = "infoName";
     private InfoWindow window;
     private MainWindow mainWindow;
     private Controller controller;
@@ -49,16 +49,16 @@ public class InfoWindowTest {
     }
 
     @Test
-    public void testConstructorOnLoadingName() {
-        App.getConfig().setProperty("participantName", NAME);
+    public void testConstructorOnLoadingUsername() {
+        App.getConfig().setProperty("username", USERNAME);
         window = new InfoWindow();
-        assertEquals(NAME, window.nameTextField.getText());
+        assertEquals(USERNAME, window.usernameTextField.getText());
     }
 
     @Test
     public void testConstructorOnLoadingUrl() {
         String url = "beam:server.user?name=mrbeam";
-        expect(model.getParticipantUrl()).andReturn(url);
+        expect(model.getUserUrl()).andReturn(url);
         replay(model);
 
         window = new InfoWindow();
@@ -78,5 +78,4 @@ public class InfoWindowTest {
 
         verify(controller);
     }
-
 }

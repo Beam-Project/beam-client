@@ -28,7 +28,7 @@ import org.junit.Before;
 
 public class SetUpDialogTest {
 
-    private final String NAME = "MYUSER";
+    private final String USERNAME = "MYUSER";
     private final String SERVER_URL = "http://beamproject.org/:80/my-server/";
     private SetUpDialogTester dialog;
     private Controller controller;
@@ -41,33 +41,33 @@ public class SetUpDialogTest {
     }
 
     @Test
-    public void testVerifyNameOnNull() {
-        dialog.nameTextField.setText(null);
-        expectInvalidName();
+    public void testVerifyUserameOnNull() {
+        dialog.usernameTextField.setText(null);
+        expectInvalidUsername();
     }
 
     @Test
-    public void testVerifyNameOnEmptyString() {
-        dialog.nameTextField.setText("");
-        expectInvalidName();
+    public void testVerifyUsernameOnEmptyString() {
+        dialog.usernameTextField.setText("");
+        expectInvalidUsername();
     }
 
     @Test
-    public void testVerifyNameOnSpaces() {
-        dialog.nameTextField.setText("   ");
-        expectInvalidName();
+    public void testVerifyUsernameOnSpaces() {
+        dialog.usernameTextField.setText("   ");
+        expectInvalidUsername();
     }
 
-    private void expectInvalidName() {
-        dialog.isNameValid();
-        assertEquals(App.ERROR_BACKGROUND, dialog.nameTextField.getBackground());
+    private void expectInvalidUsername() {
+        dialog.isUsernameValid();
+        assertEquals(App.ERROR_BACKGROUND, dialog.usernameTextField.getBackground());
 
     }
 
     @Test
-    public void testVerifyNameOnValidUser() {
-        dialog.nameTextField.setText(NAME);
-        dialog.isNameValid();
+    public void testVerifyUsernameOnValidUser() {
+        dialog.usernameTextField.setText(USERNAME);
+        dialog.isUsernameValid();
     }
 
     @Test
@@ -113,7 +113,7 @@ public class SetUpDialogTest {
     }
 
     @Test
-    public void testLetsBeamButtonOnInvocatingWithInvalidName() {
+    public void testLetsBeamButtonOnInvocatingWithInvalidUsername() {
         controller.setServerUrl(SERVER_URL);
         expectLastCall();
         replay(controller);
@@ -127,11 +127,11 @@ public class SetUpDialogTest {
 
     @Test
     public void testLetsBeamButtonOnInvocatingWithInvaidUrl() {
-        controller.changeName(NAME);
+        controller.setUsername(USERNAME);
         expectLastCall();
         replay(controller);
 
-        dialog.nameTextField.setText(NAME);
+        dialog.usernameTextField.setText(USERNAME);
         dialog.serverUrlTextField.setText("invalid url");
         dialog.letsBeamButton.doClick();
         assertFalse(dialog.isDisposed);
@@ -145,11 +145,11 @@ public class SetUpDialogTest {
         AppTest.setAppMainWindow(mainWindow);
         mainWindow.requestFocus();
         expectLastCall();
-        controller.changeName(NAME);
+        controller.setUsername(USERNAME);
         expectLastCall();
         replay(controller, mainWindow);
 
-        dialog.nameTextField.setText(NAME);
+        dialog.usernameTextField.setText(USERNAME);
         dialog.serverUrlTextField.setText("invalid url");
         dialog.skipForNowCheckBox.setSelected(true);
         dialog.letsBeamButton.doClick();
@@ -164,14 +164,14 @@ public class SetUpDialogTest {
         AppTest.setAppMainWindow(mainWindow);
         mainWindow.requestFocus();
         expectLastCall();
-        String nameWithSpaces = NAME + "   ";
-        controller.changeName(NAME);
+        String nameWithSpaces = USERNAME + "   ";
+        controller.setUsername(USERNAME);
         expectLastCall().once();
         controller.setServerUrl(SERVER_URL);
         expectLastCall().once();
         replay(controller, mainWindow);
 
-        dialog.nameTextField.setText(nameWithSpaces);
+        dialog.usernameTextField.setText(nameWithSpaces);
         dialog.serverUrlTextField.setText(SERVER_URL);
         dialog.letsBeamButton.doClick();
         assertTrue(dialog.isDisposed);
@@ -181,8 +181,6 @@ public class SetUpDialogTest {
 
     private class SetUpDialogTester extends SetUpDialog {
 
-        public SetUpDialogTester() {
-        }
         private static final long serialVersionUID = 1L;
         private boolean isDisposed = false;
 

@@ -1,14 +1,14 @@
 /*
  * Copyright (C) 2013, 2014 beamproject.org
  *
- * This file is part of beam-client.
+ * This file is part of beam-user.
  *
- * beam-client is free software: you can redistribute it and/or modify
+ * beam-user is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * beam-client is distributed in the hope that it will be useful,
+ * beam-user is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -59,7 +59,6 @@ public class ControllerTest {
         AppTest.setAppConfigWriter(writer);
         AppTest.setAppModel(model);
         AppTest.setAppMainWindow(mainWindow);
-
         contactList = new ContactList();
         controller = new Controller();
 
@@ -82,16 +81,16 @@ public class ControllerTest {
     }
 
     @Test
-    public void testChangeName() {
-        String name = "Timmeeee";
-        App.getConfig().setProperty("participantName", name);
-        mainWindow.setUsername(name);
+    public void testSetUsername() {
+        String username = "Timmeeee";
+        App.getConfig().setProperty("username", username);
+        mainWindow.setUsername(username);
         expectLastCall();
         writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
         expectLastCall();
         setMocksInReplayMode();
 
-        controller.changeName(name);
+        controller.setUsername(username);
     }
 
     @Test
@@ -207,14 +206,14 @@ public class ControllerTest {
     @Test
     public void testSendMessage() {
         Participant server = new Participant(EccKeyPairGenerator.generate());
-        Participant client = new Participant(EccKeyPairGenerator.generate());
-        Contact messageContact = new Contact(server, client, "john");
+        Participant user = new Participant(EccKeyPairGenerator.generate());
+        Contact messageContact = new Contact(server, user, "john");
         controller.sendMessage(messageContact, "hello");
     }
 
     @Test
     public void testShowInfoWindow() {
-        expect(model.getParticipantUrl()).andReturn("url");
+        expect(model.getUserUrl()).andReturn("url");
         setMocksInReplayMode();
         assertNull(controller.infoWindow);
         controller.showInfoWindow();
@@ -223,7 +222,7 @@ public class ControllerTest {
 
     @Test
     public void testShowInfoWindowOnReusingExistingWindow() {
-        expect(model.getParticipantUrl()).andReturn("url");
+        expect(model.getUserUrl()).andReturn("url");
         setMocksInReplayMode();
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
@@ -236,7 +235,7 @@ public class ControllerTest {
 
     @Test
     public void testCloseInfoWindow() {
-        expect(model.getParticipantUrl()).andReturn("url");
+        expect(model.getUserUrl()).andReturn("url");
         setMocksInReplayMode();
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
@@ -277,7 +276,7 @@ public class ControllerTest {
     @Test
     public void testShowIdentityNameInSettingsWindowOnReusingExistingWindow() {
         SettingsWindow settingsWindow = createMock(SettingsWindow.class);
-        settingsWindow.openIdentityMenuWithFocusedName();
+        settingsWindow.openIdentityMenuWithFocusedUsername();
         expectLastCall();
         settingsWindow.setVisible(true);
         expectLastCall();
@@ -298,7 +297,6 @@ public class ControllerTest {
         SettingsWindow window = new SettingsWindow();
         controller.settingsWindow = window;
         controller.settingsWindow.setVisible(true);
-
         controller.closeSettingsWindow();
 
         assertFalse(window.isVisible());

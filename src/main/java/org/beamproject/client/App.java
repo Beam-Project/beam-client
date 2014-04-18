@@ -50,7 +50,7 @@ public class App {
         setNativeLookAndFeel();
         showMainWindow();
         loadControllerAndModel();
-        loadParticipant();
+        loadUser();
         loadContactList();
     }
 
@@ -88,16 +88,16 @@ public class App {
         model = new Model();
     }
 
-    static void loadParticipant() {
+    static void loadUser() {
         if (isFirstStart()) {
             showSetUpDialog();
-            generateParticipant();
+            generateUser();
             storeConfig();
         }
     }
 
     static boolean isFirstStart() {
-        return model.getParticipant() == null;
+        return model.getUser() == null;
     }
 
     private static void showSetUpDialog() {
@@ -107,14 +107,14 @@ public class App {
         dialog.setVisible(true);
     }
 
-    private static void generateParticipant() {
-        Participant participant = new Participant(EccKeyPairGenerator.generate());
-        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), participant.getKeyPair());
+    private static void generateUser() {
+        Participant user = new Participant(EccKeyPairGenerator.generate());
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), user.getKeyPair());
         config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
         config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
 
-        model.setParticipant(participant);
+        model.setUser(user);
     }
 
     static void loadContactList() {

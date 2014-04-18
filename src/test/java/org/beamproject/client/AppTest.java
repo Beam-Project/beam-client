@@ -51,8 +51,8 @@ public class AppTest {
     public void testIsFirstStart() {
         Model model = createMock(Model.class);
         App.model = model;
-        expect(model.getParticipant()).andReturn(null);
-        expect(model.getParticipant()).andReturn(createMock(Participant.class));
+        expect(model.getUser()).andReturn(null);
+        expect(model.getUser()).andReturn(createMock(Participant.class));
         replay(model);
 
         assertTrue(App.isFirstStart());
