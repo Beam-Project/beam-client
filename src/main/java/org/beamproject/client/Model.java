@@ -26,6 +26,7 @@ import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.network.UrlAssembler;
+import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.Exceptions;
 
 public class Model {
@@ -51,7 +52,11 @@ public class Model {
         if (user == null
                 && App.getConfig().encryptedPublicKey() != null
                 && App.getConfig().encryptedPrivateKey() != null) {
-            EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedPublicKey(), config.encryptedPrivateKey(), config.keyPairSalt());
+            byte[] publicKey = Base58.decode(config.encryptedPublicKey());
+            byte[] privateKey = Base58.decode(config.encryptedPrivateKey());
+            byte[] salt = Base58.decode(config.keyPairSalt());
+
+            EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, privateKey, salt);
             KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
             setUser(new Participant(keyPair));
         }
@@ -83,7 +88,10 @@ public class Model {
     public Participant getServer() {
         if (server == null
                 && App.getConfig().encryptedServerPublicKey() != null) {
-            EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(config.encryptedServerPublicKey(), "", config.serverSalt());
+            byte[] publicKey = Base58.decode(config.encryptedServerPublicKey());
+            byte[] salt = Base58.decode(config.serverSalt());
+
+            EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, null, salt);
             KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
             setServer(new Participant(keyPair));
         }
