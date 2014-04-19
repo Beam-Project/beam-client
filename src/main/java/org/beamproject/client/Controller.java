@@ -41,7 +41,6 @@ import org.beamproject.common.util.Exceptions;
  */
 public class Controller {
 
-    public final static String FORMAT_VERSION = "1.0";
     List<ConversationWindow> conversationWindows = new ArrayList<>();
     InfoWindow infoWindow;
     SettingsWindow settingsWindow;
@@ -109,17 +108,14 @@ public class Controller {
         Exceptions.verifyArgumentsNotEmpty(content);
 
         Message plaintext = assemblePlaintextMessage(target, content);
-        byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext, target.getServer());
+        byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext);
         byte[] response = sendCiphertextToNextServer(ciphertext, App.getConfig().serverUrl());
         System.out.println("response: " + new String(response));
     }
 
     private Message assemblePlaintextMessage(Contact target, String content) {
-        Message plaintext = new Message();
-
-        plaintext.setVersion(FORMAT_VERSION);
-        plaintext.setParticipant(target.getServer());
-        plaintext.appendContent(MessageField.CNT_MSG, content.getBytes());
+        Message plaintext = new Message(target.getServer());
+        plaintext.putContent(MessageField.CNT_MSG, content.getBytes());
 
         return plaintext;
     }
