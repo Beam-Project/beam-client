@@ -24,6 +24,7 @@ import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
 import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
+import org.beamproject.client.Model;
 import org.beamproject.client.ui.MainWindow;
 import org.beamproject.common.Participant;
 import org.junit.After;
@@ -78,6 +79,10 @@ public class SettingsWindowTest {
 
     @Test
     public void testMenuListOnSelectionChange() {
+        Model model  =createMock(Model.class);
+        AppTest.setAppModel(model);
+        expect(model.getUser()).andReturn(Participant.generate()).anyTimes();
+        expect(model.getServer()).andReturn(Participant.generate()).anyTimes();
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
         controller.setUsername(USERNAME);
@@ -86,7 +91,7 @@ public class SettingsWindowTest {
         expectLastCall().anyTimes();
         controller.setServer(anyObject(Participant.class));
         expectLastCall().anyTimes();
-        replay(controller);
+        replay(model, controller);
 
         window.menuList.setSelectedIndex(SettingsWindow.GENERAL_MENU_INDEX);
         assertSame(window.getGeneralPanel(), window.contentPanel.getComponent(0));
@@ -100,7 +105,7 @@ public class SettingsWindowTest {
         window.menuList.setSelectedIndex(SettingsWindow.NETWORK_MENU_INDEX);
         assertSame(window.getNetworkPanel(), window.contentPanel.getComponent(0));
 
-        verify(controller);
+        verify(model, controller);
     }
 
     @Test
