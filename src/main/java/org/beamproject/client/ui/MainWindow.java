@@ -187,11 +187,16 @@ public class MainWindow extends javax.swing.JFrame {
         statusButton.setMinimumSize(new java.awt.Dimension(48, 30));
         statusButton.setPreferredSize(new java.awt.Dimension(48, 30));
         statusButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                statusButtonMouseEntered(evt);
+            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 statusButtonMouseExited(evt);
             }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                statusButtonMouseEntered(evt);
+        });
+        statusButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                statusButtonActionPerformed(evt);
             }
         });
         topPanel.add(statusButton);
@@ -346,14 +351,6 @@ public class MainWindow extends javax.swing.JFrame {
         usernameButton.setContentAreaFilled(false);
     }//GEN-LAST:event_usernameButtonMouseExited
 
-    private void statusButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseEntered
-        statusButton.setContentAreaFilled(true);
-    }//GEN-LAST:event_statusButtonMouseEntered
-
-    private void statusButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseExited
-        statusButton.setContentAreaFilled(false);
-    }//GEN-LAST:event_statusButtonMouseExited
-
     private void addUserButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addUserButtonMouseEntered
         addUserButton.setContentAreaFilled(true);
     }//GEN-LAST:event_addUserButtonMouseEntered
@@ -378,6 +375,18 @@ public class MainWindow extends javax.swing.JFrame {
         settingsButton.setContentAreaFilled(false);
     }//GEN-LAST:event_settingsButtonMouseExited
 
+    private void statusButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseEntered
+        statusButton.setContentAreaFilled(true);
+    }//GEN-LAST:event_statusButtonMouseEntered
+
+    private void statusButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseExited
+        statusButton.setContentAreaFilled(false);
+    }//GEN-LAST:event_statusButtonMouseExited
+
+    private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_statusButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addUserButton;
     private javax.swing.JButton avatarButton;
@@ -385,7 +394,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane contactListScrollPane;
     javax.swing.JButton infoButton;
     javax.swing.JButton settingsButton;
-    javax.swing.JButton statusButton;
+    private javax.swing.JButton statusButton;
     private javax.swing.JPanel topPanel;
     private javax.swing.Box.Filler topPanelHorizontalFiller;
     javax.swing.JButton usernameButton;
