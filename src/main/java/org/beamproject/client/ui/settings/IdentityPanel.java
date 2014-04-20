@@ -35,7 +35,7 @@ public class IdentityPanel extends javax.swing.JPanel {
         loadServerUrl();
         loadServerPublicKey();
     }
-
+    
     private void loadUsername() {
         usernameTextField.setText(App.getConfig().username());
     }
