@@ -110,8 +110,12 @@ public class SettingsWindowTest {
 
     @Test
     public void testShowIdentityUsernameWithFocusedUsername() {
+        Model model  =createMock(Model.class);
+        expect(model.getUser()).andReturn(Participant.generate()).anyTimes();
+        expect(model.getServer()).andReturn(Participant.generate()).anyTimes();
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
+        AppTest.setAppModel(model);
         AppTest.setAppMainWindow(mainWindow);
         AppTest.setAppController(controller);
         controller.setUsername(USERNAME);
@@ -120,7 +124,7 @@ public class SettingsWindowTest {
         expectLastCall().anyTimes();
         controller.setServer(anyObject(Participant.class));
         expectLastCall().anyTimes();
-        replay(mainWindow, controller);
+        replay(model, mainWindow, controller);
 
         window.openIdentityMenuWithFocusedUsername();
 
@@ -129,7 +133,7 @@ public class SettingsWindowTest {
         String selectedText = panel.usernameTextField.getSelectedText();
         assertEquals(USERNAME, selectedText);
 
-        verify(mainWindow, controller);
+        verify(model, mainWindow, controller);
     }
 
     @Test
