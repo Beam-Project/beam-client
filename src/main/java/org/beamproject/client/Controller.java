@@ -28,7 +28,7 @@ import org.beamproject.client.ui.InfoWindow;
 import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Message;
-import org.beamproject.common.MessageField;
+import static org.beamproject.common.MessageField.ContentField.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.EncryptedKeyPair;
@@ -115,7 +115,7 @@ public class Controller {
 
     private Message assemblePlaintextMessage(Contact target, String content) {
         Message plaintext = new Message(target.getServer());
-        plaintext.putContent(MessageField.CNT_MSG, content.getBytes());
+        plaintext.putContent(MSG, content.getBytes());
 
         return plaintext;
     }
