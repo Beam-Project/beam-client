@@ -18,13 +18,19 @@
  */
 package org.beamproject.client;
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
+import static org.beamproject.client.App.configWriter;
+import static org.beamproject.client.App.getConfig;
+import static org.beamproject.client.App.getModel;
 import org.beamproject.common.network.HttpConnector;
 import org.beamproject.client.storage.Storage;
 import org.beamproject.client.ui.ConversationWindow;
 import org.beamproject.client.ui.Frames;
 import org.beamproject.client.ui.InfoWindow;
+import org.beamproject.client.ui.MainWindow;
+import org.beamproject.client.ui.SetUpDialog;
 import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Message;
@@ -41,32 +47,55 @@ import org.beamproject.common.util.Exceptions;
  */
 public class Controller {
 
+    final String CONTACTS_STORAGE_FILE = Config.FOLDER + "contacts.storage";
+    MainWindow mainWindow;
     List<ConversationWindow> conversationWindows = new ArrayList<>();
     InfoWindow infoWindow;
     SettingsWindow settingsWindow;
     CryptoPacker cryptoPacker;
 
+    public void loadUser() {
+        if (isFirstStart()) {
+            showSetUpDialog();
+            generateUser();
+            storeConfig();
+        }
+    }
+
+    private void generateUser() {
+        Participant user = Participant.generate();
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(getConfig().keyPairPassword(), user.getKeyPair());
+        getConfig().setProperty("keyPairSalt", encryptedKeyPair.getSalt());
+        getConfig().setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
+        getConfig().setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
+        getModel().setUser(user);
+    }
+
+    public void storeConfig() {
+        configWriter.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
+    }
+
     public void setUsername(String name) {
-        App.getConfig().setProperty("username", name);
-        App.getMainWindow().setUsername(name);
-        App.storeConfig();
+        getConfig().setProperty("username", name);
+        getMainWindow().setUsername(name);
+        storeConfig();
     }
 
     public void setServer(Participant server) {
-        App.getModel().setServer(server);
-        EncryptedKeyPair encryptedPublicKey = KeyPairCryptor.encrypt(App.getConfig().keyPairPassword(), server.getKeyPair());
-        App.getConfig().setProperty("serverSalt", encryptedPublicKey.getSalt());
-        App.getConfig().setProperty("encryptedServerPublicKey", encryptedPublicKey.getEncryptedPublicKey());
-        App.storeConfig();
+        getModel().setServer(server);
+        EncryptedKeyPair encryptedPublicKey = KeyPairCryptor.encrypt(getConfig().keyPairPassword(), server.getKeyPair());
+        getConfig().setProperty("serverSalt", encryptedPublicKey.getSalt());
+        getConfig().setProperty("encryptedServerPublicKey", encryptedPublicKey.getEncryptedPublicKey());
+        storeConfig();
     }
 
     public void setServerUrl(String serverUrl) {
-        App.getConfig().setProperty("serverUrl", serverUrl);
-        App.storeConfig();
+        getConfig().setProperty("serverUrl", serverUrl);
+        storeConfig();
     }
 
     public void addContact(Contact contact) {
-        App.getModel().addContact(contact);
+        getModel().addContact(contact);
         writeContactListStorage();
     }
 
@@ -79,15 +108,15 @@ public class Controller {
     }
 
     public void readContactListStorage() {
-        Storage<ContactList> storage = new Storage<>(App.CONTACTS_STORAGE_FILE);
-        App.getModel().setContactListStorage(storage);
+        Storage<ContactList> storage = new Storage<>(CONTACTS_STORAGE_FILE);
+        getModel().setContactListStorage(storage);
 
         if (!storage.isExisting()) {
             return;
         }
 
         ContactList restoredContactList = storage.restore(ContactList.class);
-        ContactList existingContactList = App.getModel().getContactList();
+        ContactList existingContactList = getModel().getContactList();
 
         for (int i = 0; i < restoredContactList.getSize(); i++) {
             existingContactList.addElement(restoredContactList.elementAt(i));
@@ -95,12 +124,12 @@ public class Controller {
     }
 
     public void writeContactListStorage() {
-        if (App.getModel().getContactListStorage() == null) {
+        if (getModel().getContactListStorage() == null) {
             throw new IllegalStateException("The contact storage has to be loaded first.");
         }
 
-        ContactList list = App.getModel().getContactList();
-        App.getModel().getContactListStorage().store(list);
+        ContactList list = getModel().getContactList();
+        getModel().getContactListStorage().store(list);
     }
 
     public void sendMessage(Contact target, String content) {
@@ -109,7 +138,7 @@ public class Controller {
 
         Message plaintext = assembleMessage(target, content);
         byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext);
-        byte[] response = sendCiphertextToNextServer(ciphertext, App.getConfig().serverUrl());
+        sendCiphertextToNextServer(ciphertext, getConfig().serverUrl());
     }
 
     private Message assembleMessage(Contact target, String content) {
@@ -122,6 +151,28 @@ public class Controller {
     private byte[] sendCiphertextToNextServer(byte[] ciphertext, String targetServerUrl) {
         HttpConnector http = new HttpConnector(targetServerUrl);
         return http.excutePost(ciphertext);
+    }
+
+    public void showMainWindow() {
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                mainWindow = getMainWindow();
+                mainWindow.setAutoRequestFocus(isFirstStart());
+                mainWindow.setVisible(true);
+            }
+        });
+    }
+
+     boolean isFirstStart() {
+        return getModel().getUser() == null;
+    }
+
+    private void showSetUpDialog() {
+        SetUpDialog dialog = new SetUpDialog();
+        Frames.setIcons(dialog);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
     }
 
     public void showInfoWindow() {
@@ -145,6 +196,15 @@ public class Controller {
     public void closeSettingsWindow() {
         getSettingsWindow().dispose();
         settingsWindow = null;
+    }
+
+    public MainWindow getMainWindow() {
+        if (mainWindow == null) {
+            mainWindow = new MainWindow();
+            Frames.setIcons(mainWindow);
+        }
+
+        return mainWindow;
     }
 
     private InfoWindow getInfoWindow() {

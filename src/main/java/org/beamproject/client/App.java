@@ -19,16 +19,9 @@
 package org.beamproject.client;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.aeonbits.owner.ConfigFactory;
-import org.beamproject.client.ui.Frames;
-import org.beamproject.client.ui.MainWindow;
-import org.beamproject.client.ui.SetUpDialog;
-import org.beamproject.common.Participant;
-import org.beamproject.common.crypto.EncryptedKeyPair;
-import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.util.ConfigWriter;
 
 /**
@@ -38,19 +31,17 @@ public class App {
 
     public final static Color DEFAULT_BACKGROUND = null; // is really null
     public final static Color ERROR_BACKGROUND = new Color(255, 153, 153);
-    static String CONTACTS_STORAGE_FILE = Config.FOLDER + "contacts.storage";
     static ConfigWriter configWriter = new ConfigWriter();
     static Config config = ConfigFactory.create(Config.class);
     static Controller controller;
     static Model model;
-    static MainWindow mainWindow;
 
     public static void main(String args[]) {
         setNativeLookAndFeel();
-        showMainWindow();
         loadControllerAndModel();
-        loadUser();
-        loadContactList();
+        controller.showMainWindow();
+        controller.loadUser();
+        controller.readContactListStorage();
     }
 
     private static void setNativeLookAndFeel() {
@@ -70,54 +61,9 @@ public class App {
         }
     }
 
-    private static void showMainWindow() {
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                mainWindow = new MainWindow();
-                Frames.setIcons(mainWindow);
-                mainWindow.setAutoRequestFocus(isFirstStart());
-                mainWindow.setVisible(true);
-            }
-        });
-    }
-
     static void loadControllerAndModel() {
         controller = new Controller();
         model = new Model();
-    }
-
-    static void loadUser() {
-        if (isFirstStart()) {
-            showSetUpDialog();
-            generateUser();
-            storeConfig();
-        }
-    }
-
-    static boolean isFirstStart() {
-        return model.getUser() == null;
-    }
-
-    private static void showSetUpDialog() {
-        SetUpDialog dialog = new SetUpDialog();
-        Frames.setIcons(dialog);
-        dialog.setLocationRelativeTo(null);
-        dialog.setVisible(true);
-    }
-
-    private static void generateUser() {
-        Participant user = Participant.generate();
-        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(config.keyPairPassword(), user.getKeyPair());
-        config.setProperty("keyPairSalt", encryptedKeyPair.getSalt());
-        config.setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
-        config.setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
-
-        model.setUser(user);
-    }
-
-    static void loadContactList() {
-        controller.readContactListStorage();
     }
 
     public static Controller getController() {
@@ -128,16 +74,8 @@ public class App {
         return model;
     }
 
-    public static MainWindow getMainWindow() {
-        return mainWindow;
-    }
-
     public static Config getConfig() {
         return config;
-    }
-
-    public static void storeConfig() {
-        configWriter.writeConfig(config, Config.FOLDER, Config.FILE);
     }
 
 }

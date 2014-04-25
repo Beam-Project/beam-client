@@ -18,10 +18,7 @@
  */
 package org.beamproject.client;
 
-import org.beamproject.client.ui.MainWindow;
-import org.beamproject.common.Participant;
 import org.beamproject.common.util.ConfigWriter;
-import static org.easymock.EasyMock.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -48,20 +45,6 @@ public class AppTest {
     }
 
     @Test
-    public void testIsFirstStart() {
-        Model model = createMock(Model.class);
-        App.model = model;
-        expect(model.getUser()).andReturn(null);
-        expect(model.getUser()).andReturn(createMock(Participant.class));
-        replay(model);
-
-        assertTrue(App.isFirstStart());
-        assertFalse(App.isFirstStart());
-
-        verify(model);
-    }
-
-    @Test
     public void testGetController() {
         assertSame(App.controller, App.getController());
     }
@@ -72,26 +55,8 @@ public class AppTest {
     }
 
     @Test
-    public void testGetMainWindow() {
-        assertSame(App.mainWindow, App.getMainWindow());
-    }
-
-    @Test
     public void testGetConfig() {
         assertSame(App.config, App.getConfig());
-    }
-
-    @Test
-    public void testStoreConfig() {
-        ConfigWriter writer = createMock(ConfigWriter.class);
-        App.configWriter = writer;
-        writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
-        expectLastCall();
-        replay(writer);
-
-        App.storeConfig();
-
-        verify(writer);
     }
 
     /**
@@ -132,16 +97,6 @@ public class AppTest {
      */
     public static void setAppModel(Model model) {
         App.model = model;
-    }
-
-    /**
-     * Overwrites the existing {@link MainWindow} in {@link App} for unit
-     * testing purposes.
-     *
-     * @param mainWindow The new window.
-     */
-    public static void setAppMainWindow(MainWindow mainWindow) {
-        App.mainWindow = mainWindow;
     }
 
 }

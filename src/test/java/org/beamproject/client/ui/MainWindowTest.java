@@ -20,9 +20,9 @@ package org.beamproject.client.ui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import javax.swing.JButton;
 import static org.easymock.EasyMock.*;
-import org.beamproject.client.App;
+import static org.beamproject.client.App.getConfig;
+import static org.beamproject.client.App.getModel;
 import org.beamproject.client.AppTest;
 import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
@@ -32,6 +32,7 @@ import org.beamproject.common.util.ConfigWriter;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Ignore;
 
 public class MainWindowTest {
 
@@ -50,9 +51,10 @@ public class MainWindowTest {
 
     @Test
     public void testConstructorOnSettingModelList() {
-        assertSame(App.getModel().getContactList(), window.contactList.getModel());
+        assertSame(getModel().getContactList(), window.contactList.getModel());
     }
 
+    @Ignore
     @Test
     public void testSetPositionOnNewSetting() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -65,8 +67,8 @@ public class MainWindowTest {
 
     @Test
     public void testSetPositionOnExistingSetting() {
-        App.getConfig().setProperty("windowPositionX", "100");
-        App.getConfig().setProperty("windowPositionY", "200");
+        getConfig().setProperty("windowPositionX", "100");
+        getConfig().setProperty("windowPositionY", "200");
 
         window = new MainWindow();
         assertEquals(100, window.getX());
@@ -81,12 +83,12 @@ public class MainWindowTest {
 
     @Test
     public void testSetProfileSpecificValuesOnExistingSetting() {
-        assertEquals(App.getConfig().username(), window.usernameButton.getText());
+        assertEquals(getConfig().username(), window.usernameButton.getText());
     }
 
     @Test
     public void testSetProfileSpecificValuesOnInexistingSetting() {
-        App.getConfig().setProperty("username", null);
+        getConfig().setProperty("username", null);
 
         window.usernameButton.setText("a name");
         window.setUsername();
@@ -152,15 +154,6 @@ public class MainWindowTest {
         window.settingsButton.doClick();
 
         verify(controller);
-    }
-
-    /**
-     * Gets the MainWindows {@link JButton} of the name for testing purposes.
-     *
-     * @return The button.
-     */
-    public static JButton getUsernameButton() {
-        return App.getMainWindow().usernameButton;
     }
 
 }

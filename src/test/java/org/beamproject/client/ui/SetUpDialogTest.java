@@ -139,13 +139,13 @@ public class SetUpDialogTest {
     }
 
     @Test
-    public void testLetsBeamButtonOnInvocatingWithSkippedUrl() {
+    public void testLetsBeamButtonOnInvocatingWithSkippedUrl() {    
         MainWindow mainWindow = createMock(MainWindow.class);
-        AppTest.setAppMainWindow(mainWindow);
         mainWindow.requestFocus();
         expectLastCall();
         controller.setUsername(USERNAME);
         expectLastCall();
+        expect(controller.getMainWindow()).andReturn(mainWindow);
         replay(controller, mainWindow);
 
         dialog.usernameTextField.setText(USERNAME);
@@ -160,7 +160,6 @@ public class SetUpDialogTest {
     @Test
     public void testLetsBeamButtonOnControllerInvocation() {
         MainWindow mainWindow = createMock(MainWindow.class);
-        AppTest.setAppMainWindow(mainWindow);
         mainWindow.requestFocus();
         expectLastCall();
         String nameWithSpaces = USERNAME + "   ";
@@ -168,6 +167,7 @@ public class SetUpDialogTest {
         expectLastCall().once();
         controller.setServerUrl(SERVER_URL);
         expectLastCall().once();
+        expect(controller.getMainWindow()).andReturn(mainWindow);
         replay(controller, mainWindow);
 
         dialog.usernameTextField.setText(nameWithSpaces);

@@ -24,6 +24,7 @@ import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
 import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
+import org.beamproject.client.ControllerTest;
 import org.beamproject.client.Model;
 import org.beamproject.client.ui.MainWindow;
 import org.beamproject.common.Participant;
@@ -49,7 +50,7 @@ public class SettingsWindowTest {
 
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
-        AppTest.setAppMainWindow(mainWindow);
+        ControllerTest.setAppMainWindow(mainWindow, controller);
         AppTest.setAppController(controller);
         replay(mainWindow, controller);
 
@@ -120,7 +121,7 @@ public class SettingsWindowTest {
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
         AppTest.setAppModel(model);
-        AppTest.setAppMainWindow(mainWindow);
+        ControllerTest.setAppMainWindow(mainWindow, controller);
         AppTest.setAppController(controller);
         controller.setUsername(USERNAME);
         expectLastCall().anyTimes();

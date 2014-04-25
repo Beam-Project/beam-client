@@ -20,7 +20,9 @@ package org.beamproject.client.ui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import org.beamproject.client.App;
+import static org.beamproject.client.App.getConfig;
+import static org.beamproject.client.App.getController;
+import static org.beamproject.client.App.getModel;
 import org.beamproject.common.Contact;
 import org.beamproject.common.util.Exceptions;
 
@@ -42,20 +44,20 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow() {
         initComponents();
-        setUsername();
         setSize();
         setPosition();
+        setUsername();
         initalizeContactList();
     }
 
     void setUsername() {
-        String usernmae = App.getConfig().username();
+        String usernmae = getConfig().username();
         usernameButton.setText(usernmae != null ? usernmae : DEFAULT_USERNAME);
     }
 
     private void setSize() {
-        int width = App.getConfig().windowWidth();
-        int height = App.getConfig().windowHeight();
+        int width = getConfig().windowWidth();
+        int height = getConfig().windowHeight();
 
         if (width > 0 && height > 0) {
             if (width >= MINIMAL_WINDOW_WIDTH_IN_PX && height >= MINIMAL_WINDOW_HEIGHT_IN_PX) {
@@ -66,9 +68,9 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
 
-    private void setPosition() {
-        int xPosition = App.getConfig().windowPositionX();
-        int yPosition = App.getConfig().windowPositionY();
+    public void setPosition() {
+        int xPosition = getConfig().windowPositionX();
+        int yPosition = getConfig().windowPositionY();
 
         if (xPosition >= 0 && yPosition >= 0) {
             setLocation(xPosition, yPosition);
@@ -87,7 +89,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     @SuppressWarnings("unchecked")
     private void initalizeContactList() {
-        contactList.setModel(App.getModel().getContactList());
+        contactList.setModel(getModel().getContactList());
     }
 
     public void setUsername(String username) {
@@ -289,7 +291,7 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
-        App.getController().showSettingsWindow();
+        getController().showSettingsWindow();
     }//GEN-LAST:event_settingsButtonActionPerformed
 
     private void avatarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_avatarButtonActionPerformed
@@ -300,9 +302,9 @@ public class MainWindow extends javax.swing.JFrame {
         int xPosition = evt.getComponent().getX();
         int yPosition = evt.getComponent().getY();
 
-        App.getConfig().setProperty("windowPositionX", "" + xPosition);
-        App.getConfig().setProperty("windowPositionY", "" + yPosition);
-        App.storeConfig();
+        getConfig().setProperty("windowPositionX", "" + xPosition);
+        getConfig().setProperty("windowPositionY", "" + yPosition);
+        getController().storeConfig();
     }//GEN-LAST:event_formComponentMoved
 
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserButtonActionPerformed
@@ -314,25 +316,25 @@ public class MainWindow extends javax.swing.JFrame {
     private void contactListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_contactListMouseClicked
         if (evt.getClickCount() == DOUBLE_CLICK_NUMBER) {
             Contact selectedContect = (Contact) contactList.getSelectedValue();
-            App.getController().openConversationWindow(selectedContect);
+            getController().openConversationWindow(selectedContect);
         }
     }//GEN-LAST:event_contactListMouseClicked
 
     private void usernameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameButtonActionPerformed
-        App.getController().showNameInSettingsWindow();
+        getController().showNameInSettingsWindow();
     }//GEN-LAST:event_usernameButtonActionPerformed
 
     private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
         int width = evt.getComponent().getWidth();
         int height = evt.getComponent().getHeight();
 
-        App.getConfig().setProperty("windowWidth", "" + width);
-        App.getConfig().setProperty("windowHeight", "" + height);
-        App.storeConfig();
+        getConfig().setProperty("windowWidth", "" + width);
+        getConfig().setProperty("windowHeight", "" + height);
+        getController().storeConfig();
     }//GEN-LAST:event_formComponentResized
 
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
-        App.getController().showInfoWindow();
+        getController().showInfoWindow();
     }//GEN-LAST:event_infoButtonActionPerformed
 
     private void avatarButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_avatarButtonMouseEntered

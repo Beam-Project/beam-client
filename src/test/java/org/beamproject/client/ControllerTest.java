@@ -19,6 +19,7 @@
 package org.beamproject.client;
 
 import javax.swing.JPanel;
+import static org.beamproject.client.App.getConfig;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.storage.Storage;
 import org.beamproject.client.ui.InfoWindow;
@@ -57,7 +58,6 @@ public class ControllerTest {
         writer = createMock(ConfigWriter.class);
         AppTest.setAppConfigWriter(writer);
         AppTest.setAppModel(model);
-        AppTest.setAppMainWindow(mainWindow);
         contactList = new ContactList();
         controller = new Controller();
 
@@ -69,28 +69,36 @@ public class ControllerTest {
         verify(writer, model, contact, storage, mainWindow);
     }
 
-    private void setMocksInReplayMode() {
+    private void replayMocks() {
         replay(writer, model, contact, storage, mainWindow);
     }
 
     @Test
     public void testConstructorOnInstatiation() {
-        setMocksInReplayMode();
+        replayMocks();
         assertTrue(controller.conversationWindows.isEmpty());
+    }
+
+    @Test
+    public void testStoreConfig() {
+        writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
+        expectLastCall();
+        replayMocks();
+
+        controller.storeConfig();
     }
 
     @Test
     public void testSetUsername() {
         String username = "Timmeeee";
-        mainWindow.setUsername(username);
-        expectLastCall();
-        writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
-        expectLastCall();
-        setMocksInReplayMode();
+        writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
+        expectLastCall().anyTimes();
+        expect(model.getContactList()).andReturn(contactList);
+        replayMocks();
 
         controller.setUsername(username);
-        
-        assertEquals(username, App.getConfig().username());
+
+        assertEquals(username, getConfig().username());
     }
 
     @Test
@@ -101,7 +109,7 @@ public class ControllerTest {
         expect(model.getContactList()).andReturn(contactList);
         storage.store(contactList);
         expectLastCall();
-        setMocksInReplayMode();
+        replayMocks();
 
         controller.addContact(null); // should just invoke model
     }
@@ -109,27 +117,27 @@ public class ControllerTest {
     @Test
     public void testSetServer() {
         Participant server = Participant.generate();
-        writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
+        writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
         expectLastCall();
         model.setServer(server);
         expectLastCall();
-        setMocksInReplayMode();
+        replayMocks();
 
-        App.getConfig().removeProperty("serverSalt");
-        App.getConfig().removeProperty("encryptedServerPublicKey");
+        getConfig().removeProperty("serverSalt");
+        getConfig().removeProperty("encryptedServerPublicKey");
 
         controller.setServer(server);
 
-        assertTrue(App.getConfig().serverSalt().length() > 20);
-        assertTrue(App.getConfig().encryptedServerPublicKey().length() > 40);
+        assertTrue(getConfig().serverSalt().length() > 20);
+        assertTrue(getConfig().encryptedServerPublicKey().length() > 40);
     }
 
     @Test
     public void testSetServerUrl() {
-        App.getConfig().setProperty("serverUrl", URL);
-        writer.writeConfig(App.config, Config.FOLDER, Config.FILE);
+        getConfig().setProperty("serverUrl", URL);
+        writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
         expectLastCall();
-        setMocksInReplayMode();
+        replayMocks();
 
         controller.setServerUrl(URL);
     }
@@ -142,21 +150,21 @@ public class ControllerTest {
         expect(model.getContactList()).andReturn(contactList);
         storage.store(contactList);
         expectLastCall();
-        setMocksInReplayMode();
+        replayMocks();
 
         controller.addContact(contact);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testOpenConversationWindowOnNull() {
-        setMocksInReplayMode();
+        replayMocks();
         controller.openConversationWindow(null);
     }
 
     @Test
     public void testOpenConversationWindow() {
         expect(contact.getName()).andReturn("myname");
-        setMocksInReplayMode();
+        replayMocks();
 
         assertTrue(controller.conversationWindows.isEmpty());
         controller.openConversationWindow(contact);
@@ -168,7 +176,7 @@ public class ControllerTest {
     @Test(expected = IllegalStateException.class)
     public void testWriteContactStorageOnNotExistingStorage() {
         expect(model.getContactListStorage()).andReturn(null);
-        setMocksInReplayMode();
+        replayMocks();
 
         controller.writeContactListStorage();
     }
@@ -179,26 +187,26 @@ public class ControllerTest {
         expect(model.getContactList()).andReturn(contactList);
         storage.store(contactList);
         expectLastCall();
-        setMocksInReplayMode();
+        replayMocks();
 
         controller.writeContactListStorage();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessageOnNulls() {
-        setMocksInReplayMode();
+        replayMocks();
         controller.sendMessage(null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessageOnNullTarget() {
-        setMocksInReplayMode();
+        replayMocks();
         controller.sendMessage(null, "message");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSendMessageOnEmptyMessage() {
-        setMocksInReplayMode();
+        replayMocks();
         controller.sendMessage(contact, "");
     }
 
@@ -212,9 +220,19 @@ public class ControllerTest {
     }
 
     @Test
+    public void testIsFirstStart() {
+        expect(model.getUser()).andReturn(null);
+        expect(model.getUser()).andReturn(createMock(Participant.class));
+        replayMocks();
+
+        assertTrue(controller.isFirstStart());
+        assertFalse(controller.isFirstStart());
+    }
+
+    @Test
     public void testShowInfoWindow() {
         expect(model.getUserUrl()).andReturn("url").times(2);
-        setMocksInReplayMode();
+        replayMocks();
         assertNull(controller.infoWindow);
         controller.showInfoWindow();
         assertTrue(controller.infoWindow.isVisible());
@@ -223,7 +241,7 @@ public class ControllerTest {
     @Test
     public void testShowInfoWindowOnReusingExistingWindow() {
         expect(model.getUserUrl()).andReturn("url").times(2);
-        setMocksInReplayMode();
+        replayMocks();
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
         assertFalse(window.isVisible());
@@ -236,7 +254,7 @@ public class ControllerTest {
     @Test
     public void testCloseInfoWindow() {
         expect(model.getUserUrl()).andReturn("url").times(2);
-        setMocksInReplayMode();
+        replayMocks();
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
         controller.infoWindow.setVisible(true);
@@ -250,7 +268,7 @@ public class ControllerTest {
 
     @Test
     public void testShowSettingsWindow() {
-        setMocksInReplayMode();
+        replayMocks();
         assertNull(controller.settingsWindow);
 
         controller.showSettingsWindow();
@@ -262,7 +280,7 @@ public class ControllerTest {
 
     @Test
     public void testShowSettingsWindowOnReusingExistingWindow() {
-        setMocksInReplayMode();
+        replayMocks();
         SettingsWindow window = new SettingsWindow();
         controller.settingsWindow = window;
         assertFalse(window.isVisible());
@@ -280,7 +298,7 @@ public class ControllerTest {
         expectLastCall();
         settingsWindow.setVisible(true);
         expectLastCall();
-        setMocksInReplayMode();
+        replayMocks();
         replay(settingsWindow);
 
         controller.settingsWindow = settingsWindow;
@@ -292,7 +310,7 @@ public class ControllerTest {
 
     @Test
     public void testCloseSettingsWindow() {
-        setMocksInReplayMode();
+        replayMocks();
 
         SettingsWindow window = new SettingsWindow();
         controller.settingsWindow = window;
@@ -302,6 +320,29 @@ public class ControllerTest {
         assertFalse(window.isVisible());
         assertFalse(window.isDisplayable());
         assertNull(controller.settingsWindow);
+    }
+
+    @Test
+    public void testGetMainWindowOnNotExistingWindow() {
+        expect(model.getContactList()).andReturn(contactList);
+        replayMocks();
+
+        assertNull(controller.mainWindow);
+        MainWindow window = controller.getMainWindow();
+        assertNotNull(window);
+        assertSame(window, controller.mainWindow);
+        assertSame(window, controller.getMainWindow());
+    }
+
+    /**
+     * Overwrites the existing {@link MainWindow} in the given
+     * {@link Controller} for unit testing purposes.
+     *
+     * @param mainWindow The new window.
+     * @param controller The controller, in which the window should be placed.
+     */
+    public static void setAppMainWindow(MainWindow mainWindow, Controller controller) {
+        controller.mainWindow = mainWindow;
     }
 
     /**

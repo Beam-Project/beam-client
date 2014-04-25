@@ -18,7 +18,7 @@
  */
 package org.beamproject.client.ui;
 
-import org.beamproject.client.App;
+import static org.beamproject.client.App.getController;
 
 /**
  *
@@ -131,7 +131,7 @@ public class SetUpDialog extends javax.swing.JFrame {
 
         if (isUsernameDone && isServerUrlDone) {
             dispose();
-            App.getMainWindow().requestFocus();
+            getController().getMainWindow().requestFocus();
         }
     }//GEN-LAST:event_letsBeamButtonActionPerformed
 
@@ -140,7 +140,7 @@ public class SetUpDialog extends javax.swing.JFrame {
 
         if (Validators.isUsernameValid(username)) {
             Components.setDefalutBackground(usernameTextField);
-            App.getController().setUsername(username);
+            getController().setUsername(username);
             isUsernameDone = true;
         } else {
             Components.setErrorBackground(usernameTextField);
@@ -155,7 +155,7 @@ public class SetUpDialog extends javax.swing.JFrame {
             isServerUrlDone = true;
         } else if (Validators.isServerHttpUrlValid(serverUrl)) {
             Components.setDefalutBackground(serverUrlTextField);
-            App.getController().setServerUrl(serverUrl);
+            getController().setServerUrl(serverUrl);
             isServerUrlDone = true;
         } else {
             Components.setErrorBackground(serverUrlTextField);

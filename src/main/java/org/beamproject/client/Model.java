@@ -19,7 +19,7 @@
 package org.beamproject.client;
 
 import java.security.KeyPair;
-import static org.beamproject.client.App.config;
+import static org.beamproject.client.App.getConfig;
 import org.beamproject.client.storage.Storage;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Participant;
@@ -50,14 +50,14 @@ public class Model {
 
     public Participant getUser() {
         if (user == null
-                && App.getConfig().encryptedPublicKey() != null
-                && App.getConfig().encryptedPrivateKey() != null) {
-            byte[] publicKey = Base58.decode(config.encryptedPublicKey());
-            byte[] privateKey = Base58.decode(config.encryptedPrivateKey());
-            byte[] salt = Base58.decode(config.keyPairSalt());
+                && getConfig().encryptedPublicKey() != null
+                && getConfig().encryptedPrivateKey() != null) {
+            byte[] publicKey = Base58.decode(getConfig().encryptedPublicKey());
+            byte[] privateKey = Base58.decode(getConfig().encryptedPrivateKey());
+            byte[] salt = Base58.decode(getConfig().keyPairSalt());
 
             EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, privateKey, salt);
-            KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
+            KeyPair keyPair = KeyPairCryptor.decrypt(getConfig().keyPairPassword(), encryptedKeyPair);
             setUser(new Participant(keyPair));
         }
 
@@ -69,7 +69,7 @@ public class Model {
             return "";
         }
 
-        String name = App.getConfig().username();
+        String name = getConfig().username();
         return UrlAssembler.toUrlByServerAndUser(getServer(), getUser(), name);
     }
 
@@ -87,12 +87,12 @@ public class Model {
 
     public Participant getServer() {
         if (server == null
-                && App.getConfig().encryptedServerPublicKey() != null) {
-            byte[] publicKey = Base58.decode(config.encryptedServerPublicKey());
-            byte[] salt = Base58.decode(config.serverSalt());
+                && getConfig().encryptedServerPublicKey() != null) {
+            byte[] publicKey = Base58.decode(getConfig().encryptedServerPublicKey());
+            byte[] salt = Base58.decode(getConfig().serverSalt());
 
             EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, null, salt);
-            KeyPair keyPair = KeyPairCryptor.decrypt(config.keyPairPassword(), encryptedKeyPair);
+            KeyPair keyPair = KeyPairCryptor.decrypt(getConfig().keyPairPassword(), encryptedKeyPair);
             setServer(new Participant(keyPair));
         }
 
