@@ -20,7 +20,9 @@ package org.beamproject.client.ui;
 
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
-import org.beamproject.client.App;
+import static org.beamproject.client.App.getConfig;
+import static org.beamproject.client.App.getController;
+import static org.beamproject.client.App.getModel;
 import org.beamproject.client.util.ClipboardAccess;
 import org.beamproject.common.util.QrCode;
 
@@ -41,15 +43,15 @@ public class InfoWindow extends javax.swing.JFrame {
     }
 
     private void loadUsername() {
-        usernameLabel.setText(App.getConfig().username());
+        usernameLabel.setText(getConfig().username());
     }
 
     private void loadUserAddress() {
-        addressLabel.setText(App.getModel().getUserUrl());
+        addressLabel.setText(getModel().getUserUrl());
     }
 
     private void loadQrCode() {
-        String userUrl = App.getModel().getUserUrl();
+        String userUrl = getModel().getUserUrl();
 
         if (userUrl.isEmpty()) {
             qrCodePanel.setVisible(false);
@@ -224,7 +226,7 @@ public class InfoWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-        App.getController().closeInfoWindow();
+        getController().closeInfoWindow();
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void copyUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyUrlButtonActionPerformed
