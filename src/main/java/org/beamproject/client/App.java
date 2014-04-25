@@ -41,7 +41,6 @@ public class App {
         loadControllerAndModel();
         controller.showMainWindow();
         controller.loadUser();
-        controller.readContactListStorage();
     }
 
     private static void setNativeLookAndFeel() {

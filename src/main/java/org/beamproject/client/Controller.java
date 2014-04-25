@@ -107,7 +107,7 @@ public class Controller {
         window.setVisible(true);
     }
 
-    public void readContactListStorage() {
+    private void readContactListStorage() {
         Storage<ContactList> storage = new Storage<>(CONTACTS_STORAGE_FILE);
         getModel().setContactListStorage(storage);
 
@@ -123,7 +123,7 @@ public class Controller {
         }
     }
 
-    public void writeContactListStorage() {
+    void writeContactListStorage() {
         if (getModel().getContactListStorage() == null) {
             throw new IllegalStateException("The contact storage has to be loaded first.");
         }
@@ -164,7 +164,7 @@ public class Controller {
         });
     }
 
-     boolean isFirstStart() {
+    boolean isFirstStart() {
         return getModel().getUser() == null;
     }
 
@@ -202,6 +202,12 @@ public class Controller {
         if (mainWindow == null) {
             mainWindow = new MainWindow();
             Frames.setIcons(mainWindow);
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    readContactListStorage();
+                }
+            });
         }
 
         return mainWindow;
