@@ -19,8 +19,11 @@
 package org.beamproject.client;
 
 import java.awt.EventQueue;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import static org.beamproject.client.App.configWriter;
 import static org.beamproject.client.App.getConfig;
 import static org.beamproject.client.App.getModel;
@@ -34,11 +37,14 @@ import org.beamproject.client.ui.SetUpDialog;
 import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.*;
 import org.beamproject.common.Participant;
+import org.beamproject.common.Session;
 import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.EncryptedKeyPair;
+import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.crypto.KeyPairCryptor;
+import org.beamproject.common.util.Base58;
+import org.beamproject.common.util.Base64;
 import org.beamproject.common.util.Exceptions;
 
 /**
@@ -53,6 +59,9 @@ public class Controller {
     InfoWindow infoWindow;
     SettingsWindow settingsWindow;
     CryptoPacker cryptoPacker;
+    HttpConnector authenticationConnector;
+    boolean wasLastKeepAliveOkay;
+    Session session;
 
     public void loadUser() {
         if (isFirstStart()) {
@@ -99,6 +108,93 @@ public class Controller {
         writeContactListStorage();
     }
 
+    public void toggleConnectionStatus() {
+        if (isConnectedToServer()) {
+            disconnectFromServer();
+        } else {
+            connectToServer();
+        }
+    }
+
+    boolean isConnectedToServer() {
+        return authenticationConnector != null && session != null && wasLastKeepAliveOkay;
+    }
+
+    void disconnectFromServer() {
+        authenticationConnector = null;
+        session = null;
+        wasLastKeepAliveOkay = false;
+        getMainWindow().labelStatusButtonAsOffline();
+    }
+
+    void connectToServer() {
+        getMainWindow().disableStatusButton();
+
+        final String url = getConfig().serverUrl();
+
+        if (!isServerUrlAvailable(url) || getModel().getServer() == null) {
+            showNotEverythingForConnectionConfiguredDialog();
+            getMainWindow().enableStatusButton();
+            return;
+        }
+
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                disconnectFromServer();
+
+                Participant server = getModel().getServer();
+                authenticationConnector = new HttpConnector(getServerUrl(url + getConfig().serverAuthenticationPath()));
+                HandshakeChallenger challenger = new HandshakeChallenger(getModel().getUser());
+
+                Message challenge = challenger.produceChallenge(server);
+                Message response = sendAndResponseMessage(server, challenge);
+                challenger.consumeResponse(response);
+                Message success = challenger.produceSuccess();
+                sendMessage(server, success);
+
+                session = new Session(server, challenger.getSessionKey());
+                wasLastKeepAliveOkay = true;
+                getMainWindow().labelStatusButtonAsOnline();
+                getMainWindow().enableStatusButton();
+            }
+        });
+    }
+
+    boolean isServerUrlAvailable(String serverUrl) {
+        try {
+            URL candidate = new URL(serverUrl);
+            return "http".equalsIgnoreCase(candidate.getProtocol());
+        } catch (MalformedURLException ex) {
+            return false;
+        }
+    }
+
+    URL getServerUrl(String serverUrl) {
+        try {
+            return new URL(serverUrl);
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException("The given URL is not valid: " + ex.getMessage());
+        }
+    }
+
+    private void showNotEverythingForConnectionConfiguredDialog() {
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(null,
+                        "<html>Unfortunately, the configuration of your accout is incomple.<br />"
+                        + "Please go to <i>Settings > Identity</i> and compete it.<br />"
+                        + "Make sure to enter a valid <b>Server URL</b>, combined with the <b>Public Key</b> of that server. </html>",
+                        "Server Not Configured",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+    }
+
     public void openConversationWindow(Contact contact) {
         ConversationWindow window = new ConversationWindow();
         Frames.setIcons(window);
@@ -136,21 +232,23 @@ public class Controller {
         Exceptions.verifyArgumentsNotNull(target);
         Exceptions.verifyArgumentsNotEmpty(content);
 
-        Message plaintext = assembleMessage(target, content);
-        byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext);
-        sendCiphertextToNextServer(ciphertext, getConfig().serverUrl());
+        //TODO implement this with executors
     }
 
-    private Message assembleMessage(Contact target, String content) {
-        Message plaintext = new Message(target.getServer());
-        plaintext.putContent(MSG, content.getBytes());
+    public Message sendAndResponseMessage(Participant recipient, Message message) {
+        Exceptions.verifyArgumentsNotNull(recipient, message);
 
-        return plaintext;
+        byte[] ciphertextRequest = getCryptoPacker().packAndEncrypt(message);
+        byte[] base64CiphertextResponse = authenticationConnector.excutePost(ciphertextRequest);
+        byte[] ciphertextResponse = Base64.decode(new String(base64CiphertextResponse).trim());
+        return getCryptoPacker().decryptAndUnpack(ciphertextResponse, getModel().getUser());
     }
 
-    private byte[] sendCiphertextToNextServer(byte[] ciphertext, String targetServerUrl) {
-        HttpConnector http = new HttpConnector(targetServerUrl);
-        return http.excutePost(ciphertext);
+    public void sendMessage(Participant recipient, Message message) {
+        Exceptions.verifyArgumentsNotNull(recipient, message);
+
+        byte[] ciphertextRequest = getCryptoPacker().packAndEncrypt(message);
+        authenticationConnector.excutePost(ciphertextRequest);
     }
 
     public void showMainWindow() {

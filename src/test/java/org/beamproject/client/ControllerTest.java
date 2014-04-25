@@ -18,6 +18,8 @@
  */
 package org.beamproject.client;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.JPanel;
 import static org.beamproject.client.App.getConfig;
 import static org.easymock.EasyMock.*;
@@ -29,6 +31,8 @@ import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.client.ui.settings.SettingsWindowTest;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Participant;
+import org.beamproject.common.Session;
+import org.beamproject.common.network.HttpConnector;
 import org.beamproject.common.util.ConfigWriter;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -38,7 +42,8 @@ import org.junit.Ignore;
 
 public class ControllerTest {
 
-    private final String URL = "http://srv.beamproject.org";
+    private final String SERVER_URL_AS_STRING = "http://srv.beamproject.org";
+    private URL serverUrl;
     private Controller controller;
     private Model model;
     private Contact contact;
@@ -49,7 +54,7 @@ public class ControllerTest {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setUp() {
+    public void setUp() throws MalformedURLException {
         ConfigTest.loadDefaultConfig();
         model = createMock(Model.class);
         contact = createMock(Contact.class);
@@ -60,6 +65,7 @@ public class ControllerTest {
         AppTest.setAppModel(model);
         contactList = new ContactList();
         controller = new Controller();
+        serverUrl = new URL(SERVER_URL_AS_STRING);
 
         App.controller = controller;
     }
@@ -134,12 +140,12 @@ public class ControllerTest {
 
     @Test
     public void testSetServerUrl() {
-        getConfig().setProperty("serverUrl", URL);
+        getConfig().setProperty("serverUrl", SERVER_URL_AS_STRING);
         writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
         expectLastCall();
         replayMocks();
 
-        controller.setServerUrl(URL);
+        controller.setServerUrl(SERVER_URL_AS_STRING);
     }
 
     @Test
@@ -153,6 +159,76 @@ public class ControllerTest {
         replayMocks();
 
         controller.addContact(contact);
+    }
+
+    @Test
+    public void testIsConnectedToServer() {
+        replayMocks();
+
+        assertFalse(controller.isConnectedToServer());
+
+        controller.authenticationConnector = new HttpConnector(serverUrl);
+        assertFalse(controller.isConnectedToServer());
+
+        controller.wasLastKeepAliveOkay = true;
+        assertFalse(controller.isConnectedToServer());
+
+        controller.session = createMock(Session.class);
+        assertTrue(controller.isConnectedToServer());
+
+        controller.wasLastKeepAliveOkay = false;
+        assertFalse(controller.isConnectedToServer());
+
+        controller.wasLastKeepAliveOkay = true;
+        controller.authenticationConnector = null;
+        assertFalse(controller.isConnectedToServer());
+    }
+
+    @Test
+    public void testDisconnectFromServer() {
+        controller.mainWindow = mainWindow;
+        mainWindow.labelStatusButtonAsOffline();
+        expectLastCall();
+        replayMocks();
+
+        controller.authenticationConnector = new HttpConnector(serverUrl);
+        controller.session = createMock(Session.class);
+        controller.wasLastKeepAliveOkay = true;
+        controller.disconnectFromServer();
+
+        assertNull(controller.authenticationConnector);
+        assertNull(controller.session);
+        assertFalse(controller.wasLastKeepAliveOkay);
+    }
+
+    @Test
+    public void testIsServerUrlAvailable() {
+        replayMocks();
+
+        assertFalse(controller.isServerUrlAvailable(null));
+        assertFalse(controller.isServerUrlAvailable("invalid url"));
+        assertFalse(controller.isServerUrlAvailable("ftp://example.com"));
+        assertTrue(controller.isServerUrlAvailable("http://example.com"));
+        assertTrue(controller.isServerUrlAvailable("http://192.168.0.1"));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetServerUrlOnNull() {
+        replayMocks();
+        controller.getServerUrl(null);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetServerUrlOnInvalidString() {
+        replayMocks();
+        controller.getServerUrl("hallo");
+    }
+
+    @Test
+    public void testGetServerUrl() {
+        replayMocks();
+        URL url = controller.getServerUrl(SERVER_URL_AS_STRING);
+        assertEquals(SERVER_URL_AS_STRING, url.toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -190,12 +266,6 @@ public class ControllerTest {
         replayMocks();
 
         controller.writeContactListStorage();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSendMessageOnNulls() {
-        replayMocks();
-        controller.sendMessage(null, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
