@@ -48,11 +48,14 @@ public interface Config extends ConfigBase {
 
     @DefaultValue("server-salt")
     String serverSalt();
-    
+
     String encryptedServerPublicKey();
-    
+
     @DefaultValue("")
     String serverUrl();
+
+    @DefaultValue("authentication")
+    String serverAuthenticationPath();
 
     @DefaultValue("-1")
     int windowPositionX();
