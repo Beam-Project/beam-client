@@ -118,7 +118,7 @@ public class ControllerTest {
     public void testSetServer() {
         Participant server = Participant.generate();
         writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
-        expectLastCall();
+        expectLastCall().anyTimes();
         model.setServer(server);
         expectLastCall();
         replayMocks();
