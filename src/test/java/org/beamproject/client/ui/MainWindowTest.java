@@ -118,6 +118,31 @@ public class MainWindowTest {
     }
 
     @Test
+    public void testLabelStatusButtonAsOnline() {
+        window.statusButton.setText("hello");
+        window.labelStatusButtonAsOnline();
+        assertEquals(window.STATUS_BUTTON_ONLINE_LABEL, window.statusButton.getText());
+    }
+
+    @Test
+    public void testLabelStatusButtonAsOffline() {
+        window.statusButton.setText("hello");
+        window.labelStatusButtonAsOffline();
+        assertEquals(window.STATUS_BUTTON_OFFLINE_LABEL, window.statusButton.getText());
+    }
+
+    @Test
+    public void testEnableStatusButton() {
+        assertTrue(window.statusButton.isEnabled());
+        window.statusButton.setContentAreaFilled(true);
+        window.disableStatusButton();
+        assertFalse(window.statusButton.isEnabled());
+        assertFalse(window.statusButton.isContentAreaFilled());
+        window.enableStatusButton();
+        assertTrue(window.statusButton.isEnabled());
+    }
+
+    @Test
     public void testInfoButtonOnShowingInvokingMethod() {
         Controller controller = createMock(Controller.class);
         AppTest.setAppController(controller);
@@ -139,6 +164,19 @@ public class MainWindowTest {
         replay(controller);
 
         window.usernameButton.doClick();
+
+        verify(controller);
+    }
+
+    @Test
+    public void testStatusButtonOnInvokingMethod() {
+        Controller controller = createMock(Controller.class);
+        AppTest.setAppController(controller);
+        controller.toggleConnectionStatus();
+        expectLastCall();
+        replay(controller);
+
+        window.statusButton.doClick();
 
         verify(controller);
     }

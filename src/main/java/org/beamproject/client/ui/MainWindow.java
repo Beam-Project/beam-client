@@ -34,6 +34,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
     final String DEFAULT_USERNAME = "Beamer";
+    final String STATUS_BUTTON_OFFLINE_LABEL = "Offline";
+    final String STATUS_BUTTON_ONLINE_LABEL = "Online";
     private final int DOUBLE_CLICK_NUMBER = 2;
     final static int MINIMAL_WINDOW_WIDTH_IN_PX = 270;
     final static int MINIMAL_WINDOW_HEIGHT_IN_PX = 500;
@@ -98,6 +100,23 @@ public class MainWindow extends javax.swing.JFrame {
         Exceptions.verifyArgumentsNotEmpty(username);
 
         usernameButton.setText(username);
+    }
+
+    public void labelStatusButtonAsOnline() {
+        statusButton.setText(STATUS_BUTTON_ONLINE_LABEL);
+    }
+
+    public void labelStatusButtonAsOffline() {
+        statusButton.setText(STATUS_BUTTON_OFFLINE_LABEL);
+    }
+
+    public void disableStatusButton() {
+        statusButton.setEnabled(false);
+        statusButton.setContentAreaFilled(false);
+    }
+
+    public void enableStatusButton() {
+        statusButton.setEnabled(true);
     }
 
     /**
@@ -378,7 +397,9 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_settingsButtonMouseExited
 
     private void statusButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseEntered
-        statusButton.setContentAreaFilled(true);
+        if (statusButton.isEnabled()) {
+            statusButton.setContentAreaFilled(true);
+        }
     }//GEN-LAST:event_statusButtonMouseEntered
 
     private void statusButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_statusButtonMouseExited
@@ -386,7 +407,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_statusButtonMouseExited
 
     private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
-        // TODO add your handling code here:
+        getController().toggleConnectionStatus();
     }//GEN-LAST:event_statusButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -396,7 +417,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane contactListScrollPane;
     javax.swing.JButton infoButton;
     javax.swing.JButton settingsButton;
-    private javax.swing.JButton statusButton;
+    javax.swing.JButton statusButton;
     private javax.swing.JPanel topPanel;
     private javax.swing.Box.Filler topPanelHorizontalFiller;
     javax.swing.JButton usernameButton;
