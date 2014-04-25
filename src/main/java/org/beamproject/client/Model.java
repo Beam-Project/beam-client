@@ -85,6 +85,12 @@ public class Model {
         this.server = server;
     }
 
+    /**
+     * Gets the server. If it is stored, it is loaded the first time.
+     * Afterwards, the server is kept in memory and just returned.
+     *
+     * @return The server, if available, {@code null} otherwise.
+     */
     public Participant getServer() {
         if (server == null
                 && getConfig().encryptedServerPublicKey() != null) {
