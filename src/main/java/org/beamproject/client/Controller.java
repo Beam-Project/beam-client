@@ -43,7 +43,6 @@ import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.crypto.KeyPairCryptor;
-import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.Base64;
 import org.beamproject.common.util.Exceptions;
 
