@@ -137,38 +137,39 @@ public class ModelTest {
         verify(model.user, model.server);
     }
 
-    public class UserAccessException extends RuntimeException {
+    public class AccessException extends RuntimeException {
 
         private static final long serialVersionUID = 1L;
     };
 
-    @Test(expected = UserAccessException.class)
+    @Test(expected = AccessException.class)
     public void testGetUserUrlOnUsingGetUser() {
-        model = new Model() {
+        new Model() {
             @Override
             public Participant getUser() {
-                throw new UserAccessException();
+                throw new AccessException();
             }
-        };
 
-        model.getUserUrl();
-    }
-
-    public class ServerAccessException extends RuntimeException {
-
-        private static final long serialVersionUID = 1L;
-    };
-
-    @Test(expected = ServerAccessException.class)
-    public void testGetUserUrlOnUsingGetServer() {
-        model = new Model() {
             @Override
             public Participant getServer() {
-                throw new ServerAccessException();
+                return Participant.generate();
             }
-        };
+        }.getUserUrl();
+    }
 
-        model.getUserUrl();
+    @Test(expected = AccessException.class)
+    public void testGetUserUrlOnUsingGetServer() {
+        new Model() {
+            @Override
+            public Participant getUser() {
+                return Participant.generate();
+            }
+
+            @Override
+            public Participant getServer() {
+                throw new AccessException();
+            }
+        }.getUserUrl();
     }
 
     @Test(expected = IllegalArgumentException.class)
