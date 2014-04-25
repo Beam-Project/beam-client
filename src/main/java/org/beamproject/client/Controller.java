@@ -107,13 +107,12 @@ public class Controller {
         Exceptions.verifyArgumentsNotNull(target);
         Exceptions.verifyArgumentsNotEmpty(content);
 
-        Message plaintext = assemblePlaintextMessage(target, content);
+        Message plaintext = assembleMessage(target, content);
         byte[] ciphertext = getCryptoPacker().packAndEncrypt(plaintext);
         byte[] response = sendCiphertextToNextServer(ciphertext, App.getConfig().serverUrl());
-        System.out.println("response: " + new String(response));
     }
 
-    private Message assemblePlaintextMessage(Contact target, String content) {
+    private Message assembleMessage(Contact target, String content) {
         Message plaintext = new Message(target.getServer());
         plaintext.putContent(MSG, content.getBytes());
 
