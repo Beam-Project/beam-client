@@ -18,7 +18,9 @@
  */
 package org.beamproject.client.ui.settings;
 
-import org.beamproject.client.App;
+import static org.beamproject.client.App.getConfig;
+import static org.beamproject.client.App.getController;
+import static org.beamproject.client.App.getModel;
 import org.beamproject.client.ui.Validators;
 import org.beamproject.common.Participant;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
@@ -37,11 +39,11 @@ public class IdentityPanel extends javax.swing.JPanel {
     }
     
     private void loadUsername() {
-        usernameTextField.setText(App.getConfig().username());
+        usernameTextField.setText(getConfig().username());
     }
 
     private void loadUserPublicKey() {
-        Participant participant = App.getModel().getUser();
+        Participant participant = getModel().getUser();
 
         if (participant != null) {
             userPublicKeyTextField.setText(participant.getPublicKeyAsBase58());
@@ -49,7 +51,7 @@ public class IdentityPanel extends javax.swing.JPanel {
     }
 
     private void loadServerPublicKey() {
-        Participant server = App.getModel().getServer();
+        Participant server = getModel().getServer();
 
         if (server != null) {
             serverPublicKeyTextField.setText(server.getPublicKeyAsBase58());
@@ -57,7 +59,7 @@ public class IdentityPanel extends javax.swing.JPanel {
     }
 
     private void loadServerUrl() {
-        serverUrlTextField.setText(App.getConfig().serverUrl());
+        serverUrlTextField.setText(getConfig().serverUrl());
     }
 
     @SuppressWarnings("unchecked")
@@ -167,30 +169,30 @@ public class IdentityPanel extends javax.swing.JPanel {
     private void usernameTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_usernameTextFieldPropertyChange
         String name = usernameTextField.getText().trim();
 
-        if (App.getConfig().username().equals(name)) {
+        if (getConfig().username().equals(name)) {
             return;
         }
 
         if (Validators.isUsernameValid(name)) {
-            App.getController().setUsername(name);
+            getController().setUsername(name);
         }
     }//GEN-LAST:event_usernameTextFieldPropertyChange
 
     private void serverUrlTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverUrlTextFieldPropertyChange
         String serverUrl = serverUrlTextField.getText().trim();
 
-        if (App.getConfig().serverUrl().equals(serverUrl)) {
+        if (getConfig().serverUrl().equals(serverUrl)) {
             return;
         }
 
         if (Validators.isServerHttpUrlValid(serverUrl)) {
-            App.getController().setServerUrl(serverUrl);
+            getController().setServerUrl(serverUrl);
         }
     }//GEN-LAST:event_serverUrlTextFieldPropertyChange
 
     private void serverPublicKeyTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverPublicKeyTextFieldPropertyChange
         String serverPublicKey = serverPublicKeyTextField.getText().trim();
-        Participant server = App.getModel().getServer();
+        Participant server = getModel().getServer();
 
         if (server != null && server.getPublicKeyAsBase58().equals(serverPublicKey)) {
             return;
@@ -199,7 +201,7 @@ public class IdentityPanel extends javax.swing.JPanel {
         if (Validators.isServerPublicKeyValid(serverPublicKey)) {
             byte[] publicKeyAsBytes = Base58.decode(serverPublicKey);
             server = new Participant(EccKeyPairGenerator.fromPublicKey(publicKeyAsBytes));
-            App.getController().setServer(server);
+            getController().setServer(server);
         }
     }//GEN-LAST:event_serverPublicKeyTextFieldPropertyChange
 
