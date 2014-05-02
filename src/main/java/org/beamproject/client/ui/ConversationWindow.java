@@ -26,7 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import org.beamproject.client.App;
 import org.beamproject.common.Contact;
 import org.beamproject.common.util.Exceptions;
 
@@ -186,7 +185,6 @@ public class ConversationWindow extends javax.swing.JFrame {
 
         if (message.length() > 0) {
             updateWindowWithMessage(message);
-            App.getController().sendMessage(contact, message);
         }
     }//GEN-LAST:event_sendButtonActionPerformed
 

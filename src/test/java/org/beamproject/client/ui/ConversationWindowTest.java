@@ -93,19 +93,13 @@ public class ConversationWindowTest {
     @Test
     public void testSendButtonActionPerformed() {
         replay(contact);
-        Controller controller = createMock(Controller.class);
-        controller.sendMessage(anyObject(Contact.class), anyString());
-        expectLastCall().anyTimes();
-        replay(controller);
 
-        AppTest.setAppController(controller);
         window.messageTextArea.setText("  hello \t ");
         assertEquals(0, window.messages.getModel().getSize());
 
         window.sendButton.doClick();
         assertEquals("hello", window.messagesModel.get(0));
         assertTrue(window.messageTextArea.getText().isEmpty());
-        verify(controller);
     }
 
 }
