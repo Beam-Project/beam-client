@@ -23,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.aeonbits.owner.ConfigFactory;
 import org.beamproject.common.util.ConfigWriter;
+import org.beamproject.common.util.Executor;
 
 /**
  * The main class of this application.
@@ -33,6 +34,7 @@ public class App {
     public final static Color ERROR_BACKGROUND = new Color(255, 153, 153);
     static ConfigWriter configWriter = new ConfigWriter();
     static Config config = ConfigFactory.create(Config.class);
+    static Executor executor = new Executor();
     static Controller controller;
     static Model model;
 
@@ -75,6 +77,10 @@ public class App {
 
     public static Config getConfig() {
         return config;
+    }
+
+    public static Executor getExecutor() {
+        return executor;
     }
 
 }

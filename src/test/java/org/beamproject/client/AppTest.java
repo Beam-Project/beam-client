@@ -19,6 +19,7 @@
 package org.beamproject.client;
 
 import org.beamproject.common.util.ConfigWriter;
+import org.beamproject.common.util.Executor;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -30,9 +31,17 @@ public class AppTest {
     }
 
     @Test
+    public void testStaticConstructor() {
+        assertNotNull(App.configWriter);
+        assertNotNull(App.config);
+        assertNotNull(App.executor);
+    }
+
+    @Test
     public void testStaticInits() {
         assertNotNull(App.configWriter);
         assertNotNull(App.config);
+        assertNotNull(App.executor);
     }
 
     @Test
@@ -57,6 +66,11 @@ public class AppTest {
     @Test
     public void testGetConfig() {
         assertSame(App.config, App.getConfig());
+    }
+
+    @Test
+    public void testGetExecutor() {
+        assertSame(App.executor, App.getExecutor());
     }
 
     /**
@@ -97,6 +111,16 @@ public class AppTest {
      */
     public static void setAppModel(Model model) {
         App.model = model;
+    }
+
+    /**
+     * Overwrites the existing {@link Executor} in {@link App} for unit testing
+     * purposes.
+     *
+     * @param executor The new executor.
+     */
+    public static void setAppExecutor(Executor executor) {
+        App.executor = executor;
     }
 
 }
