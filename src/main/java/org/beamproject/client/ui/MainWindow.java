@@ -102,12 +102,8 @@ public class MainWindow extends javax.swing.JFrame {
         usernameButton.setText(username);
     }
 
-    public void labelStatusButtonAsOnline() {
-        statusButton.setText(STATUS_BUTTON_ONLINE_LABEL);
-    }
-
-    public void labelStatusButtonAsOffline() {
-        statusButton.setText(STATUS_BUTTON_OFFLINE_LABEL);
+    public void labelStatusButtonAsConnected(boolean isOnline) {
+        statusButton.setText(isOnline ? STATUS_BUTTON_ONLINE_LABEL : STATUS_BUTTON_OFFLINE_LABEL);
     }
 
     public void disableStatusButton() {

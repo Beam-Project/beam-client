@@ -120,14 +120,11 @@ public class MainWindowTest {
     @Test
     public void testLabelStatusButtonAsOnline() {
         window.statusButton.setText("hello");
-        window.labelStatusButtonAsOnline();
+        window.labelStatusButtonAsConnected(true);
         assertEquals(window.STATUS_BUTTON_ONLINE_LABEL, window.statusButton.getText());
-    }
 
-    @Test
-    public void testLabelStatusButtonAsOffline() {
         window.statusButton.setText("hello");
-        window.labelStatusButtonAsOffline();
+        window.labelStatusButtonAsConnected(false);
         assertEquals(window.STATUS_BUTTON_OFFLINE_LABEL, window.statusButton.getText());
     }
 
