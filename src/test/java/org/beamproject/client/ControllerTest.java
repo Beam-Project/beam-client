@@ -32,13 +32,11 @@ import org.beamproject.client.ui.settings.SettingsWindowTest;
 import org.beamproject.common.Contact;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
-import org.beamproject.common.network.HttpConnector;
 import org.beamproject.common.util.ConfigWriter;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
-import org.junit.Ignore;
 
 public class ControllerTest {
 
@@ -80,7 +78,7 @@ public class ControllerTest {
     }
 
     @Test
-    public void testConstructorOnInstatiation() {
+    public void testConstructor() {
         replayMocks();
         assertTrue(controller.conversationWindows.isEmpty());
     }
@@ -166,39 +164,8 @@ public class ControllerTest {
         replayMocks();
 
         assertFalse(controller.isConnectedToServer());
-
-        controller.authenticationConnector = new HttpConnector(serverUrl);
-        assertFalse(controller.isConnectedToServer());
-
-        controller.wasLastKeepAliveOkay = true;
-        assertFalse(controller.isConnectedToServer());
-
         controller.session = createMock(Session.class);
         assertTrue(controller.isConnectedToServer());
-
-        controller.wasLastKeepAliveOkay = false;
-        assertFalse(controller.isConnectedToServer());
-
-        controller.wasLastKeepAliveOkay = true;
-        controller.authenticationConnector = null;
-        assertFalse(controller.isConnectedToServer());
-    }
-
-    @Test
-    public void testDisconnectFromServer() {
-        controller.mainWindow = mainWindow;
-        mainWindow.labelStatusButtonAsOffline();
-        expectLastCall();
-        replayMocks();
-
-        controller.authenticationConnector = new HttpConnector(serverUrl);
-        controller.session = createMock(Session.class);
-        controller.wasLastKeepAliveOkay = true;
-        controller.disconnectFromServer();
-
-        assertNull(controller.authenticationConnector);
-        assertNull(controller.session);
-        assertFalse(controller.wasLastKeepAliveOkay);
     }
 
     @Test
@@ -210,25 +177,6 @@ public class ControllerTest {
         assertFalse(controller.isServerUrlAvailable("ftp://example.com"));
         assertTrue(controller.isServerUrlAvailable("http://example.com"));
         assertTrue(controller.isServerUrlAvailable("http://192.168.0.1"));
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testGetServerUrlOnNull() {
-        replayMocks();
-        controller.getServerUrl(null);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testGetServerUrlOnInvalidString() {
-        replayMocks();
-        controller.getServerUrl("hallo");
-    }
-
-    @Test
-    public void testGetServerUrl() {
-        replayMocks();
-        URL url = controller.getServerUrl(SERVER_URL_AS_STRING);
-        assertEquals(SERVER_URL_AS_STRING, url.toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -266,27 +214,6 @@ public class ControllerTest {
         replayMocks();
 
         controller.writeContactListStorage();
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSendMessageOnNullTarget() {
-        replayMocks();
-        controller.sendMessage(null, "message");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSendMessageOnEmptyMessage() {
-        replayMocks();
-        controller.sendMessage(contact, "");
-    }
-
-    @Ignore // Only wirks if the server is running
-    @Test
-    public void testSendMessage() {
-        Participant server = Participant.generate();
-        Participant user = Participant.generate();
-        Contact messageContact = new Contact(server, user, "john");
-        controller.sendMessage(messageContact, "hello");
     }
 
     @Test
@@ -391,6 +318,25 @@ public class ControllerTest {
         assertFalse(window.isDisplayable());
         assertNull(controller.settingsWindow);
     }
+    
+    @Test
+    public void testGetSession() {
+        replayMocks();
+        
+        assertNull(controller.getSession());
+        controller.session = new Session(Participant.generate(), "key".getBytes());
+        assertSame(controller.session, controller.getSession());
+    }
+    
+    @Test
+    public void testSetSession() {
+        replayMocks();
+
+        Session session = new Session(Participant.generate(), "key".getBytes());;
+        controller.setSession(session);
+        assertSame(session, controller.session);
+    }
+    
 
     @Test
     public void testGetMainWindowOnNotExistingWindow() {

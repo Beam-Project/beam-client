@@ -23,11 +23,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import static org.beamproject.client.App.configWriter;
 import static org.beamproject.client.App.getConfig;
+import static org.beamproject.client.App.getExecutor;
 import static org.beamproject.client.App.getModel;
-import org.beamproject.common.network.HttpConnector;
 import org.beamproject.client.storage.Storage;
 import org.beamproject.client.ui.ConversationWindow;
 import org.beamproject.client.ui.Frames;
@@ -36,15 +35,10 @@ import org.beamproject.client.ui.MainWindow;
 import org.beamproject.client.ui.SetUpDialog;
 import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.common.Contact;
-import org.beamproject.common.Message;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
-import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.EncryptedKeyPair;
-import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.crypto.KeyPairCryptor;
-import org.beamproject.common.util.Base64;
-import org.beamproject.common.util.Exceptions;
 
 /**
  * The controller manages the activities between the components, typically
@@ -57,9 +51,6 @@ public class Controller {
     List<ConversationWindow> conversationWindows = new ArrayList<>();
     InfoWindow infoWindow;
     SettingsWindow settingsWindow;
-    CryptoPacker cryptoPacker;
-    HttpConnector authenticationConnector;
-    boolean wasLastKeepAliveOkay;
     Session session;
 
     public void loadUser() {
@@ -108,57 +99,12 @@ public class Controller {
     }
 
     public void toggleConnectionStatus() {
-        if (isConnectedToServer()) {
-            disconnectFromServer();
-        } else {
-            connectToServer();
-        }
+        boolean doConnect = !isConnectedToServer();
+        getExecutor().runAsync(new ConnectorTask(doConnect));
     }
 
     boolean isConnectedToServer() {
-        return authenticationConnector != null && session != null && wasLastKeepAliveOkay;
-    }
-
-    void disconnectFromServer() {
-        authenticationConnector = null;
-        session = null;
-        wasLastKeepAliveOkay = false;
-        getMainWindow().labelStatusButtonAsOffline();
-    }
-
-    void connectToServer() {
-        getMainWindow().disableStatusButton();
-
-        final String url = getConfig().serverUrl();
-
-        if (!isServerUrlAvailable(url) || getModel().getServer() == null) {
-            showNotEverythingForConnectionConfiguredDialog();
-            getMainWindow().enableStatusButton();
-            return;
-        }
-
-        EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                disconnectFromServer();
-
-                Participant server = getModel().getServer();
-                authenticationConnector = new HttpConnector(getServerUrl(url + getConfig().serverAuthenticationPath()));
-                HandshakeChallenger challenger = new HandshakeChallenger(getModel().getUser());
-
-                Message challenge = challenger.produceChallenge(server);
-                Message response = sendAndResponseMessage(server, challenge);
-                challenger.consumeResponse(response);
-                Message success = challenger.produceSuccess();
-                sendMessage(server, success);
-
-                session = new Session(server, challenger.getSessionKey());
-                wasLastKeepAliveOkay = true;
-                getMainWindow().labelStatusButtonAsOnline();
-                getMainWindow().enableStatusButton();
-            }
-        });
+        return session != null;
     }
 
     boolean isServerUrlAvailable(String serverUrl) {
@@ -168,30 +114,6 @@ public class Controller {
         } catch (MalformedURLException ex) {
             return false;
         }
-    }
-
-    URL getServerUrl(String serverUrl) {
-        try {
-            return new URL(serverUrl);
-        } catch (MalformedURLException ex) {
-            throw new IllegalStateException("The given URL is not valid: " + ex.getMessage());
-        }
-    }
-
-    private void showNotEverythingForConnectionConfiguredDialog() {
-        EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                JOptionPane.showMessageDialog(null,
-                        "<html>Unfortunately, the configuration of your accout is incomple.<br />"
-                        + "Please go to <i>Settings > Identity</i> and compete it.<br />"
-                        + "Make sure to enter a valid <b>Server URL</b>, combined with the <b>Public Key</b> of that server. </html>",
-                        "Server Not Configured",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-
     }
 
     public void openConversationWindow(Contact contact) {
@@ -225,29 +147,6 @@ public class Controller {
 
         ContactList list = getModel().getContactList();
         getModel().getContactListStorage().store(list);
-    }
-
-    public void sendMessage(Contact target, String content) {
-        Exceptions.verifyArgumentsNotNull(target);
-        Exceptions.verifyArgumentsNotEmpty(content);
-
-        //TODO implement this with executors
-    }
-
-    public Message sendAndResponseMessage(Participant recipient, Message message) {
-        Exceptions.verifyArgumentsNotNull(recipient, message);
-
-        byte[] ciphertextRequest = getCryptoPacker().packAndEncrypt(message);
-        byte[] base64CiphertextResponse = authenticationConnector.excutePost(ciphertextRequest);
-        byte[] ciphertextResponse = Base64.decode(new String(base64CiphertextResponse).trim());
-        return getCryptoPacker().decryptAndUnpack(ciphertextResponse, getModel().getUser());
-    }
-
-    public void sendMessage(Participant recipient, Message message) {
-        Exceptions.verifyArgumentsNotNull(recipient, message);
-
-        byte[] ciphertextRequest = getCryptoPacker().packAndEncrypt(message);
-        authenticationConnector.excutePost(ciphertextRequest);
     }
 
     public void showMainWindow() {
@@ -295,6 +194,14 @@ public class Controller {
         settingsWindow = null;
     }
 
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
     public MainWindow getMainWindow() {
         if (mainWindow == null) {
             mainWindow = new MainWindow();
@@ -326,14 +233,6 @@ public class Controller {
         }
 
         return settingsWindow;
-    }
-
-    private CryptoPacker getCryptoPacker() {
-        if (cryptoPacker == null) {
-            cryptoPacker = new CryptoPacker();
-        }
-
-        return cryptoPacker;
     }
 
 }
