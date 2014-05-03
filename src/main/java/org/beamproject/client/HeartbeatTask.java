@@ -64,8 +64,7 @@ public class HeartbeatTask implements Task {
     public void run() {
         while (doWork) {
             try {
-                heartbeat = new Message(session.getRemoteParticipant());
-                heartbeat.putContent(TYPE, HEARTBEAT);
+                heartbeat = new Message(HEARTBEAT, session.getRemoteParticipant());
                 heartbeat.putContent(HSPUBKEY, session.getKey());
                 sender.send(heartbeat);
                 sleep(SLEEP_TIME_BETWEEN_HEARTBEATS_IN_MILLISECONDS);
