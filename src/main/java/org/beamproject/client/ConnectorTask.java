@@ -100,7 +100,7 @@ public class ConnectorTask implements Task {
     }
 
     void prepareConnection() {
-        serverUrl = getServerUrl(serverUrlAsString + getConfig().serverAuthenticationPath());
+        serverUrl = getServerUrl(serverUrlAsString);
         sender = new MessageSender(serverUrl, user);
     }
 
