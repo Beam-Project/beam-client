@@ -328,7 +328,7 @@ public class ControllerTest {
     public void testSetSession() {
         replayMocks();
 
-        Session session = new Session(Participant.generate(), "key".getBytes());;
+        Session session = new Session(Participant.generate(), "key".getBytes());
         controller.setSession(session);
         assertSame(session, controller.session);
     }
