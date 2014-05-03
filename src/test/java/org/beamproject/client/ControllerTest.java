@@ -19,7 +19,6 @@
 package org.beamproject.client;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import javax.swing.JPanel;
 import static org.beamproject.client.App.getConfig;
 import static org.easymock.EasyMock.*;
@@ -41,12 +40,10 @@ import org.junit.Before;
 public class ControllerTest {
 
     private final String SERVER_URL_AS_STRING = "http://srv.beamproject.org";
-    private URL serverUrl;
     private Controller controller;
     private Model model;
     private Contact contact;
     private Storage<ContactList> storage;
-    private ContactList contactList;
     private MainWindow mainWindow;
     private ConfigWriter writer;
 
@@ -54,27 +51,27 @@ public class ControllerTest {
     @SuppressWarnings("unchecked")
     public void setUp() throws MalformedURLException {
         ConfigTest.loadDefaultConfig();
-        model = createMock(Model.class);
         contact = createMock(Contact.class);
         storage = createMock(Storage.class);
         mainWindow = createMock(MainWindow.class);
         writer = createMock(ConfigWriter.class);
+        model = new Model();
+        model.contactList = new ContactList();
+        model.contactListStorage = storage;
         AppTest.setAppConfigWriter(writer);
         AppTest.setAppModel(model);
-        contactList = new ContactList();
         controller = new Controller();
-        serverUrl = new URL(SERVER_URL_AS_STRING);
 
         App.controller = controller;
     }
 
     @After
     public void verifyMocks() {
-        verify(writer, model, contact, storage, mainWindow);
+        verify(writer, contact, storage, mainWindow);
     }
 
     private void replayMocks() {
-        replay(writer, model, contact, storage, mainWindow);
+        replay(writer, contact, storage, mainWindow);
     }
 
     @Test
@@ -97,7 +94,6 @@ public class ControllerTest {
         String username = "Timmeeee";
         writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
         expectLastCall().anyTimes();
-        expect(model.getContactList()).andReturn(contactList);
         replayMocks();
 
         controller.setUsername(username);
@@ -106,25 +102,10 @@ public class ControllerTest {
     }
 
     @Test
-    public void testAddContactOnInvocingModelOnNull() {
-        model.addContact(anyObject(Contact.class));
-        expectLastCall().once();
-        expect(model.getContactListStorage()).andReturn(storage).anyTimes();
-        expect(model.getContactList()).andReturn(contactList);
-        storage.store(contactList);
-        expectLastCall();
-        replayMocks();
-
-        controller.addContact(null); // should just invoke model
-    }
-
-    @Test
     public void testSetServer() {
         Participant server = Participant.generate();
         writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
         expectLastCall().anyTimes();
-        model.setServer(server);
-        expectLastCall();
         replayMocks();
 
         getConfig().removeProperty("serverSalt");
@@ -134,6 +115,7 @@ public class ControllerTest {
 
         assertTrue(getConfig().serverSalt().length() > 20);
         assertTrue(getConfig().encryptedServerPublicKey().length() > 40);
+        assertSame(server, model.server);
     }
 
     @Test
@@ -148,15 +130,13 @@ public class ControllerTest {
 
     @Test
     public void testAddContact() {
-        model.addContact(anyObject(Contact.class));
-        expectLastCall().once();
-        expect(model.getContactListStorage()).andReturn(storage).anyTimes();
-        expect(model.getContactList()).andReturn(contactList);
-        storage.store(contactList);
+        storage.store(model.contactList);
         expectLastCall();
         replayMocks();
 
         controller.addContact(contact);
+
+        assertSame(contact, model.contactList.get(0));
     }
 
     @Test
@@ -199,17 +179,15 @@ public class ControllerTest {
 
     @Test(expected = IllegalStateException.class)
     public void testWriteContactStorageOnNotExistingStorage() {
-        expect(model.getContactListStorage()).andReturn(null);
         replayMocks();
+        model.contactListStorage = null;
 
         controller.writeContactListStorage();
     }
 
     @Test
     public void testWriteContactStorage() {
-        expect(model.getContactListStorage()).andReturn(storage).times(2);
-        expect(model.getContactList()).andReturn(contactList);
-        storage.store(contactList);
+        storage.store(model.contactList);
         expectLastCall();
         replayMocks();
 
@@ -218,18 +196,24 @@ public class ControllerTest {
 
     @Test
     public void testIsFirstStart() {
-        expect(model.getUser()).andReturn(null);
-        expect(model.getUser()).andReturn(createMock(Participant.class));
         replayMocks();
 
+        model.user = null;
         assertTrue(controller.isFirstStart());
+        model.user = Participant.generate();
         assertFalse(controller.isFirstStart());
     }
 
     @Test
     public void testShowInfoWindow() {
-        expect(model.getUserUrl()).andReturn("url").times(2);
         replayMocks();
+
+        model = new Model() {
+            @Override
+            public String getUserUrl() {
+                return "url";
+            }
+        };
         assertNull(controller.infoWindow);
         controller.showInfoWindow();
         assertTrue(controller.infoWindow.isVisible());
@@ -237,8 +221,14 @@ public class ControllerTest {
 
     @Test
     public void testShowInfoWindowOnReusingExistingWindow() {
-        expect(model.getUserUrl()).andReturn("url").times(2);
         replayMocks();
+
+        model = new Model() {
+            @Override
+            public String getUserUrl() {
+                return "url";
+            }
+        };
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
         assertFalse(window.isVisible());
@@ -250,8 +240,14 @@ public class ControllerTest {
 
     @Test
     public void testCloseInfoWindow() {
-        expect(model.getUserUrl()).andReturn("url").times(2);
         replayMocks();
+
+        model = new Model() {
+            @Override
+            public String getUserUrl() {
+                return "url";
+            }
+        };
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
         controller.infoWindow.setVisible(true);
@@ -266,8 +262,8 @@ public class ControllerTest {
     @Test
     public void testShowSettingsWindow() {
         replayMocks();
-        assertNull(controller.settingsWindow);
 
+        assertNull(controller.settingsWindow);
         controller.showSettingsWindow();
 
         JPanel activeContentPanel = SettingsWindowTest.getContentPanel(controller.settingsWindow);
@@ -278,12 +274,12 @@ public class ControllerTest {
     @Test
     public void testShowSettingsWindowOnReusingExistingWindow() {
         replayMocks();
+
         SettingsWindow window = new SettingsWindow();
         controller.settingsWindow = window;
         assertFalse(window.isVisible());
 
         controller.showSettingsWindow();
-
         assertSame(window, controller.settingsWindow);
         assertTrue(controller.settingsWindow.isVisible());
     }
@@ -318,16 +314,16 @@ public class ControllerTest {
         assertFalse(window.isDisplayable());
         assertNull(controller.settingsWindow);
     }
-    
+
     @Test
     public void testGetSession() {
         replayMocks();
-        
+
         assertNull(controller.getSession());
         controller.session = new Session(Participant.generate(), "key".getBytes());
         assertSame(controller.session, controller.getSession());
     }
-    
+
     @Test
     public void testSetSession() {
         replayMocks();
@@ -336,11 +332,9 @@ public class ControllerTest {
         controller.setSession(session);
         assertSame(session, controller.session);
     }
-    
 
     @Test
     public void testGetMainWindowOnNotExistingWindow() {
-        expect(model.getContactList()).andReturn(contactList);
         replayMocks();
 
         assertNull(controller.mainWindow);
