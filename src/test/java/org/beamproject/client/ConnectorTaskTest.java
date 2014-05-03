@@ -18,7 +18,6 @@
  */
 package org.beamproject.client;
 
-import java.net.URL;
 import static org.beamproject.client.App.getConfig;
 import org.beamproject.client.ui.MainWindow;
 import org.beamproject.common.Message;
@@ -89,6 +88,17 @@ public class ConnectorTaskTest {
         assertEquals(SERVER_URL_AS_STRING, task.serverUrlAsString);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testPrepareConnectionOnNoServerUrl() {
+        task.prepareConnection();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testPrepareConnectionOnInvalidServerUrl() {
+        task.serverUrlAsString = "hello";
+        task.prepareConnection();
+    }
+
     @Test
     public void testPrepareConnection() {
         task.user = user;
@@ -104,22 +114,6 @@ public class ConnectorTaskTest {
         assertNull(task.challenger);
         task.prepareHandshake();
         assertNotNull(task.challenger);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testGetServerUrlOnNull() {
-        task.getServerUrl(null);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testGetServerUrlOnInvalidString() {
-        task.getServerUrl("hallo");
-    }
-
-    @Test
-    public void testGetServerUrl() {
-        URL url = task.getServerUrl(SERVER_URL_AS_STRING);
-        assertEquals(SERVER_URL_AS_STRING, url.toString());
     }
 
     @Test

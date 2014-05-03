@@ -100,20 +100,17 @@ public class ConnectorTask implements Task {
     }
 
     void prepareConnection() {
-        serverUrl = getServerUrl(serverUrlAsString);
+        try {
+            serverUrl = new URL(serverUrlAsString);
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException("The given URL is not valid: " + ex.getMessage());
+        }
+
         sender = new MessageSender(serverUrl, user);
     }
 
     void prepareHandshake() {
         challenger = new HandshakeChallenger(model.getUser());
-    }
-
-    URL getServerUrl(String serverUrl) {
-        try {
-            return new URL(serverUrl);
-        } catch (MalformedURLException ex) {
-            throw new IllegalStateException("The given URL is not valid: " + ex.getMessage());
-        }
     }
 
     void executeHandshake() {
