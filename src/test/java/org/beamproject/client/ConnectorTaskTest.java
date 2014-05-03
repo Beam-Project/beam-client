@@ -94,7 +94,7 @@ public class ConnectorTaskTest {
         task.user = user;
         task.serverUrlAsString = SERVER_URL_AS_STRING;
         task.prepareConnection();
-        assertEquals(task.serverUrl.toString(), SERVER_URL_AS_STRING + getConfig().serverAuthenticationPath());
+        assertEquals(task.serverUrl.toString(), SERVER_URL_AS_STRING);
         assertNotNull(task.sender);
     }
 
