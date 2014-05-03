@@ -54,9 +54,6 @@ public interface Config extends ConfigBase {
     @DefaultValue("")
     String serverUrl();
 
-    @DefaultValue("authentication")
-    String serverAuthenticationPath();
-
     @DefaultValue("-1")
     int windowPositionX();
 
