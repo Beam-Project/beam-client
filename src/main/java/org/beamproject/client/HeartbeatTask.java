@@ -66,7 +66,7 @@ public class HeartbeatTask implements Task {
             try {
                 heartbeat = new Message(session.getRemoteParticipant());
                 heartbeat.putContent(TYPE, HEARTBEAT);
-                heartbeat.putContent(CRPUBKEY, session.getKey());
+                heartbeat.putContent(HSPUBKEY, session.getKey());
                 sender.send(heartbeat);
                 sleep(SLEEP_TIME_BETWEEN_HEARTBEATS_IN_MILLISECONDS);
             } catch (InterruptedException ex) {
