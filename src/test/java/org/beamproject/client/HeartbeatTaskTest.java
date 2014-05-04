@@ -22,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import static org.beamproject.client.App.getConfig;
 import org.beamproject.common.Message;
+import static org.beamproject.common.MessageField.ContentField.*;
+import static org.beamproject.common.MessageField.ContentField.TypeValue.*;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
 import org.beamproject.common.network.MessageSender;
@@ -36,6 +38,7 @@ import org.junit.Before;
 
 public class HeartbeatTaskTest {
 
+    private final byte[] KEY = "key".getBytes();
     private HeartbeatTask task;
     private Controller controller;
     private Model model;
@@ -49,7 +52,7 @@ public class HeartbeatTaskTest {
         model.server = Participant.generate();
         AppTest.setAppModel(model);
         controller = new Controller();
-        controller.session = new Session(model.server, "key".getBytes());
+        controller.session = new Session(model.server, KEY);
         AppTest.setAppController(controller);
 
         task = new HeartbeatTask();
@@ -90,6 +93,9 @@ public class HeartbeatTaskTest {
             @Override
             public void send(Message message) {
                 assertSame(task.heartbeat, message);
+                assertEquals(HEARTBEAT, message.getType());
+                assertArrayEquals(KEY, message.getContent(HBKEY));
+                assertEquals(24, new String(message.getContent(HBTS)).length());
                 task.doWork = false;
             }
         });

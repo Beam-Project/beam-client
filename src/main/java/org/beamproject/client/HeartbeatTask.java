@@ -28,8 +28,10 @@ import static org.beamproject.common.MessageField.ContentField.*;
 import static org.beamproject.common.MessageField.ContentField.TypeValue.*;
 import org.beamproject.common.Session;
 import org.beamproject.common.network.MessageSender;
+import org.beamproject.common.network.NetworkException;
 import org.beamproject.common.util.ExecutorException;
 import org.beamproject.common.util.Task;
+import org.beamproject.common.util.Timestamps;
 
 /**
  * This task can is used to ensure the connection and session to the keep alive.
@@ -65,10 +67,11 @@ public class HeartbeatTask implements Task {
         while (doWork) {
             try {
                 heartbeat = new Message(HEARTBEAT, session.getRemoteParticipant());
-                heartbeat.putContent(HSPUBKEY, session.getKey());
+                heartbeat.putContent(HBKEY, session.getKey());
+                heartbeat.putContent(HBTS, Timestamps.getIso8601UtcTimestamp());
                 sender.send(heartbeat);
                 sleep(SLEEP_TIME_BETWEEN_HEARTBEATS_IN_MILLISECONDS);
-            } catch (InterruptedException ex) {
+            } catch (NetworkException | InterruptedException ex) {
                 throw new ExecutorException("The heartbeat thread was interrupted during sleep: " + ex.getMessage());
             }
         }
