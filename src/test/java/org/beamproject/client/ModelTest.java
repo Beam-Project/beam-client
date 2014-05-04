@@ -40,6 +40,8 @@ public class ModelTest {
 
     @Before
     public void setUp() {
+        ConfigTest.loadDefaultConfig();
+        
         user = new User(USERNAME, KEY_PAIR);
         model = new Model();
     }
@@ -97,6 +99,8 @@ public class ModelTest {
 
     @Test
     public void testGetServerWhenExistingInConfig() {
+        model.user = null;
+        putUserInConfig();
         Server server = Server.generate();
         getConfig().setProperty("serverAddress", server.getAddress());
 
