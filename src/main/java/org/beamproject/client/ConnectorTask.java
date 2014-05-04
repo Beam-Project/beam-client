@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import static org.beamproject.client.App.getConfig;
 import static org.beamproject.client.App.getController;
+import static org.beamproject.client.App.getExecutor;
 import static org.beamproject.client.App.getModel;
 import org.beamproject.client.ui.Dialogs;
 import org.beamproject.client.ui.MainWindow;
@@ -77,7 +78,9 @@ public class ConnectorTask implements Task {
             if (doConnect) {
                 prepareHandshake();
                 executeHandshake();
+                activateHeartbeat();
             } else {
+                deactivateHeartbeat();
                 disconnect();
             }
 
@@ -120,6 +123,20 @@ public class ConnectorTask implements Task {
         success = challenger.produceSuccess();
         sender.send(success);
         controller.session = new Session(server, challenger.getSessionKey());
+    }
+
+    void activateHeartbeat() {
+        deactivateHeartbeat();
+
+        getModel().setHeartbeatTask(new HeartbeatTask());
+        getExecutor().runAsync(getModel().getHeartbeatTask());
+    }
+
+    void deactivateHeartbeat() {
+        if (getModel().getHeartbeatTask() != null) {
+            getModel().getHeartbeatTask().shutdown();
+            getModel().removeHeartbeatTask();
+        }
     }
 
     void disconnect() {

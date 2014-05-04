@@ -25,12 +25,16 @@ import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.network.MessageSender;
+import org.beamproject.common.util.Executor;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.IsEqual.equalTo;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -43,10 +47,13 @@ public class ConnectorTaskTest {
     private Model model;
     private MainWindow window;
     private Participant user, server;
+    private Executor executor;
 
     @Before
     public void setUp() {
         ConfigTest.loadDefaultConfig();
+        executor = createMock(Executor.class);
+        AppTest.setAppExecutor(executor);
         user = Participant.generate();
         server = Participant.generate();
 
@@ -143,6 +150,53 @@ public class ConnectorTaskTest {
         assertArrayEquals("key".getBytes(), controller.getSession().getKey());
         assertSame(server, controller.getSession().getRemoteParticipant());
         verify(task.challenger, task.sender);
+    }
+
+    @Test
+    public void testActivateHeartbeatOnExistingHeartbeat() {
+        prepareHeartbeatTest();
+
+        HeartbeatTask existing = new HeartbeatTask();
+        assertTrue(existing.doWork);
+        model.heartbeatTask = existing;
+
+        task.activateHeartbeat();
+        assertFalse(existing.doWork);
+        assertThat(model.heartbeatTask, not(equalTo(existing)));
+        assertTrue(model.heartbeatTask.doWork);
+
+        verify(executor);
+    }
+
+    @Test
+    public void testActivateHeartbeatOnNewHeartbeat() {
+        prepareHeartbeatTest();
+
+        task.activateHeartbeat();
+        assertTrue(model.heartbeatTask.doWork);
+
+        verify(executor);
+    }
+
+    private void prepareHeartbeatTest() {
+        getConfig().setProperty("serverUrl", SERVER_URL_AS_STRING);
+        controller.session = new Session(server, "key".getBytes());
+        executor.runAsync(anyObject(HeartbeatTask.class));
+        expectLastCall();
+        replay(executor);
+    }
+
+    @Test
+    public void testDeactivateHeartbeat() {
+        prepareHeartbeatTest();
+
+        HeartbeatTask existing = new HeartbeatTask();
+        assertTrue(existing.doWork);
+        model.heartbeatTask = existing;
+
+        task.deactivateHeartbeat();
+        assertFalse(existing.doWork);
+        assertNull(model.heartbeatTask);
     }
 
     @Test
