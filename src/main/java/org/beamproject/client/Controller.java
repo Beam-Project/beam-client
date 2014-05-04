@@ -18,7 +18,6 @@
  */
 package org.beamproject.client;
 
-import java.awt.EventQueue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,6 +38,7 @@ import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
+import org.beamproject.common.util.Task;
 
 /**
  * The controller manages the activities between the components, typically
@@ -150,7 +150,7 @@ public class Controller {
     }
 
     public void showMainWindow() {
-        EventQueue.invokeLater(new Runnable() {
+        getExecutor().runAsync(new Task() {
             @Override
             public void run() {
                 mainWindow = getMainWindow();
@@ -206,7 +206,7 @@ public class Controller {
         if (mainWindow == null) {
             mainWindow = new MainWindow();
             Frames.setIcons(mainWindow);
-            EventQueue.invokeLater(new Runnable() {
+            getExecutor().runAsync(new Task() {
                 @Override
                 public void run() {
                     readContactListStorage();
