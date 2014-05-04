@@ -204,6 +204,33 @@ public class ModelTest {
         assertSame(storage, model.getContactListStorage());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetHeartbeatTaskOnNull() {
+        model.setHeartbeatTask(null);
+    }
+
+    @Test
+    public void testSetHeartbeatTask() {
+        HeartbeatTask task = createMock(HeartbeatTask.class);
+        model.setHeartbeatTask(task);
+        assertSame(task, model.heartbeatTask);
+    }
+
+    @Test
+    public void testGetHeartbeatTask() {
+        assertNull(model.getHeartbeatTask());
+        model.heartbeatTask = createMock(HeartbeatTask.class);
+        assertSame(model.heartbeatTask, model.getHeartbeatTask());
+    }
+
+    @Test
+    public void testTerminateHeartbeatTask() {
+        HeartbeatTask task = createMock(HeartbeatTask.class);
+        model.heartbeatTask = task;
+        model.removeHeartbeatTask();
+        assertNull(model.heartbeatTask);
+    }
+
     /**
      * Sets the given user to the given {@link Model}. This can be used for unit
      * testing purposes.

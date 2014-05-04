@@ -35,6 +35,7 @@ public class Model {
     Participant server;
     Storage<ContactList> contactListStorage;
     ContactList contactList = new ContactList();
+    HeartbeatTask heartbeatTask;
 
     /**
      * Sets the given user to this {@link Model}.
@@ -130,4 +131,29 @@ public class Model {
     public Storage<ContactList> getContactListStorage() {
         return contactListStorage;
     }
+
+    /**
+     * Sets the given {@link HeartbeatTask} to this model.
+     *
+     * @param task The task to set.
+     * @throws IllegalArgumentException If the argument is null.
+     */
+    public void setHeartbeatTask(HeartbeatTask task) {
+        Exceptions.verifyArgumentsNotNull(task);
+
+        this.heartbeatTask = task;
+    }
+
+    public HeartbeatTask getHeartbeatTask() {
+        return heartbeatTask;
+    }
+
+    /**
+     * Sets the reference to the local {@link HeartbeatTask} reference to null.
+     * This has no effect if the reference already points to null.
+     */
+    public void removeHeartbeatTask() {
+        heartbeatTask = null;
+    }
+
 }
