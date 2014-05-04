@@ -1,14 +1,14 @@
 /*
  * Copyright (C) 2013, 2014 beamproject.org
  *
- * This file is part of beam-user.
+ * This file is part of beam-contact.
  *
- * beam-user is free software: you can redistribute it and/or modify
+ * beam-contact is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * beam-user is distributed in the hope that it will be useful,
+ * beam-contact is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -21,7 +21,7 @@ package org.beamproject.client.ui;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.AppTest;
 import org.beamproject.client.Controller;
-import org.beamproject.common.Contact;
+import org.beamproject.common.User;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -29,13 +29,13 @@ import org.junit.Before;
 public class ConversationWindowTest {
 
     private ConversationWindow window;
-    private Contact contact;
+    private User contact;
     private final String NAME = "contactName";
 
     @Before
     public void setUp() {
         window = new ConversationWindow();
-        contact = createMock(Contact.class);
+        contact = createMock(User.class);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ConversationWindowTest {
 
     @Test
     public void testSetContactsOnAssignment() {
-        expect(contact.getName()).andReturn(NAME);
+        expect(contact.getUsername()).andReturn(NAME);
         replay(contact);
 
         window.setContact(contact);
@@ -63,7 +63,7 @@ public class ConversationWindowTest {
 
     @Test
     public void testSetContactUpdatingNames() {
-        expect(contact.getName()).andReturn(NAME);
+        expect(contact.getUsername()).andReturn(NAME);
         replay(contact);
 
         window.setContact(contact);

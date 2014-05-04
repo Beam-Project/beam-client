@@ -42,7 +42,7 @@ public class App {
         setNativeLookAndFeel();
         loadControllerAndModel();
         controller.showMainWindow();
-        controller.loadUser();
+        controller.generateUserAndShowDialogOnFirstStart();
     }
 
     private static void setNativeLookAndFeel() {

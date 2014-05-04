@@ -22,44 +22,29 @@ import static org.beamproject.client.App.getConfig;
 import static org.beamproject.client.App.getController;
 import static org.beamproject.client.App.getModel;
 import org.beamproject.client.ui.Validators;
-import org.beamproject.common.Participant;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
-import org.beamproject.common.util.Base58;
+import org.beamproject.common.User;
 
 public class IdentityPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
+    public static final String SERVER_ADDRESS_PLACEHOLDER = "Not configured yet...";
 
     public IdentityPanel() {
         initComponents();
         loadUsername();
-        loadUserPublicKey();
-        loadServerUrl();
-        loadServerPublicKey();
+        loadServerAddress();
     }
-    
+
     private void loadUsername() {
         usernameTextField.setText(getConfig().username());
     }
 
-    private void loadUserPublicKey() {
-        Participant participant = getModel().getUser();
+    private void loadServerAddress() {
+        User user = getModel().getUser();
 
-        if (participant != null) {
-            userPublicKeyTextField.setText(participant.getPublicKeyAsBase58());
-        }
-    }
-
-    private void loadServerPublicKey() {
-        Participant server = getModel().getServer();
-
-        if (server != null) {
-            serverPublicKeyTextField.setText(server.getPublicKeyAsBase58());
-        }
-    }
-
-    private void loadServerUrl() {
-        serverUrlTextField.setText(getConfig().serverUrl());
+        serverAddressValueLabel.setText(user.isServerSet()
+                ? user.getAddress()
+                : SERVER_ADDRESS_PLACEHOLDER);
     }
 
     @SuppressWarnings("unchecked")
@@ -68,14 +53,10 @@ public class IdentityPanel extends javax.swing.JPanel {
 
         usernameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
-        keyMaterialLabel = new javax.swing.JLabel();
-        userPublicKeyLabel = new javax.swing.JLabel();
-        userPublicKeyTextField = new javax.swing.JTextField();
         serverLabel = new javax.swing.JLabel();
-        serverUrlLabel = new javax.swing.JLabel();
-        serverUrlTextField = new javax.swing.JTextField();
-        serverPublicKeyLabel = new javax.swing.JLabel();
-        serverPublicKeyTextField = new javax.swing.JTextField();
+        serverAddressLabel = new javax.swing.JLabel();
+        changeServerAddressButton = new javax.swing.JButton();
+        serverAddressValueLabel = new javax.swing.JLabel();
 
         usernameLabel.setText("Your Name:");
 
@@ -85,31 +66,22 @@ public class IdentityPanel extends javax.swing.JPanel {
             }
         });
 
-        keyMaterialLabel.setFont(keyMaterialLabel.getFont().deriveFont(keyMaterialLabel.getFont().getStyle() | java.awt.Font.BOLD));
-        keyMaterialLabel.setText("Key Material");
-
-        userPublicKeyLabel.setText("Public Key:");
-
-        userPublicKeyTextField.setEditable(false);
-
         serverLabel.setFont(serverLabel.getFont().deriveFont(serverLabel.getFont().getStyle() | java.awt.Font.BOLD));
         serverLabel.setText("Server");
 
-        serverUrlLabel.setText("URL:");
+        serverAddressLabel.setText("Address:");
 
-        serverUrlTextField.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                serverUrlTextFieldPropertyChange(evt);
+        changeServerAddressButton.setText("Change...");
+        changeServerAddressButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeServerAddressButtonActionPerformed(evt);
             }
         });
 
-        serverPublicKeyLabel.setText("Public Key:");
-
-        serverPublicKeyTextField.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                serverPublicKeyTextFieldPropertyChange(evt);
-            }
-        });
+        serverAddressValueLabel.setText("Not configured yet...");
+        serverAddressValueLabel.setMaximumSize(new java.awt.Dimension(10000, 15));
+        serverAddressValueLabel.setMinimumSize(new java.awt.Dimension(15, 15));
+        serverAddressValueLabel.setPreferredSize(new java.awt.Dimension(500, 15));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -117,28 +89,18 @@ public class IdentityPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(usernameLabel)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(userPublicKeyLabel))
-                    .addComponent(usernameLabel))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(userPublicKeyTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
-                    .addComponent(usernameTextField)))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(serverPublicKeyLabel)
-                    .addComponent(serverUrlLabel))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(serverUrlTextField)
-                    .addComponent(serverPublicKeyTextField)))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(keyMaterialLabel)
+                        .addComponent(serverAddressLabel))
                     .addComponent(serverLabel))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(serverAddressValueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(changeServerAddressButton))
+                    .addComponent(usernameTextField)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,22 +109,12 @@ public class IdentityPanel extends javax.swing.JPanel {
                     .addComponent(usernameLabel)
                     .addComponent(usernameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(keyMaterialLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(userPublicKeyLabel)
-                    .addComponent(userPublicKeyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
                 .addComponent(serverLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(serverUrlLabel)
-                    .addComponent(serverUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(serverPublicKeyLabel)
-                    .addComponent(serverPublicKeyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(146, Short.MAX_VALUE))
+                    .addComponent(serverAddressLabel)
+                    .addComponent(changeServerAddressButton)
+                    .addComponent(serverAddressValueLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -178,43 +130,15 @@ public class IdentityPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_usernameTextFieldPropertyChange
 
-    private void serverUrlTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverUrlTextFieldPropertyChange
-        String serverUrl = serverUrlTextField.getText().trim();
-
-        if (getConfig().serverUrl().equals(serverUrl)) {
-            return;
-        }
-
-        if (Validators.isServerHttpUrlValid(serverUrl)) {
-            getController().setServerUrl(serverUrl);
-        }
-    }//GEN-LAST:event_serverUrlTextFieldPropertyChange
-
-    private void serverPublicKeyTextFieldPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_serverPublicKeyTextFieldPropertyChange
-        String serverPublicKey = serverPublicKeyTextField.getText().trim();
-        Participant server = getModel().getServer();
-
-        if (server != null && server.getPublicKeyAsBase58().equals(serverPublicKey)) {
-            return;
-        }
-
-        if (Validators.isServerPublicKeyValid(serverPublicKey)) {
-            byte[] publicKeyAsBytes = Base58.decode(serverPublicKey);
-            server = new Participant(EccKeyPairGenerator.fromPublicKey(publicKeyAsBytes));
-            getController().setServer(server);
-        }
-    }//GEN-LAST:event_serverPublicKeyTextFieldPropertyChange
-
+    private void changeServerAddressButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeServerAddressButtonActionPerformed
+        System.out.println("change button clicked");
+    }//GEN-LAST:event_changeServerAddressButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel keyMaterialLabel;
+    private javax.swing.JButton changeServerAddressButton;
+    private javax.swing.JLabel serverAddressLabel;
+    javax.swing.JLabel serverAddressValueLabel;
     private javax.swing.JLabel serverLabel;
-    private javax.swing.JLabel serverPublicKeyLabel;
-    javax.swing.JTextField serverPublicKeyTextField;
-    private javax.swing.JLabel serverUrlLabel;
-    javax.swing.JTextField serverUrlTextField;
-    private javax.swing.JLabel userPublicKeyLabel;
-    javax.swing.JTextField userPublicKeyTextField;
     private javax.swing.JLabel usernameLabel;
     javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables

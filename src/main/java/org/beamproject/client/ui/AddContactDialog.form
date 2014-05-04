@@ -31,7 +31,7 @@
                   <Component id="urlScrollPane" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="introductionLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="109" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="87" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -64,7 +64,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="introductionLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Copy &amp; Paste the Beam URL of the contact you want to add:"/>
+        <Property name="text" type="java.lang.String" value="Copy &amp; Paste the Beam address of the contact you want to add:"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="urlScrollPane">

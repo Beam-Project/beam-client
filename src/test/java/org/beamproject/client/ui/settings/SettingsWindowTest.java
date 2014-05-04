@@ -27,7 +27,8 @@ import org.beamproject.client.Controller;
 import org.beamproject.client.ControllerTest;
 import org.beamproject.client.Model;
 import org.beamproject.client.ui.MainWindow;
-import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
+import org.beamproject.common.User;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -46,7 +47,7 @@ public class SettingsWindowTest {
     public void setUp() {
         ConfigTest.loadDefaultConfig();
         App.getConfig().setProperty("username", USERNAME);
-        App.getConfig().setProperty("serverUrl", URL);
+        App.getConfig().setProperty("serverAddress", URL);
 
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
@@ -85,15 +86,12 @@ public class SettingsWindowTest {
     public void testMenuListOnSelectionChange() {
         Model model = createMock(Model.class);
         AppTest.setAppModel(model);
-        expect(model.getUser()).andReturn(Participant.generate()).anyTimes();
-        expect(model.getServer()).andReturn(Participant.generate()).anyTimes();
+        expect(model.getUser()).andReturn(getUserWithServer()).anyTimes();
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
         controller.setUsername(USERNAME);
         expectLastCall().anyTimes();
-        controller.setServerUrl(URL);
-        expectLastCall().anyTimes();
-        controller.setServer(anyObject(Participant.class));
+        controller.setServer(anyObject(Server.class));
         expectLastCall().anyTimes();
         replay(model, controller);
 
@@ -116,8 +114,7 @@ public class SettingsWindowTest {
     @Test
     public void testShowIdentityUsernameWithFocusedUsername() {
         Model model = createMock(Model.class);
-        expect(model.getUser()).andReturn(Participant.generate()).anyTimes();
-        expect(model.getServer()).andReturn(Participant.generate()).anyTimes();
+        expect(model.getUser()).andReturn(getUserWithServer()).anyTimes();
         mainWindow = createMock(MainWindow.class);
         controller = createMock(Controller.class);
         AppTest.setAppModel(model);
@@ -125,9 +122,7 @@ public class SettingsWindowTest {
         AppTest.setAppController(controller);
         controller.setUsername(USERNAME);
         expectLastCall().anyTimes();
-        controller.setServerUrl(URL);
-        expectLastCall().anyTimes();
-        controller.setServer(anyObject(Participant.class));
+        controller.setServer(anyObject(Server.class));
         expectLastCall().anyTimes();
         replay(model, mainWindow, controller);
 
@@ -139,6 +134,13 @@ public class SettingsWindowTest {
         assertEquals(USERNAME, selectedText);
 
         verify(model, mainWindow, controller);
+    }
+
+    private User getUserWithServer() {
+        User user = User.generate();
+        user.setServer(Server.generate());
+
+        return user;
     }
 
     @Test

@@ -21,18 +21,16 @@ package org.beamproject.client;
 import java.security.KeyPair;
 import static org.beamproject.client.App.getConfig;
 import org.beamproject.client.storage.Storage;
-import org.beamproject.common.Contact;
-import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
+import org.beamproject.common.User;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
-import org.beamproject.common.network.UrlAssembler;
 import org.beamproject.common.util.Base58;
 import org.beamproject.common.util.Exceptions;
 
 public class Model {
 
-    Participant user;
-    Participant server;
+    User user;
     Storage<ContactList> contactListStorage;
     ContactList contactList = new ContactList();
     HeartbeatTask heartbeatTask;
@@ -43,13 +41,21 @@ public class Model {
      * @param user This may not be null.
      * @throws IllegalArgumentException If the argument is null.
      */
-    public void setUser(Participant user) {
+    public void setUser(User user) {
         Exceptions.verifyArgumentsNotNull(user);
 
         this.user = user;
     }
 
-    public Participant getUser() {
+    /**
+     * Reads the encrypted public and private key, and the username from the
+     * config file and restores the user with that. If the user is already
+     * loaded, the reference will be returned.
+     *
+     * @return The user or, if it has not been loaded so far and if it does not
+     * exist in the config file, null will be returned.
+     */
+    public User getUser() {
         if (user == null
                 && getConfig().encryptedPublicKey() != null
                 && getConfig().encryptedPrivateKey() != null) {
@@ -59,57 +65,22 @@ public class Model {
 
             EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, privateKey, salt);
             KeyPair keyPair = KeyPairCryptor.decrypt(getConfig().keyPairPassword(), encryptedKeyPair);
-            setUser(new Participant(keyPair));
+
+            try {
+                Server server = new Server(getConfig().serverAddress());
+                user = new User(getConfig().username(), keyPair, server);
+            } catch (IllegalArgumentException ex) {
+                user = new User(getConfig().username(), keyPair);
+            }
         }
 
         return user;
     }
 
-    public String getUserUrl() {
-        if (getUser() == null || getServer() == null) {
-            return "";
-        }
+    public void addContact(User user) {
+        Exceptions.verifyArgumentsNotNull(user);
 
-        String name = getConfig().username();
-        return UrlAssembler.toUrlByServerAndUser(getServer(), getUser(), name);
-    }
-
-    /**
-     * Sets the given server to this {@link Model}.
-     *
-     * @param server This may not be null.
-     * @throws IllegalArgumentException If the argument is null.
-     */
-    public void setServer(Participant server) {
-        Exceptions.verifyArgumentsNotNull(server);
-
-        this.server = server;
-    }
-
-    /**
-     * Gets the server. If it is stored, it is loaded the first time.
-     * Afterwards, the server is kept in memory and just returned.
-     *
-     * @return The server, if available, {@code null} otherwise.
-     */
-    public Participant getServer() {
-        if (server == null
-                && getConfig().encryptedServerPublicKey() != null) {
-            byte[] publicKey = Base58.decode(getConfig().encryptedServerPublicKey());
-            byte[] salt = Base58.decode(getConfig().serverSalt());
-
-            EncryptedKeyPair encryptedKeyPair = new EncryptedKeyPair(publicKey, null, salt);
-            KeyPair keyPair = KeyPairCryptor.decrypt(getConfig().keyPairPassword(), encryptedKeyPair);
-            setServer(new Participant(keyPair));
-        }
-
-        return server;
-    }
-
-    public void addContact(Contact contact) {
-        Exceptions.verifyArgumentsNotNull(contact);
-
-        contactList.addElement(contact);
+        contactList.addElement(user);
     }
 
     public ContactList getContactList() {

@@ -22,6 +22,7 @@ import static org.easymock.EasyMock.*;
 import org.beamproject.client.App;
 import org.beamproject.client.AppTest;
 import org.beamproject.client.Controller;
+import org.beamproject.common.Server;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -29,7 +30,7 @@ import org.junit.Before;
 public class SetUpDialogTest {
 
     private final String USERNAME = "MYUSER";
-    private final String SERVER_URL = "http://beamproject.org/:80/my-server/";
+    private final String SERVER_ADDRESS = Server.generate().getAddress();
     private SetUpDialogTester dialog;
     private Controller controller;
 
@@ -71,30 +72,30 @@ public class SetUpDialogTest {
 
     @Test
     public void testVerifyServerUrlOnNull() {
-        dialog.serverUrlTextField.setText(null);
+        dialog.serverAddressTextField.setText(null);
         expectInvalidServerUrl();
     }
 
     @Test
     public void testVerifyServerUrlOnEmptyString() {
-        dialog.serverUrlTextField.setText("");
+        dialog.serverAddressTextField.setText("");
         expectInvalidServerUrl();
     }
 
     @Test
     public void testVerifyServerUrlOnSpaces() {
-        dialog.serverUrlTextField.setText("   ");
+        dialog.serverAddressTextField.setText("   ");
         expectInvalidServerUrl();
     }
 
     private void expectInvalidServerUrl() {
         dialog.letsBeamButton.doClick();
-        assertEquals(App.ERROR_BACKGROUND, dialog.serverUrlTextField.getBackground());
+        assertEquals(App.ERROR_BACKGROUND, dialog.serverAddressTextField.getBackground());
     }
 
     @Test
     public void testVerifyServerUrlOnValidUrl() {
-        dialog.serverUrlTextField.setText(SERVER_URL);
+        dialog.serverAddressTextField.setText(SERVER_ADDRESS);
         dialog.letsBeamButton.doClick();
     }
 
@@ -102,22 +103,22 @@ public class SetUpDialogTest {
     public void testSkipForNowCheckBox() {
         replay(controller);
 
-        assertTrue(dialog.serverUrlTextField.isEditable());
-        dialog.serverUrlTextField.setText("invalid url");
+        assertTrue(dialog.serverAddressTextField.isEditable());
+        dialog.serverAddressTextField.setText("invalid url");
         dialog.skipForNowCheckBox.doClick();
-        assertFalse(dialog.serverUrlTextField.isEditable());
-        assertTrue(dialog.serverUrlTextField.getText().isEmpty());
+        assertFalse(dialog.serverAddressTextField.isEditable());
+        assertTrue(dialog.serverAddressTextField.getText().isEmpty());
 
         verify(controller);
     }
 
     @Test
     public void testLetsBeamButtonOnInvocatingWithInvalidUsername() {
-        controller.setServerUrl(SERVER_URL);
+        controller.setServer(anyObject(Server.class));
         expectLastCall();
         replay(controller);
 
-        dialog.serverUrlTextField.setText(SERVER_URL);
+        dialog.serverAddressTextField.setText(SERVER_ADDRESS);
         dialog.letsBeamButton.doClick();
         assertFalse(dialog.isDisposed);
 
@@ -131,7 +132,7 @@ public class SetUpDialogTest {
         replay(controller);
 
         dialog.usernameTextField.setText(USERNAME);
-        dialog.serverUrlTextField.setText("invalid url");
+        dialog.serverAddressTextField.setText("invalid url");
         dialog.letsBeamButton.doClick();
         assertFalse(dialog.isDisposed);
 
@@ -139,7 +140,7 @@ public class SetUpDialogTest {
     }
 
     @Test
-    public void testLetsBeamButtonOnInvocatingWithSkippedUrl() {    
+    public void testLetsBeamButtonOnInvocatingWithSkippedUrl() {
         MainWindow mainWindow = createMock(MainWindow.class);
         mainWindow.requestFocus();
         expectLastCall();
@@ -149,7 +150,7 @@ public class SetUpDialogTest {
         replay(controller, mainWindow);
 
         dialog.usernameTextField.setText(USERNAME);
-        dialog.serverUrlTextField.setText("invalid url");
+        dialog.serverAddressTextField.setText("invalid url");
         dialog.skipForNowCheckBox.setSelected(true);
         dialog.letsBeamButton.doClick();
         assertTrue(dialog.isDisposed);
@@ -162,16 +163,15 @@ public class SetUpDialogTest {
         MainWindow mainWindow = createMock(MainWindow.class);
         mainWindow.requestFocus();
         expectLastCall();
-        String nameWithSpaces = USERNAME + "   ";
         controller.setUsername(USERNAME);
         expectLastCall().once();
-        controller.setServerUrl(SERVER_URL);
+        controller.setServer(anyObject(Server.class));
         expectLastCall().once();
         expect(controller.getMainWindow()).andReturn(mainWindow);
         replay(controller, mainWindow);
 
-        dialog.usernameTextField.setText(nameWithSpaces);
-        dialog.serverUrlTextField.setText(SERVER_URL);
+        dialog.usernameTextField.setText(USERNAME + "   ");
+        dialog.serverAddressTextField.setText(SERVER_ADDRESS);
         dialog.letsBeamButton.doClick();
         assertTrue(dialog.isDisposed);
 

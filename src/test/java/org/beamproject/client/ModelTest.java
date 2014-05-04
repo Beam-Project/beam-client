@@ -18,27 +18,30 @@
  */
 package org.beamproject.client;
 
+import java.security.KeyPair;
+import static org.beamproject.client.App.getConfig;
 import static org.easymock.EasyMock.*;
 import org.beamproject.client.storage.Storage;
-import org.beamproject.common.Contact;
-import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
+import org.beamproject.common.User;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
-import org.beamproject.common.util.Base58;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
 public class ModelTest {
 
+    private final String USERNAME = "Hanna";
+    private final KeyPair KEY_PAIR = EccKeyPairGenerator.generate();
+    private User user;
     private Model model;
-    private Contact contact;
 
     @Before
     public void setUp() {
+        user = new User(USERNAME, KEY_PAIR);
         model = new Model();
-        contact = createMock(Contact.class);
     }
 
     @Test
@@ -53,123 +56,51 @@ public class ModelTest {
 
     @Test
     public void testSetUser() {
-        Participant user = createMock(Participant.class);
+        user = createMock(User.class);
         model.setUser(user);
         assertSame(user, model.user);
     }
 
     @Test
     public void testGetUserWhenNotExisting() {
-        App.getConfig().removeProperty("encryptedPublicKey");
-        App.getConfig().removeProperty("encryptedPrivateKey");
+        getConfig().removeProperty("encryptedPublicKey");
+        getConfig().removeProperty("encryptedPrivateKey");
         assertNull(model.user);
         assertNull(model.getUser());
         assertNull(model.user);
     }
 
     @Test
-    public void testGetUserWhenExistingInConfig() {
-        Participant user = Participant.generate();
-        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(App.getConfig().keyPairPassword(), user.getKeyPair());
-        App.getConfig().setProperty("keyPairSalt", encryptedKeyPair.getSalt());
-        App.getConfig().setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
-        App.getConfig().setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
+    public void testGetUserWhenExisting() {
+        putUserInConfig();
 
         assertNull(model.user);
         assertEquals(user, model.getUser());
         assertEquals(user, model.user);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetServerOnNull() {
-        model.setServer(null);
+    @Test
+    public void testGetUserWhenExistingWithServer() {
+        putUserInConfig();
+        Server server = Server.generate();
+
     }
 
-    @Test
-    public void testSetServer() {
-        Participant server = createMock(Participant.class);
-        model.setServer(server);
-        assertSame(server, model.server);
-    }
+    private void putUserInConfig() {
+        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(getConfig().keyPairPassword(), user.getKeyPair());
+        getConfig().setProperty("username", USERNAME);
+        getConfig().setProperty("keyPairSalt", encryptedKeyPair.getSalt());
+        getConfig().setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
+        getConfig().setProperty("encryptedPrivateKey", encryptedKeyPair.getEncryptedPrivateKey());
 
-    @Test
-    public void testGetServerWhenNotExisting() {
-        App.getConfig().removeProperty("encryptedServerPublicKey");
-        assertNull(model.server);
-        assertNull(model.getServer());
-        assertNull(model.server);
     }
 
     @Test
     public void testGetServerWhenExistingInConfig() {
-        Participant server = Participant.generate();
-        Participant serverWithPublicKey = new Participant(EccKeyPairGenerator.fromPublicKey(server.getPublicKeyAsBytes()));
-        EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(App.getConfig().keyPairPassword(), serverWithPublicKey.getKeyPair());
-        App.getConfig().setProperty("serverSalt", encryptedKeyPair.getSalt());
-        App.getConfig().setProperty("encryptedServerPublicKey", encryptedKeyPair.getEncryptedPublicKey());
+        Server server = Server.generate();
+        getConfig().setProperty("serverAddress", server.getAddress());
 
-        assertNull(model.server);
-        assertEquals(serverWithPublicKey, model.getServer());
-        assertEquals(serverWithPublicKey, model.server);
-    }
-
-    @Test
-    public void testGetUserUrl() {
-        String username = "mr spock";
-        App.getConfig().setProperty("username", username);
-        App.getConfig().removeProperty("encryptedServerPublicKey");
-        String usernameAsBase58 = Base58.encode(username.getBytes());
-        String userPart = "-user-";
-        String serverPart = "-server-";
-
-        assertTrue(model.getUserUrl().isEmpty());
-        model.setUser(createMock(Participant.class));
-        assertTrue(model.getUserUrl().isEmpty());
-
-        model.setServer(createMock(Participant.class));
-        expect(model.user.getPublicKeyAsBase58()).andReturn(userPart);
-        expect(model.server.getPublicKeyAsBase58()).andReturn(serverPart);
-        replay(model.user, model.server);
-
-        String url = model.getUserUrl();
-
-        assertEquals("beam:" + serverPart + "." + userPart + "?name=" + usernameAsBase58, url);
-        verify(model.user, model.server);
-    }
-
-    public class AccessException extends RuntimeException {
-
-        private static final long serialVersionUID = 1L;
-    };
-
-    @Test(expected = AccessException.class)
-    public void testGetUserUrlOnUsingGetUser() {
-        new Model() {
-            @Override
-            public Participant getUser() {
-                throw new AccessException();
-            }
-
-            @Override
-            public Participant getServer() {
-                return Participant.generate();
-            }
-        }.getUserUrl();
-    }
-
-    @Test(expected = AccessException.class)
-    public void testGetUserUrlOnUsingGetServer() {
-        new Model() {
-            @Override
-            public Participant getUser() {
-                return Participant.generate();
-            }
-
-            @Override
-            public Participant getServer() {
-                throw new AccessException();
-            }
-        }.getUserUrl();
+        assertTrue(model.getUser().isServerSet());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -179,9 +110,8 @@ public class ModelTest {
 
     @Test
     public void testAddContact() {
-        replay(contact);
         assertEquals(0, model.contactList.size());
-        model.addContact(contact);
+        model.addContact(user);
         assertEquals(1, model.contactList.size());
     }
 
@@ -238,19 +168,8 @@ public class ModelTest {
      * @param user The user to set. This can be null.
      * @param model The model on that should be set.
      */
-    public static void setUser(Participant user, Model model) {
+    public static void setUser(User user, Model model) {
         model.user = user;
-    }
-
-    /**
-     * Sets the given server to the given {@link Model}. This can be used for
-     * unit testing purposes.
-     *
-     * @param server The server to set. This can be null.
-     * @param model The model on that should be set.
-     */
-    public static void setServer(Participant server, Model model) {
-        model.server = server;
     }
 
 }

@@ -22,16 +22,16 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TrimExceptionTest {
-    
+
     @Test
     public void testAssignment() {
         String message = "hello";
-        
+
         try {
             throw new TrimException(message);
         } catch (TrimException ex) {
             assertEquals(message, ex.getMessage());
         }
     }
-    
+
 }

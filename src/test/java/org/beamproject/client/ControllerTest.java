@@ -28,9 +28,10 @@ import org.beamproject.client.ui.MainWindow;
 import org.beamproject.client.ui.settings.GeneralPanel;
 import org.beamproject.client.ui.settings.SettingsWindow;
 import org.beamproject.client.ui.settings.SettingsWindowTest;
-import org.beamproject.common.Contact;
 import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
 import org.beamproject.common.Session;
+import org.beamproject.common.User;
 import org.beamproject.common.util.ConfigWriter;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -39,10 +40,9 @@ import org.junit.Before;
 
 public class ControllerTest {
 
-    private final String SERVER_URL_AS_STRING = "http://srv.beamproject.org";
     private Controller controller;
     private Model model;
-    private Contact contact;
+    private User otherUser;
     private Storage<ContactList> storage;
     private MainWindow mainWindow;
     private ConfigWriter writer;
@@ -51,11 +51,12 @@ public class ControllerTest {
     @SuppressWarnings("unchecked")
     public void setUp() throws MalformedURLException {
         ConfigTest.loadDefaultConfig();
-        contact = createMock(Contact.class);
+        otherUser = createMock(User.class);
         storage = createMock(Storage.class);
         mainWindow = createMock(MainWindow.class);
         writer = createMock(ConfigWriter.class);
         model = new Model();
+        model.user = User.generate();
         model.contactList = new ContactList();
         model.contactListStorage = storage;
         AppTest.setAppConfigWriter(writer);
@@ -67,11 +68,11 @@ public class ControllerTest {
 
     @After
     public void verifyMocks() {
-        verify(writer, contact, storage, mainWindow);
+        verify(writer, otherUser, storage, mainWindow);
     }
 
     private void replayMocks() {
-        replay(writer, contact, storage, mainWindow);
+        replay(writer, otherUser, storage, mainWindow);
     }
 
     @Test
@@ -103,40 +104,16 @@ public class ControllerTest {
 
     @Test
     public void testSetServer() {
-        Participant server = Participant.generate();
+        Server server = Server.generate();
+        getConfig().removeProperty("serverAddress");
         writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
         expectLastCall().anyTimes();
         replayMocks();
 
-        getConfig().removeProperty("serverSalt");
-        getConfig().removeProperty("encryptedServerPublicKey");
-
         controller.setServer(server);
 
-        assertTrue(getConfig().serverSalt().length() > 20);
-        assertTrue(getConfig().encryptedServerPublicKey().length() > 40);
-        assertSame(server, model.server);
-    }
-
-    @Test
-    public void testSetServerUrl() {
-        getConfig().setProperty("serverUrl", SERVER_URL_AS_STRING);
-        writer.writeConfig(getConfig(), Config.FOLDER, Config.FILE);
-        expectLastCall();
-        replayMocks();
-
-        controller.setServerUrl(SERVER_URL_AS_STRING);
-    }
-
-    @Test
-    public void testAddContact() {
-        storage.store(model.contactList);
-        expectLastCall();
-        replayMocks();
-
-        controller.addContact(contact);
-
-        assertSame(contact, model.contactList.get(0));
+        assertEquals(server.getAddress(), getConfig().serverAddress());
+        assertSame(server, model.getUser().getServer());
     }
 
     @Test
@@ -149,14 +126,14 @@ public class ControllerTest {
     }
 
     @Test
-    public void testIsServerUrlAvailable() {
+    public void testAddContact() {
+        storage.store(model.contactList);
+        expectLastCall();
         replayMocks();
 
-        assertFalse(controller.isServerUrlAvailable(null));
-        assertFalse(controller.isServerUrlAvailable("invalid url"));
-        assertFalse(controller.isServerUrlAvailable("ftp://example.com"));
-        assertTrue(controller.isServerUrlAvailable("http://example.com"));
-        assertTrue(controller.isServerUrlAvailable("http://192.168.0.1"));
+        controller.addContact(otherUser);
+
+        assertSame(otherUser, model.contactList.get(0));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -167,14 +144,14 @@ public class ControllerTest {
 
     @Test
     public void testOpenConversationWindow() {
-        expect(contact.getName()).andReturn("myname");
+        expect(otherUser.getUsername()).andReturn("myname");
         replayMocks();
 
         assertTrue(controller.conversationWindows.isEmpty());
-        controller.openConversationWindow(contact);
+        controller.openConversationWindow(otherUser);
         assertEquals(1, controller.conversationWindows.size());
         assertTrue(controller.conversationWindows.get(0).isVisible());
-        assertSame(contact, controller.conversationWindows.get(0).getContact());
+        assertSame(otherUser, controller.conversationWindows.get(0).getContact());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -200,7 +177,7 @@ public class ControllerTest {
 
         model.user = null;
         assertTrue(controller.isFirstStart());
-        model.user = Participant.generate();
+        model.user = User.generate();
         assertFalse(controller.isFirstStart());
     }
 
@@ -208,12 +185,6 @@ public class ControllerTest {
     public void testShowInfoWindow() {
         replayMocks();
 
-        model = new Model() {
-            @Override
-            public String getUserUrl() {
-                return "url";
-            }
-        };
         assertNull(controller.infoWindow);
         controller.showInfoWindow();
         assertTrue(controller.infoWindow.isVisible());
@@ -223,12 +194,6 @@ public class ControllerTest {
     public void testShowInfoWindowOnReusingExistingWindow() {
         replayMocks();
 
-        model = new Model() {
-            @Override
-            public String getUserUrl() {
-                return "url";
-            }
-        };
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
         assertFalse(window.isVisible());
@@ -242,12 +207,6 @@ public class ControllerTest {
     public void testCloseInfoWindow() {
         replayMocks();
 
-        model = new Model() {
-            @Override
-            public String getUserUrl() {
-                return "url";
-            }
-        };
         InfoWindow window = new InfoWindow();
         controller.infoWindow = window;
         controller.infoWindow.setVisible(true);

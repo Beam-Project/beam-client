@@ -21,8 +21,9 @@ package org.beamproject.client;
 import static org.beamproject.client.App.getConfig;
 import org.beamproject.client.ui.MainWindow;
 import org.beamproject.common.Message;
-import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
 import org.beamproject.common.Session;
+import org.beamproject.common.User;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.network.MessageSender;
 import org.beamproject.common.util.Executor;
@@ -41,12 +42,12 @@ import org.junit.Before;
 
 public class ConnectorTaskTest {
 
-    private final String SERVER_URL_AS_STRING = "http://srv.beamproject.org";
     private ConnectorTask task;
     private Controller controller;
     private Model model;
     private MainWindow window;
-    private Participant user, server;
+    private Server server;
+    private User user;
     private Executor executor;
 
     @Before
@@ -54,13 +55,13 @@ public class ConnectorTaskTest {
         ConfigTest.loadDefaultConfig();
         executor = createMock(Executor.class);
         AppTest.setAppExecutor(executor);
-        user = Participant.generate();
-        server = Participant.generate();
+        server = Server.generate();
+        user = User.generate();
+        user.setServer(server);
 
         controller = new Controller();
         model = new Model();
         model.user = user;
-        model.server = server;
         window = createMock(MainWindow.class);
         controller.mainWindow = window;
         AppTest.setAppController(controller);
@@ -78,40 +79,25 @@ public class ConnectorTaskTest {
 
     @Test
     public void testPrepareEnvironment() {
-        getConfig().setProperty("serverUrl", SERVER_URL_AS_STRING);
+        getConfig().setProperty("serverAddress", server.getAddress());
 
         assertNull(task.controller);
         assertNull(task.window);
         assertNull(task.model);
-        assertNull(task.server);
-        assertNull(task.serverUrlAsString);
+        assertNull(task.user);
 
         task.prepareEnvironment();
 
         assertSame(controller, task.controller);
         assertSame(window, task.window);
         assertSame(model, task.model);
-        assertSame(server, task.server);
-        assertEquals(SERVER_URL_AS_STRING, task.serverUrlAsString);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testPrepareConnectionOnNoServerUrl() {
-        task.prepareConnection();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testPrepareConnectionOnInvalidServerUrl() {
-        task.serverUrlAsString = "hello";
-        task.prepareConnection();
+        assertSame(user, task.user);
     }
 
     @Test
     public void testPrepareConnection() {
         task.user = user;
-        task.serverUrlAsString = SERVER_URL_AS_STRING;
         task.prepareConnection();
-        assertEquals(task.serverUrl.toString(), SERVER_URL_AS_STRING);
         assertNotNull(task.sender);
     }
 
@@ -126,7 +112,7 @@ public class ConnectorTaskTest {
     @Test
     public void testExecuteHandshake() {
         task.controller = controller;
-        task.server = server;
+        task.user = user;
 
         Message challenge = createMock(Message.class);
         Message response = createMock(Message.class);
@@ -179,7 +165,7 @@ public class ConnectorTaskTest {
     }
 
     private void prepareHeartbeatTest() {
-        getConfig().setProperty("serverUrl", SERVER_URL_AS_STRING);
+        getConfig().setProperty("serverAddress", server.getAddress());
         controller.session = new Session(server, "key".getBytes());
         executor.runAsync(anyObject(HeartbeatTask.class));
         expectLastCall();
@@ -210,7 +196,7 @@ public class ConnectorTaskTest {
         Session session = new Session(server, "key".getBytes());
         controller.session = session;
         task.controller = controller;
-        task.server = server;
+        task.user = user;
 
         task.sender = createMock(MessageSender.class);
         task.sender.send(EasyMock.anyObject(Message.class));

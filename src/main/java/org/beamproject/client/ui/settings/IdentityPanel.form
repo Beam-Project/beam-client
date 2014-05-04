@@ -18,36 +18,22 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="usernameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="userPublicKeyLabel" min="-2" max="-2" attributes="0"/>
+                      <Component id="serverAddressLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="usernameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="serverLabel" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="userPublicKeyTextField" pref="304" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="serverAddressValueLabel" pref="244" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="changeServerAddressButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <Component id="usernameTextField" max="32767" attributes="0"/>
               </Group>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="serverPublicKeyLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="serverUrlLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="serverUrlTextField" max="32767" attributes="0"/>
-                  <Component id="serverPublicKeyTextField" max="32767" attributes="0"/>
-              </Group>
-          </Group>
-          <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="keyMaterialLabel" min="-2" max="-2" attributes="0"/>
-                  <Component id="serverLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -59,25 +45,13 @@
                   <Component id="usernameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="keyMaterialLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="userPublicKeyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="userPublicKeyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="serverLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="serverUrlLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="serverUrlTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="serverAddressLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="changeServerAddressButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="serverAddressValueLabel" alignment="3" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="serverPublicKeyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="serverPublicKeyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace pref="146" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -96,29 +70,6 @@
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JLabel" name="keyMaterialLabel">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-          <FontInfo relative="true">
-            <Font bold="true" component="keyMaterialLabel" property="font" relativeSize="true" size="0"/>
-          </FontInfo>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Key Material"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="userPublicKeyLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Public Key:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="userPublicKeyTextField">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-      </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-      </AuxValues>
-    </Component>
     <Component class="javax.swing.JLabel" name="serverLabel">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
@@ -129,28 +80,32 @@
         <Property name="text" type="java.lang.String" value="Server"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="serverUrlLabel">
+    <Component class="javax.swing.JLabel" name="serverAddressLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="URL:"/>
+        <Property name="text" type="java.lang.String" value="Address:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="serverUrlTextField">
-      <Events>
-        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="serverUrlTextFieldPropertyChange"/>
-      </Events>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-      </AuxValues>
-    </Component>
-    <Component class="javax.swing.JLabel" name="serverPublicKeyLabel">
+    <Component class="javax.swing.JButton" name="changeServerAddressButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Public Key:"/>
+        <Property name="text" type="java.lang.String" value="Change..."/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="serverPublicKeyTextField">
       <Events>
-        <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="serverPublicKeyTextFieldPropertyChange"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeServerAddressButtonActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="serverAddressValueLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Not configured yet..."/>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[10000, 15]"/>
+        </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[15, 15]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[500, 15]"/>
+        </Property>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>

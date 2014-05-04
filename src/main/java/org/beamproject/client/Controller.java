@@ -18,8 +18,6 @@
  */
 package org.beamproject.client;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import static org.beamproject.client.App.configWriter;
@@ -33,9 +31,9 @@ import org.beamproject.client.ui.InfoWindow;
 import org.beamproject.client.ui.MainWindow;
 import org.beamproject.client.ui.SetUpDialog;
 import org.beamproject.client.ui.settings.SettingsWindow;
-import org.beamproject.common.Contact;
-import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
 import org.beamproject.common.Session;
+import org.beamproject.common.User;
 import org.beamproject.common.crypto.EncryptedKeyPair;
 import org.beamproject.common.crypto.KeyPairCryptor;
 import org.beamproject.common.util.Task;
@@ -53,7 +51,7 @@ public class Controller {
     SettingsWindow settingsWindow;
     Session session;
 
-    public void loadUser() {
+    public void generateUserAndShowDialogOnFirstStart() {
         if (isFirstStart()) {
             showSetUpDialog();
             generateUser();
@@ -62,7 +60,7 @@ public class Controller {
     }
 
     private void generateUser() {
-        Participant user = Participant.generate();
+        User user = User.generate();
         EncryptedKeyPair encryptedKeyPair = KeyPairCryptor.encrypt(getConfig().keyPairPassword(), user.getKeyPair());
         getConfig().setProperty("keyPairSalt", encryptedKeyPair.getSalt());
         getConfig().setProperty("encryptedPublicKey", encryptedKeyPair.getEncryptedPublicKey());
@@ -80,22 +78,16 @@ public class Controller {
         storeConfig();
     }
 
-    public void setServer(Participant server) {
-        getModel().setServer(server);
-        EncryptedKeyPair encryptedPublicKey = KeyPairCryptor.encrypt(getConfig().keyPairPassword(), server.getKeyPair());
-        getConfig().setProperty("serverSalt", encryptedPublicKey.getSalt());
-        getConfig().setProperty("encryptedServerPublicKey", encryptedPublicKey.getEncryptedPublicKey());
+    /**
+     * Sets the server to the user and stores it afterwards.
+     *
+     * @param server The server to store.
+     * @throws IllegalArgumentException If the argument is null.
+     */
+    public void setServer(Server server) {
+        getModel().getUser().setServer(server);
+        getConfig().setProperty("serverAddress", server.getAddress());
         storeConfig();
-    }
-
-    public void setServerUrl(String serverUrl) {
-        getConfig().setProperty("serverUrl", serverUrl);
-        storeConfig();
-    }
-
-    public void addContact(Contact contact) {
-        getModel().addContact(contact);
-        writeContactListStorage();
     }
 
     public void toggleConnectionStatus() {
@@ -107,19 +99,15 @@ public class Controller {
         return session != null;
     }
 
-    boolean isServerUrlAvailable(String serverUrl) {
-        try {
-            URL candidate = new URL(serverUrl);
-            return "http".equalsIgnoreCase(candidate.getProtocol());
-        } catch (MalformedURLException ex) {
-            return false;
-        }
+    public void addContact(User user) {
+        getModel().addContact(user);
+        writeContactListStorage();
     }
 
-    public void openConversationWindow(Contact contact) {
+    public void openConversationWindow(User user) {
         ConversationWindow window = new ConversationWindow();
         Frames.setIcons(window);
-        window.setContact(contact);
+        window.setContact(user);
         conversationWindows.add(window);
         window.setVisible(true);
     }

@@ -24,50 +24,52 @@ import org.beamproject.client.AppTest;
 import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
 import org.beamproject.client.Model;
-import org.junit.After;
+import org.beamproject.common.Server;
+import org.beamproject.common.User;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
 public class InfoWindowTest {
-    
+
     private final String USERNAME = "infoName";
-    private final String URL = "beam:server.user?name=mrbeam";
     private InfoWindow window;
     private Controller controller;
     private Model model;
-    
+
     @Before
     public void setUp() {
         ConfigTest.loadDefaultConfig();
-        controller = createMock(Controller.class);
-        model = createMock(Model.class);
-        
+        controller = new Controller();
+        model = new Model();
+        model.setUser(User.generate());
+        model.getUser().setServer(Server.generate());
+
         AppTest.setAppController(controller);
         AppTest.setAppModel(model);
-        
-        expect(model.getUserUrl()).andReturn(URL).anyTimes();
-        replay(controller, model);
     }
-    
-    @After
-    public void verifyMocks() {
-        verify(controller, model);
-    }
-    
+
     @Test
     public void testConstructorOnLoadingUsername() {
         App.getConfig().setProperty("username", USERNAME);
         window = new InfoWindow();
         assertEquals(USERNAME, window.usernameLabel.getText());
     }
-    
+
     @Test
     public void testConstructorOnLoadingAddress() {
         window = new InfoWindow();
-        assertEquals(URL, window.addressLabel.getText());
+        assertEquals(model.getUser().getAddress(), window.addressLabel.getText());
     }
-    
+
+    @Test
+    public void testConstructorOnLoadingAddressWithoutServer() {
+        model.setUser(User.generate());
+        window = new InfoWindow();
+        assertEquals(InfoWindow.USER_ADDRESS_PLACEHOLDER, window.addressLabel.getText());
+        assertFalse(window.copyAddressButton.isVisible());
+    }
+
     @Test
     public void testConstructorOnLoadingQrCode() {
         window = new InfoWindow();
@@ -75,27 +77,27 @@ public class InfoWindowTest {
         assertEquals(InfoWindow.QR_CODE_DIMENSION_IN_PX, window.qrCodeLabel.getIcon().getIconHeight());
         assertEquals(InfoWindow.QR_CODE_DIMENSION_IN_PX, window.qrCodeLabel.getIcon().getIconWidth());
     }
-    
+
     @Test
-    public void testConstructorOnLoadingQrCodeWhenMissingUrl() {
-        model = createMock(Model.class);
-        expect(model.getUserUrl()).andReturn("").times(2);
-        replay(model);
-        AppTest.setAppModel(model);
-        
+    public void testConstructorOnLoadingQrCodeWhenMissingAddress() {
+        model.setUser(User.generate());
+
         window = new InfoWindow();
         assertFalse(window.qrCodePanel.isVisible());
     }
-    
+
     @Test
     public void testCloseButtonOnDisposingWindow() {
+        window = new InfoWindow();
+
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
         controller.closeInfoWindow();
         expectLastCall();
         replay(controller);
-        
-        window = new InfoWindow();
+
         window.closeButton.doClick();
+
+        verify(controller);
     }
 }

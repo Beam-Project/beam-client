@@ -26,14 +26,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import org.beamproject.common.Contact;
+import org.beamproject.common.User;
 import org.beamproject.common.util.Exceptions;
 
 public class ConversationWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
     private final String AND_YOU = "and you";
-    Contact contact;
+    User contact;
     DefaultListModel<String> messagesModel;
 
     public ConversationWindow() {
@@ -79,7 +79,7 @@ public class ConversationWindow extends javax.swing.JFrame {
         });
     }
 
-    public void setContact(Contact contact) {
+    public void setContact(User contact) {
         Exceptions.verifyArgumentsNotNull(contact);
 
         this.contact = contact;
@@ -87,10 +87,10 @@ public class ConversationWindow extends javax.swing.JFrame {
     }
 
     void updateNames() {
-        namesLabel.setText(contact.getName() + " " + AND_YOU);
+        namesLabel.setText(contact.getUsername() + " " + AND_YOU);
     }
 
-    public Contact getContact() {
+    public User getContact() {
         return contact;
     }
 

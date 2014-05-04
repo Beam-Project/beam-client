@@ -19,9 +19,6 @@
 package org.beamproject.client;
 
 import org.beamproject.common.network.MessageSender;
-import java.net.MalformedURLException;
-import java.net.URL;
-import static org.beamproject.client.App.getConfig;
 import static org.beamproject.client.App.getController;
 import static org.beamproject.client.App.getExecutor;
 import static org.beamproject.client.App.getModel;
@@ -30,6 +27,7 @@ import org.beamproject.client.ui.MainWindow;
 import org.beamproject.common.Message;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
+import org.beamproject.common.User;
 import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.util.Executor;
@@ -49,9 +47,7 @@ public class ConnectorTask implements Task {
     Controller controller;
     Model model;
     MainWindow window;
-    URL serverUrl;
-    String serverUrlAsString;
-    Participant user, server;
+    User user;
     HandshakeChallenger challenger;
     MessageSender sender;
     Message challenge, response, success;
@@ -72,7 +68,7 @@ public class ConnectorTask implements Task {
     public void run() {
         prepareEnvironment();
 
-        if (controller.isServerUrlAvailable(serverUrlAsString) && server != null) {
+        if (user.isServerSet()) {
             prepareConnection();
 
             if (doConnect) {
@@ -98,18 +94,10 @@ public class ConnectorTask implements Task {
         window.disableStatusButton();
         model = getModel();
         user = model.getUser();
-        server = model.getServer();
-        serverUrlAsString = getConfig().serverUrl();
     }
 
     void prepareConnection() {
-        try {
-            serverUrl = new URL(serverUrlAsString);
-        } catch (MalformedURLException ex) {
-            throw new IllegalStateException("The given URL is not valid: " + ex.getMessage());
-        }
-
-        sender = new MessageSender(serverUrl, user);
+        sender = new MessageSender(user.getServer().getUrl(), user);
     }
 
     void prepareHandshake() {
@@ -117,12 +105,12 @@ public class ConnectorTask implements Task {
     }
 
     void executeHandshake() {
-        challenge = challenger.produceChallenge(server);
+        challenge = challenger.produceChallenge(user.getServer());
         response = sender.sendAndReceive(challenge);
         challenger.consumeResponse(response);
         success = challenger.produceSuccess();
         sender.send(success);
-        controller.session = new Session(server, challenger.getSessionKey());
+        controller.session = new Session(user.getServer(), challenger.getSessionKey());
     }
 
     void activateHeartbeat() {
@@ -143,7 +131,7 @@ public class ConnectorTask implements Task {
         Session session = controller.getSession();
 
         if (session != null) {
-            Message invalidateMessage = Handshake.getInvalidate(server, session.getKey());
+            Message invalidateMessage = Handshake.getInvalidate(user.getServer(), session.getKey());
             sender.send(invalidateMessage);
             session.invalidateSession();
             controller.setSession(null);

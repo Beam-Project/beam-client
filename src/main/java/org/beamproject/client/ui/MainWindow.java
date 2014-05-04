@@ -23,7 +23,7 @@ import java.awt.Toolkit;
 import static org.beamproject.client.App.getConfig;
 import static org.beamproject.client.App.getController;
 import static org.beamproject.client.App.getModel;
-import org.beamproject.common.Contact;
+import org.beamproject.common.User;
 import org.beamproject.common.util.Exceptions;
 
 /**
@@ -330,7 +330,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void contactListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_contactListMouseClicked
         if (evt.getClickCount() == DOUBLE_CLICK_NUMBER) {
-            Contact selectedContect = (Contact) contactList.getSelectedValue();
+            User selectedContect = (User) contactList.getSelectedValue();
             getController().openConversationWindow(selectedContect);
         }
     }//GEN-LAST:event_contactListMouseClicked

@@ -19,6 +19,7 @@
 package org.beamproject.client.ui;
 
 import static org.beamproject.client.App.getController;
+import org.beamproject.common.Server;
 
 /**
  *
@@ -42,8 +43,8 @@ public class SetUpDialog extends javax.swing.JFrame {
         textLabel = new javax.swing.JLabel();
         nameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
-        serverUrlLabel = new javax.swing.JLabel();
-        serverUrlTextField = new javax.swing.JTextField();
+        serverAddressLabel = new javax.swing.JLabel();
+        serverAddressTextField = new javax.swing.JTextField();
         skipForNowCheckBox = new javax.swing.JCheckBox();
         letsBeamButton = new javax.swing.JButton();
 
@@ -60,7 +61,7 @@ public class SetUpDialog extends javax.swing.JFrame {
 
         nameLabel.setText("Your Name:");
 
-        serverUrlLabel.setText("Server URL:");
+        serverAddressLabel.setText("Server Address:");
 
         skipForNowCheckBox.setText("Skip for now");
         skipForNowCheckBox.setFocusTraversalPolicyProvider(true);
@@ -91,12 +92,12 @@ public class SetUpDialog extends javax.swing.JFrame {
                         .addGap(2, 2, 2)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nameLabel)
-                            .addComponent(serverUrlLabel))
+                            .addComponent(serverAddressLabel))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(usernameTextField)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(serverUrlTextField)
+                                .addComponent(serverAddressTextField)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(skipForNowCheckBox)))))
                 .addContainerGap())
@@ -115,8 +116,8 @@ public class SetUpDialog extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(skipForNowCheckBox)
-                    .addComponent(serverUrlLabel)
-                    .addComponent(serverUrlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(serverAddressLabel)
+                    .addComponent(serverAddressTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(letsBeamButton)
                 .addContainerGap())
@@ -127,7 +128,7 @@ public class SetUpDialog extends javax.swing.JFrame {
 
     private void letsBeamButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_letsBeamButtonActionPerformed
         validateAndSaveUsername();
-        validateAndSaveServerUrl();
+        validateAndSaveServerAddress();
 
         if (isUsernameDone && isServerUrlDone) {
             dispose();
@@ -148,32 +149,34 @@ public class SetUpDialog extends javax.swing.JFrame {
         }
     }
 
-    private void validateAndSaveServerUrl() {
-        String serverUrl = serverUrlTextField.getText().trim();
+    private void validateAndSaveServerAddress() {
+        String serverAddress = serverAddressTextField.getText().trim();
 
         if (skipForNowCheckBox.isSelected()) {
             isServerUrlDone = true;
-        } else if (Validators.isServerHttpUrlValid(serverUrl)) {
-            Components.setDefalutBackground(serverUrlTextField);
-            getController().setServerUrl(serverUrl);
-            isServerUrlDone = true;
         } else {
-            Components.setErrorBackground(serverUrlTextField);
-            isServerUrlDone = false;
+            try {
+                getController().setServer(new Server(serverAddress));
+                Components.setDefalutBackground(serverAddressTextField);
+                isServerUrlDone = true;
+            } catch (IllegalArgumentException ex) {
+                Components.setErrorBackground(serverAddressTextField);
+                isServerUrlDone = false;
+            }
         }
     }
 
     private void skipForNowCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_skipForNowCheckBoxItemStateChanged
-        serverUrlTextField.setEditable(!skipForNowCheckBox.isSelected());
-        Components.setDefalutBackground(serverUrlTextField);
-        serverUrlTextField.setText("");
+        serverAddressTextField.setEditable(!skipForNowCheckBox.isSelected());
+        Components.setDefalutBackground(serverAddressTextField);
+        serverAddressTextField.setText("");
     }//GEN-LAST:event_skipForNowCheckBoxItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton letsBeamButton;
     private javax.swing.JLabel nameLabel;
-    private javax.swing.JLabel serverUrlLabel;
-    javax.swing.JTextField serverUrlTextField;
+    private javax.swing.JLabel serverAddressLabel;
+    javax.swing.JTextField serverAddressTextField;
     javax.swing.JCheckBox skipForNowCheckBox;
     private javax.swing.JLabel textLabel;
     private javax.swing.JLabel titleLabel;

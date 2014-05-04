@@ -33,6 +33,7 @@ public class InfoWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
     static final int QR_CODE_DIMENSION_IN_PX = 250;
+    static final String USER_ADDRESS_PLACEHOLDER = "Configure the server first.";
 
     public InfoWindow() {
         initComponents();
@@ -47,19 +48,22 @@ public class InfoWindow extends javax.swing.JFrame {
     }
 
     private void loadUserAddress() {
-        addressLabel.setText(getModel().getUserUrl());
+        if (getModel().getUser().isServerSet()) {
+            addressLabel.setText(getModel().getUser().getAddress());
+        } else {
+            addressLabel.setText(USER_ADDRESS_PLACEHOLDER);
+            copyAddressButton.setVisible(false);
+        }
     }
 
     private void loadQrCode() {
-        String userUrl = getModel().getUserUrl();
-
-        if (userUrl.isEmpty()) {
+        if (getModel().getUser().isServerSet()) {
+            qrCodeLabel.setText("");
+            BufferedImage qrCode = QrCode.encode(getModel().getUser().getAddress(), QR_CODE_DIMENSION_IN_PX);
+            qrCodeLabel.setIcon(new ImageIcon(qrCode));
+        } else {
             qrCodePanel.setVisible(false);
             pack();
-        } else {
-            qrCodeLabel.setText("");
-            BufferedImage qrCode = QrCode.encode(userUrl, QR_CODE_DIMENSION_IN_PX);
-            qrCodeLabel.setIcon(new ImageIcon(qrCode));
         }
     }
 
@@ -75,7 +79,7 @@ public class InfoWindow extends javax.swing.JFrame {
         usernameLabel = new javax.swing.JLabel();
         addressTitleLabel = new javax.swing.JLabel();
         addressLabel = new javax.swing.JLabel();
-        copyUrlButton = new javax.swing.JButton();
+        copyAddressButton = new javax.swing.JButton();
         statisticsLabel = new javax.swing.JLabel();
         storedContactsLabel = new javax.swing.JLabel();
         storedContactsValueLabel = new javax.swing.JLabel();
@@ -100,10 +104,10 @@ public class InfoWindow extends javax.swing.JFrame {
 
         addressLabel.setText("n/a");
 
-        copyUrlButton.setText("Copy");
-        copyUrlButton.addActionListener(new java.awt.event.ActionListener() {
+        copyAddressButton.setText("Copy");
+        copyAddressButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                copyUrlButtonActionPerformed(evt);
+                copyAddressButtonActionPerformed(evt);
             }
         });
 
@@ -158,7 +162,7 @@ public class InfoWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(addressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(copyUrlButton))
+                        .addComponent(copyAddressButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(aboutButton)
@@ -197,7 +201,7 @@ public class InfoWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addressTitleLabel)
-                    .addComponent(copyUrlButton)
+                    .addComponent(copyAddressButton)
                     .addComponent(addressLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(qrCodePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -229,10 +233,10 @@ public class InfoWindow extends javax.swing.JFrame {
         getController().closeInfoWindow();
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void copyUrlButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyUrlButtonActionPerformed
+    private void copyAddressButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyAddressButtonActionPerformed
         ClipboardAccess access = new ClipboardAccess();
         access.copyTextToClipboard(addressLabel.getText());
-    }//GEN-LAST:event_copyUrlButtonActionPerformed
+    }//GEN-LAST:event_copyAddressButtonActionPerformed
 
     private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutButtonActionPerformed
         AboutWindow window = new AboutWindow();
@@ -245,7 +249,7 @@ public class InfoWindow extends javax.swing.JFrame {
     javax.swing.JLabel addressLabel;
     private javax.swing.JLabel addressTitleLabel;
     javax.swing.JButton closeButton;
-    private javax.swing.JButton copyUrlButton;
+    javax.swing.JButton copyAddressButton;
     javax.swing.JLabel qrCodeLabel;
     javax.swing.JPanel qrCodePanel;
     private javax.swing.JLabel receivedMessagesLabel;

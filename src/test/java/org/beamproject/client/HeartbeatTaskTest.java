@@ -20,12 +20,12 @@ package org.beamproject.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import static org.beamproject.client.App.getConfig;
 import org.beamproject.common.Message;
 import static org.beamproject.common.MessageField.ContentField.*;
 import static org.beamproject.common.MessageField.ContentField.TypeValue.*;
-import org.beamproject.common.Participant;
+import org.beamproject.common.Server;
 import org.beamproject.common.Session;
+import org.beamproject.common.User;
 import org.beamproject.common.network.MessageSender;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
@@ -46,13 +46,13 @@ public class HeartbeatTaskTest {
     @Before
     public void setUp() {
         ConfigTest.loadDefaultConfig();
-        getConfig().setProperty("serverUrl", "http://beamproject.com");
 
         model = new Model();
-        model.server = Participant.generate();
+        model.user = User.generate();
+        model.user.setServer(Server.generate());
         AppTest.setAppModel(model);
         controller = new Controller();
-        controller.session = new Session(model.server, KEY);
+        controller.session = new Session(model.getUser().getServer(), KEY);
         AppTest.setAppController(controller);
 
         task = new HeartbeatTask();
@@ -72,23 +72,17 @@ public class HeartbeatTaskTest {
         assertSame(controller.session, task.session);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testCreateSenderOnMissingServer() {
-        getConfig().removeProperty("serverUrl");
-        task.createSender();
-    }
-
     @Test
     public void testCreateSender() {
-        getConfig().setProperty("serverUrl", "http://beamproject.com");
         task.createSender();
+        assertNotNull(task.sender);
     }
 
     @Test
     public void testRun() throws MalformedURLException {
         task.sender = createMock(MessageSender.class);
         task.sender.send(anyObject(Message.class));
-        expectLastCall().andDelegateTo(new MessageSender(new URL("http://beamproject.org"), model.server) {
+        expectLastCall().andDelegateTo(new MessageSender(new URL("http://beamproject.org"), model.getUser().getServer()) {
 
             @Override
             public void send(Message message) {

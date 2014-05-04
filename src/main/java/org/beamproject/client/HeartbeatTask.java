@@ -19,13 +19,11 @@
 package org.beamproject.client;
 
 import static java.lang.Thread.sleep;
-import java.net.MalformedURLException;
-import java.net.URL;
-import static org.beamproject.client.App.getConfig;
 import static org.beamproject.client.App.getController;
 import org.beamproject.common.Message;
 import static org.beamproject.common.MessageField.ContentField.*;
 import static org.beamproject.common.MessageField.ContentField.TypeValue.*;
+import org.beamproject.common.Server;
 import org.beamproject.common.Session;
 import org.beamproject.common.network.MessageSender;
 import org.beamproject.common.network.NetworkException;
@@ -54,12 +52,8 @@ public class HeartbeatTask implements Task {
     }
 
     void createSender() {
-        try {
-            URL serverUrl = new URL(getConfig().serverUrl());
-            sender = new MessageSender(serverUrl, session.getRemoteParticipant());
-        } catch (MalformedURLException ex) {
-            throw new IllegalStateException("The server address is not valid: " + ex.getMessage());
-        }
+        Server server = (Server) session.getRemoteParticipant();
+        sender = new MessageSender(server.getUrl(), server);
     }
 
     @Override

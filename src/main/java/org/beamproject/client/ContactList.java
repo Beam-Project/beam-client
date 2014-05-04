@@ -19,13 +19,13 @@
 package org.beamproject.client;
 
 import javax.swing.DefaultListModel;
-import org.beamproject.common.Contact;
+import org.beamproject.common.User;
 
 /**
  * This class implements a non-generic {@link DefaultListModel} with
- * {@link Contact}s. This is needed to store the list.
+ * {@link User}s. This is needed to store the list.
  */
-public class ContactList extends DefaultListModel<Contact> {
+public class ContactList extends DefaultListModel<User> {
 
     private static final long serialVersionUID = 1L;
 

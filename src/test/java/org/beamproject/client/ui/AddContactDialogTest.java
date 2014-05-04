@@ -19,13 +19,11 @@
 package org.beamproject.client.ui;
 
 import static org.easymock.EasyMock.*;
-import org.easymock.IAnswer;
 import org.beamproject.client.App;
 import org.beamproject.client.AppTest;
 import org.beamproject.client.Controller;
-import org.beamproject.common.Contact;
-import org.beamproject.common.Participant;
-import org.beamproject.common.network.UrlAssembler;
+import org.beamproject.common.Server;
+import org.beamproject.common.User;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -34,11 +32,17 @@ public class AddContactDialogTest {
 
     private AddContactDialog dialog;
     private Controller controller;
+    private User user;
+    private String userAddress;
 
     @Before
     public void setUp() {
         dialog = new AddContactDialog();
         controller = createMock(Controller.class);
+
+        user = User.generate();
+        user.setServer(Server.generate());
+        userAddress = user.getAddress();
     }
 
     @Test
@@ -90,15 +94,12 @@ public class AddContactDialogTest {
 
     @Test
     public void testAddButtonOnTrimmingWithCorrectUrl() {
-        Participant user = Participant.generate();
-        String url = UrlAssembler.toUrlByServerAndUser(user, user, "myname");
-
-        controller.addContact(anyObject(Contact.class));
+        controller.addContact(anyObject(User.class));
         expectLastCall().once();
         replay(controller);
 
         AppTest.setAppController(controller);
-        String untrimmed = "    " + url + "    ";
+        String untrimmed = "    " + userAddress + "    ";
         dialog.urlTextArea.setText(untrimmed);
         dialog.addButton.doClick();
 
@@ -108,20 +109,17 @@ public class AddContactDialogTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAddButton() {
-        Participant user = Participant.generate();
-        controller.addContact(anyObject(Contact.class));
-        expectLastCall().andAnswer(new IAnswer() {
+        controller.addContact(anyObject(User.class));
+        expectLastCall().andDelegateTo(new Controller() {
             @Override
-            public Object answer() {
-                Contact argument = (Contact) getCurrentArguments()[0];
-                assertEquals("name", argument.getName());
-                return null;
+            public void addContact(User user) {
+                assertEquals(User.DEFAULT_USERNAME, user.getUsername());
             }
         });
         replay(controller);
 
         AppTest.setAppController(controller);
-        dialog.urlTextArea.setText(UrlAssembler.toUrlByServerAndUser(user, user, "name"));
+        dialog.urlTextArea.setText(user.getAddress());
         dialog.addButton.doClick();
 
         verify(controller);

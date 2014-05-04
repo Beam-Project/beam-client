@@ -25,10 +25,8 @@ import org.beamproject.client.AppTest;
 import org.beamproject.client.ConfigTest;
 import org.beamproject.client.Controller;
 import org.beamproject.client.Model;
-import org.beamproject.client.ModelTest;
-import org.beamproject.common.Participant;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
-import org.beamproject.common.util.Base58;
+import org.beamproject.common.Server;
+import org.beamproject.common.User;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -36,7 +34,6 @@ import org.junit.Before;
 public class IdentityPanelTest {
 
     private final String USERNAME = "Mr/Mrs Garrison";
-    private final String SERVER_URL = "http://my-server.beamproject.org:1234";
     private IdentityPanel panel;
     private Controller controller;
     private Model model;
@@ -45,37 +42,21 @@ public class IdentityPanelTest {
     public void setUp() {
         ConfigTest.loadDefaultConfig();
         App.getConfig().setProperty("username", USERNAME);
-        App.getConfig().setProperty("serverUrl", SERVER_URL);
         controller = createMock(Controller.class);
         AppTest.setAppController(controller);
         model = new Model();
-        model.setUser(Participant.generate());
-        model.setServer(Participant.generate());
+        model.setUser(User.generate());
+        model.getUser().setServer(Server.generate());
+        App.getConfig().setProperty("serverAddress", model.getUser().getServer().getAddress());
         AppTest.setAppModel(model);
 
         panel = new IdentityPanel();
     }
 
     @Test
-    public void testLoadingFieldsWithServerAndParticipant() {
+    public void testLoadingFieldsWithServerAndUser() {
         assertEquals(USERNAME, panel.usernameTextField.getText());
-        assertEquals(model.getUser().getPublicKeyAsBase58(), panel.userPublicKeyTextField.getText());
-        assertEquals(SERVER_URL, panel.serverUrlTextField.getText());
-        assertEquals(model.getServer().getPublicKeyAsBase58(), panel.serverPublicKeyTextField.getText());
-    }
-
-    @Test
-    public void testLoadingFieldsWithoutServerAndParticipant() {
-        ModelTest.setUser(null, model);
-        ModelTest.setServer(null, model);
-        App.getConfig().removeProperty("username");
-        App.getConfig().removeProperty("serverUrl");
-        panel = new IdentityPanel();
-
-        assertTrue(panel.usernameTextField.getText().isEmpty());
-        assertTrue(panel.userPublicKeyTextField.getText().isEmpty());
-        assertTrue(panel.serverUrlTextField.getText().isEmpty());
-        assertTrue(panel.serverPublicKeyTextField.getText().isEmpty());
+        assertTrue(panel.serverAddressValueLabel.getText().startsWith("beam:"));
     }
 
     @Test
@@ -119,104 +100,6 @@ public class IdentityPanelTest {
 
         String changedUsernameToTrim = "  Mrs Garrison   ";
         panel.usernameTextField.setText(changedUsernameToTrim);
-        listener.propertyChange(null);
-
-        verify(controller);
-    }
-
-    @Test
-    public void testServerUrlTextFieldPropertyChangeOnValueChange() {
-        PropertyChangeListener listener = panel.serverUrlTextField.getPropertyChangeListeners()[2];
-        String url = "http://inchtat.org/myserver/is/very/cool";
-        controller.setServerUrl(url);
-        expectLastCall();
-        replay(controller);
-
-        listener.propertyChange(null);
-        panel.serverUrlTextField.setText(SERVER_URL);
-        listener.propertyChange(null);
-        panel.serverUrlTextField.setText(url);
-        listener.propertyChange(null);
-
-        verify(controller);
-    }
-
-    @Test
-    public void testServerUrlTextFieldPropertyChange() {
-        PropertyChangeListener listener = panel.serverUrlTextField.getPropertyChangeListeners()[2];
-        String validUrl1 = "http://inchtat.org/myserver/is/very/cool";
-        String validUrl2 = "http://192.168.0.123";
-
-        controller.setServerUrl(validUrl1);
-        expectLastCall();
-        controller.setServerUrl(validUrl2);
-        expectLastCall();
-        replay(controller);
-
-        panel.serverUrlTextField.setText("   ");
-        listener.propertyChange(null);
-        panel.serverUrlTextField.setText("");
-        listener.propertyChange(null);
-        panel.serverUrlTextField.setText(validUrl1);
-        listener.propertyChange(null);
-        panel.serverUrlTextField.setText("    " + validUrl2 + "     ");
-        listener.propertyChange(null);
-
-        verify(controller);
-    }
-
-    @Test
-    public void testServerPublicKeyTextFieldPropertyChangeOnValueChange() {
-        PropertyChangeListener listener = panel.serverPublicKeyTextField.getPropertyChangeListeners()[2];
-        String oldPublicKey = model.getServer().getPublicKeyAsBase58();
-        String newPublicKey = Participant.generate().getPublicKeyAsBase58();
-        Participant newServer = new Participant(EccKeyPairGenerator.fromPublicKey(Base58.decode(newPublicKey)));
-        controller.setServer(eq(newServer));
-        expectLastCall();
-        replay(controller);
-
-        listener.propertyChange(null);
-        panel.serverPublicKeyTextField.setText(oldPublicKey);
-        listener.propertyChange(null);
-        panel.serverPublicKeyTextField.setText(newPublicKey);
-        listener.propertyChange(null);
-
-        verify(controller);
-    }
-
-    @Test
-    public void testServerPublicKeyTextFieldPropertyChangeOnMissingServer() {
-        PropertyChangeListener listener = panel.serverPublicKeyTextField.getPropertyChangeListeners()[2];
-        ModelTest.setServer(null, model);
-        replay(controller);
-
-        panel.serverPublicKeyTextField.setText("");
-        listener.propertyChange(null);
-
-        verify(controller);
-    }
-
-    @Test
-    public void testServerPublicKeyTextFieldPropertyChange() {
-        PropertyChangeListener listener = panel.serverPublicKeyTextField.getPropertyChangeListeners()[2];
-        Participant server1Full = Participant.generate();
-        Participant server2Full = Participant.generate();
-        Participant server1 = new Participant(EccKeyPairGenerator.fromPublicKey(server1Full.getPublicKeyAsBytes()));
-        Participant server2 = new Participant(EccKeyPairGenerator.fromPublicKey(server2Full.getPublicKeyAsBytes()));
-
-        controller.setServer(eq(server1));
-        expectLastCall();
-        controller.setServer(eq(server2));
-        expectLastCall();
-        replay(controller);
-
-        panel.serverPublicKeyTextField.setText("   ");
-        listener.propertyChange(null);
-        panel.serverPublicKeyTextField.setText("");
-        listener.propertyChange(null);
-        panel.serverPublicKeyTextField.setText(server1.getPublicKeyAsBase58());
-        listener.propertyChange(null);
-        panel.serverPublicKeyTextField.setText("    " + server2.getPublicKeyAsBase58() + "     ");
         listener.propertyChange(null);
 
         verify(controller);

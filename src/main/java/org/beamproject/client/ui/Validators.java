@@ -18,14 +18,6 @@
  */
 package org.beamproject.client.ui;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import org.beamproject.common.Participant;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
-import org.beamproject.common.util.Base58;
-
 /**
  * This class contains several static validators.
  */
@@ -43,55 +35,6 @@ public abstract class Validators {
      */
     public static boolean isUsernameValid(String username) {
         return !isNullOrTrimmable(username) && !username.isEmpty();
-    }
-
-    /**
-     * Checks if a given URL valid is or not for HTTP. Make sure to trim the
-     * {@code url} <b>before</b> using it with this method. If a String can be
-     * trimmed, an exception is thrown (reason: if this method returns true, the
-     * argument without changes should be a valid URL).
-     *
-     * @param url URL to check.
-     * @return True, if the given URL is valid, otherwise false.
-     * @throws TrimException If the argument can be trimmed.
-     */
-    public static boolean isServerHttpUrlValid(String url) {
-        if (isNullOrTrimmable(url)) {
-            return false;
-        }
-
-        try {
-            URL validUrl = new URL(url);
-            URI validUri = validUrl.toURI(); // Needed to check if the URI is valid.
-
-            return "http".equalsIgnoreCase(validUri.getScheme());
-        } catch (MalformedURLException | URISyntaxException ex) {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if a given server public key is valid or not. Make sure to trim
-     * the {@code serverPublicKey} <b>before</b> using it with this method. If a
-     * String can be trimmed, an exception is thrown (reason: if this method
-     * returns true, the argument without changes should be a valid public key).
-     *
-     * @param serverPublicKey String to check.
-     * @return True, if the given public key is valid, otherwise false.
-     * @throws TrimException If the argument can be trimmed.
-     */
-    public static boolean isServerPublicKeyValid(String serverPublicKey) {
-        if (isNullOrTrimmable(serverPublicKey)) {
-            return false;
-        }
-
-        try {
-            byte[] publicKeyBytes = Base58.decode(serverPublicKey);
-            Participant server = new Participant(EccKeyPairGenerator.fromPublicKey(publicKeyBytes));
-            return server.getPublicKey().getEncoded() != null;
-        } catch (IllegalStateException | IllegalArgumentException | NullPointerException ex) {
-            return false;
-        }
     }
 
     private static boolean isNullOrTrimmable(String tester) {

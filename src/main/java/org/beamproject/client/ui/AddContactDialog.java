@@ -19,16 +19,14 @@
 package org.beamproject.client.ui;
 
 import org.beamproject.client.App;
-import org.beamproject.common.Contact;
-import org.beamproject.common.network.UrlAssembler;
+import org.beamproject.common.User;
 
 public class AddContactDialog extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
     private boolean isErrorInUrlTextArea;
     private boolean isErrorInNameTextField;
-    Contact contact;
-    String name;
+    User user;
 
     public AddContactDialog() {
         initComponents();
@@ -49,7 +47,7 @@ public class AddContactDialog extends javax.swing.JFrame {
         setTitle("Add a Contact");
         setResizable(false);
 
-        introductionLabel.setText("Copy & Paste the Beam URL of the contact you want to add:");
+        introductionLabel.setText("Copy & Paste the Beam address of the contact you want to add:");
 
         urlTextArea.setColumns(20);
         urlTextArea.setLineWrap(true);
@@ -85,7 +83,7 @@ public class AddContactDialog extends javax.swing.JFrame {
                     .addComponent(urlScrollPane)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(introductionLabel)
-                        .addGap(0, 109, Short.MAX_VALUE))
+                        .addGap(0, 87, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(addButton)
@@ -115,7 +113,7 @@ public class AddContactDialog extends javax.swing.JFrame {
         verifyUrlTextArea();
 
         if (!isErrorInUrlTextArea && !isErrorInNameTextField) {
-            App.getController().addContact(contact);
+            App.getController().addContact(user);
             dispose();
         }
     }//GEN-LAST:event_addButtonActionPerformed
@@ -143,7 +141,7 @@ public class AddContactDialog extends javax.swing.JFrame {
 
     void verifyUrlTextArea() {
         try {
-            contact = UrlAssembler.toContactByServerAndUserUrl(urlTextArea.getText());
+            user = new User(urlTextArea.getText());
             Components.setDefalutBackground(urlTextArea);
             isErrorInUrlTextArea = false;
         } catch (IllegalArgumentException ex) {
