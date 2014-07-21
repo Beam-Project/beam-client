@@ -31,7 +31,7 @@ import org.beamproject.client.view.MainWindow;
  */
 public class App {
 
-    public final static String NAME = "beam-server";
+    public final static String NAME = "beam-client";
     public final static String POM_VERSION = "0.0.1"; // Do NOT change this, Maven replaces it.
     public final static String WEBSITE = "https://www.beamproject.org/";
     public final static String CONFIG_DIRECTORY_PATH = System.getProperty("user.home") + File.separator + ".beam" + File.separator;
