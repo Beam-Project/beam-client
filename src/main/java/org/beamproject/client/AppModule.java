@@ -41,7 +41,6 @@ import org.beamproject.client.view.MainWindow;
 import org.beamproject.client.view.PasswordChangeLayer;
 import org.beamproject.client.view.ServerChangeLayer;
 import org.beamproject.client.view.menu.SettingsLayer;
-import org.beamproject.client.view.menu.StatusLayer;
 import org.beamproject.client.view.UnlockLayer;
 import org.beamproject.client.view.wizard.WelcomeLayer;
 import org.beamproject.common.util.Executor;
@@ -60,7 +59,6 @@ public class AppModule extends AbstractModule {
         bind(MainWindow.class);
         bind(BootstrapLayer.class);
         bind(InfoLayer.class);
-        bind(StatusLayer.class);
         bind(SettingsLayer.class);
         bind(WelcomeLayer.class);
         bind(AddressLayer.class);

@@ -19,7 +19,6 @@
 package org.beamproject.client.view;
 
 import org.beamproject.client.view.menu.InfoLayer;
-import org.beamproject.client.view.menu.StatusLayer;
 import org.beamproject.client.view.menu.SettingsLayer;
 import org.beamproject.client.view.wizard.AddressLayer;
 import org.beamproject.client.view.wizard.WelcomeLayer;
@@ -64,8 +63,6 @@ public class MainWindow extends javax.swing.JFrame {
     private AddContactLayer addContactLayer;
     @Inject
     private InfoLayer infoLayer;
-    @Inject
-    private StatusLayer statusLayer;
     @Inject
     private SettingsLayer settingsLayer;
     private RegexValidator usernameValidator;
@@ -158,12 +155,12 @@ public class MainWindow extends javax.swing.JFrame {
         avatarLabel = new javax.swing.JLabel();
         usernameLabel = new javax.swing.JLabel();
         usernameTextField = new javax.swing.JTextField();
-        statusButton = new javax.swing.JToggleButton();
         infoButton = new javax.swing.JToggleButton();
         settingsButton = new javax.swing.JToggleButton();
         contactScrollPane = new javax.swing.JScrollPane();
         contactList = new javax.swing.JList();
         addContactButton = new javax.swing.JButton();
+        statusLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Beam");
@@ -207,15 +204,6 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        statusButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/view/status-offline.png"))); // NOI18N
-        statusButton.setBorderPainted(false);
-        statusButton.setFocusPainted(false);
-        statusButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                statusButtonActionPerformed(evt);
-            }
-        });
-
         infoButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/beamproject/client/view/info.png"))); // NOI18N
         infoButton.setBorderPainted(false);
         infoButton.setFocusPainted(false);
@@ -250,28 +238,31 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        statusLabel.setText("Offline");
+
         javax.swing.GroupLayout basePanelLayout = new javax.swing.GroupLayout(basePanel);
         basePanel.setLayout(basePanelLayout);
         basePanelLayout.setHorizontalGroup(
             basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(basePanelLayout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addComponent(avatarLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(usernameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(usernameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(statusButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(infoButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(settingsButton)
-                .addGap(4, 4, 4))
             .addComponent(contactScrollPane)
             .addGroup(basePanelLayout.createSequentialGroup()
-                .addComponent(addContactButton)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(basePanelLayout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(avatarLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(usernameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(usernameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(infoButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(settingsButton))
+                    .addGroup(basePanelLayout.createSequentialGroup()
+                        .addComponent(addContactButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(statusLabel)))
+                .addGap(4, 4, 4))
         );
         basePanelLayout.setVerticalGroup(
             basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,23 +271,24 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(settingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(infoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(statusButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(avatarLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(usernameLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(usernameTextField))
+                    .addComponent(usernameTextField, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(contactScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addComponent(addContactButton))
+                .addGroup(basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addContactButton)
+                    .addComponent(statusLabel)))
         );
         basePanel.setLayer(avatarLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(usernameLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(usernameTextField, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        basePanel.setLayer(statusButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(infoButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(settingsButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(contactScrollPane, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(addContactButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        basePanel.setLayer(statusLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -319,10 +311,6 @@ public class MainWindow extends javax.swing.JFrame {
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
         updateLayerVisibility(infoButton, infoLayer);
     }//GEN-LAST:event_infoButtonActionPerformed
-
-    private void statusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusButtonActionPerformed
-        updateLayerVisibility(statusButton, statusLayer);
-    }//GEN-LAST:event_statusButtonActionPerformed
 
     private void usernameLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameLabelMouseEntered
         Font bold = usernameLabel.getFont().deriveFont(Font.BOLD);
@@ -396,13 +384,11 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void deselectAllButtons() {
-        statusButton.setSelected(false);
         infoButton.setSelected(false);
         settingsButton.setSelected(false);
     }
 
     private void deselectAllButtonsExcept(JToggleButton button) {
-        statusButton.setSelected(button == statusButton);
         infoButton.setSelected(button == infoButton);
         settingsButton.setSelected(button == settingsButton);
     }
@@ -415,7 +401,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane contactScrollPane;
     private javax.swing.JToggleButton infoButton;
     private javax.swing.JToggleButton settingsButton;
-    private javax.swing.JToggleButton statusButton;
+    private javax.swing.JLabel statusLabel;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
