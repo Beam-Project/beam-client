@@ -18,31 +18,37 @@
  */
 package org.beamproject.client;
 
-import java.awt.Color;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import java.io.File;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.aeonbits.owner.ConfigFactory;
-import org.beamproject.common.util.ConfigWriter;
-import org.beamproject.common.util.Executor;
+import org.beamproject.client.model.MainModel;
+import org.beamproject.client.view.MainWindow;
 
 /**
  * The main class of this application.
  */
 public class App {
 
-    public final static Color DEFAULT_BACKGROUND = null; // is really null
-    public final static Color ERROR_BACKGROUND = new Color(255, 153, 153);
-    static ConfigWriter configWriter = new ConfigWriter();
-    static Config config = ConfigFactory.create(Config.class);
-    static Executor executor = new Executor();
-    static Controller controller;
-    static Model model;
+    public final static String NAME = "beam-server";
+    public final static String POM_VERSION = "0.0.1"; // Do NOT change this, Maven replaces it.
+    public final static String WEBSITE = "https://www.beamproject.org/";
+    public final static String CONFIG_DIRECTORY_PATH = System.getProperty("user.home") + File.separator + ".beam" + File.separator;
+    public final static String CONFIG_PATH = CONFIG_DIRECTORY_PATH + "client.conf";
+    public final static String ENCRYPTED_CONFIG_PATH = CONFIG_DIRECTORY_PATH + "client-encrypted.conf";
+    private static MainWindow window;
+    private static MainModel model;
 
     public static void main(String args[]) {
         setNativeLookAndFeel();
-        loadControllerAndModel();
-        controller.showMainWindow();
-        controller.generateUserAndShowDialogOnFirstStart();
+
+        Injector appInjector = Guice.createInjector(new AppModule());
+        window = appInjector.getInstance(MainWindow.class);
+        model = appInjector.getInstance(MainModel.class);
+        model.bootstrap();
+
+        window.setVisible(true);
     }
 
     private static void setNativeLookAndFeel() {
@@ -54,33 +60,42 @@ public class App {
         try {
             if (isUnix) {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+                enableXrenderOnX11BasedDesktops();
             } else {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                useDirecd3dOnly();
             }
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
             throw new IllegalStateException("The Look&Feel could not be configured correctly: " + ex.getMessage());
         }
+
+        enableFontAntiAliasing();
     }
 
-    static void loadControllerAndModel() {
-        controller = new Controller();
-        model = new Model();
+    /**
+     * Use sysetm anti-aliasing font settings: ANTIALIAS_LCD_HRGB<br />
+     * See:
+     * https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html#aaFonts
+     */
+    private static void enableFontAntiAliasing() {
+        System.setProperty("awt.useSystemAAFontSettings", "lcd");
     }
 
-    public static Controller getController() {
-        return controller;
+    /**
+     * Use D3D only on Windows platform for better performance.<br />
+     * See:
+     * https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html#noddraw
+     */
+    private static void useDirecd3dOnly() {
+        System.setProperty("sun.java2d.noddraw", "true");
     }
 
-    public static Model getModel() {
-        return model;
-    }
-
-    public static Config getConfig() {
-        return config;
-    }
-
-    public static Executor getExecutor() {
-        return executor;
+    /**
+     * See:
+     * https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html#xrender
+     */
+    private static void enableXrenderOnX11BasedDesktops() {
+        System.setProperty("sun.java2d.xrender", "true");
     }
 
 }
