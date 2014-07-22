@@ -18,11 +18,6 @@
  */
 package org.beamproject.client.view;
 
-import org.beamproject.client.view.menu.InfoLayer;
-import org.beamproject.client.view.menu.SettingsLayer;
-import org.beamproject.client.view.wizard.AddressLayer;
-import org.beamproject.client.view.wizard.WelcomeLayer;
-import org.beamproject.client.view.wizard.PasswordLayer;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
@@ -36,7 +31,13 @@ import static org.beamproject.client.Event.*;
 import org.beamproject.client.model.ChatModel;
 import org.beamproject.client.model.MainModel;
 import org.beamproject.client.util.Components;
+import static org.beamproject.client.util.ConfigKey.*;
 import org.beamproject.client.util.validators.RegexValidator;
+import org.beamproject.client.view.menu.InfoLayer;
+import org.beamproject.client.view.menu.SettingsLayer;
+import org.beamproject.client.view.wizard.AddressLayer;
+import org.beamproject.client.view.wizard.PasswordLayer;
+import org.beamproject.client.view.wizard.WelcomeLayer;
 
 @Singleton
 public class MainWindow extends javax.swing.JFrame {
@@ -133,9 +134,29 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     @Subscribe
-    public void updateUsername(Event event) {
+    public void updateAfterUnlocking(Event event) {
         if (event == ENCRYPTED_CONFIG_UNLOCKED) {
-            usernameLabel.setText(model.getUser().getUsername());
+            updateUsername();
+            updateConnectionButton();
+        }
+    }
+
+    private void updateUsername() {
+        usernameLabel.setText(model.getUser().getUsername());
+    }
+
+    private void updateConnectionButton() {
+        boolean doConnect = Boolean.parseBoolean(model.getEncryptedConfig().getAsString(CONNECT_TO_SERVER));
+
+        if (doConnect) {
+            connectionToggleButton.doClick();
+        }
+    }
+
+    @Subscribe
+    public void updateConnectionStatus(Event event) {
+        if (event == UPDATE_CONNECTION_STATUS) {
+            connectionToggleButton.setText(model.getConnectionStatus());
         }
     }
 
@@ -160,7 +181,7 @@ public class MainWindow extends javax.swing.JFrame {
         contactScrollPane = new javax.swing.JScrollPane();
         contactList = new javax.swing.JList();
         addContactButton = new javax.swing.JButton();
-        statusLabel = new javax.swing.JLabel();
+        connectionToggleButton = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Beam");
@@ -238,31 +259,36 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        statusLabel.setText("Offline");
+        connectionToggleButton.setText("Stay offline");
+        connectionToggleButton.setBorderPainted(false);
+        connectionToggleButton.setFocusPainted(false);
+        connectionToggleButton.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                connectionToggleButtonItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout basePanelLayout = new javax.swing.GroupLayout(basePanel);
         basePanel.setLayout(basePanelLayout);
         basePanelLayout.setHorizontalGroup(
             basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(contactScrollPane)
+            .addComponent(contactScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
             .addGroup(basePanelLayout.createSequentialGroup()
-                .addGroup(basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(basePanelLayout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addComponent(avatarLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(usernameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(usernameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(infoButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(settingsButton))
-                    .addGroup(basePanelLayout.createSequentialGroup()
-                        .addComponent(addContactButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(statusLabel)))
+                .addGap(4, 4, 4)
+                .addComponent(avatarLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(usernameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(usernameTextField)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(infoButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(settingsButton)
                 .addGap(4, 4, 4))
+            .addGroup(basePanelLayout.createSequentialGroup()
+                .addComponent(addContactButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(connectionToggleButton))
         );
         basePanelLayout.setVerticalGroup(
             basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,7 +305,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addGroup(basePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addContactButton)
-                    .addComponent(statusLabel)))
+                    .addComponent(connectionToggleButton)))
         );
         basePanel.setLayer(avatarLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(usernameLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -288,7 +314,7 @@ public class MainWindow extends javax.swing.JFrame {
         basePanel.setLayer(settingsButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(contactScrollPane, javax.swing.JLayeredPane.DEFAULT_LAYER);
         basePanel.setLayer(addContactButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        basePanel.setLayer(statusLabel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        basePanel.setLayer(connectionToggleButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -359,6 +385,10 @@ public class MainWindow extends javax.swing.JFrame {
         chatModel.showAddContactLayer();
     }//GEN-LAST:event_addContactButtonActionPerformed
 
+    private void connectionToggleButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_connectionToggleButtonItemStateChanged
+        model.setConnectionState(connectionToggleButton.isSelected());
+    }//GEN-LAST:event_connectionToggleButtonItemStateChanged
+
     private void showUsernameLabel() {
         usernameTextField.setVisible(false);
         usernameLabel.setVisible(true);
@@ -397,11 +427,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton addContactButton;
     private javax.swing.JLabel avatarLabel;
     private javax.swing.JLayeredPane basePanel;
+    private javax.swing.JToggleButton connectionToggleButton;
     private javax.swing.JList contactList;
     private javax.swing.JScrollPane contactScrollPane;
     private javax.swing.JToggleButton infoButton;
     private javax.swing.JToggleButton settingsButton;
-    private javax.swing.JLabel statusLabel;
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
