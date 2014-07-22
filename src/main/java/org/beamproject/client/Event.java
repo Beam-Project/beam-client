@@ -62,6 +62,11 @@ public enum Event {
      */
     ENCRYPTED_CONFIG_UNLOCKED,
     /**
+     * This event is sent by the {@link MainModel} and indicates the status of
+     * the connection between this client and the server has changed.
+     */
+    UPDATE_CONNECTION_STATUS,
+    /**
      * This event is sent by the {@link MenuModel} in order to show the
      * {@link PasswordChangeLayer}.
      */
