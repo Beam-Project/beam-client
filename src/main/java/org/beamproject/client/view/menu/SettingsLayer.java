@@ -102,7 +102,6 @@ public class SettingsLayer extends javax.swing.JPanel {
         changePasswordButton = new javax.swing.JButton();
         dangerZoneLabel = new javax.swing.JLabel();
         changeServerButton = new javax.swing.JButton();
-        generateIdentityButton = new javax.swing.JButton();
 
         setOpaque(false);
 
@@ -153,8 +152,6 @@ public class SettingsLayer extends javax.swing.JPanel {
             }
         });
 
-        generateIdentityButton.setText("Generate new identity");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -166,12 +163,9 @@ public class SettingsLayer extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(rememberCheckBox)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(changePasswordButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(generateIdentityButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(rememberCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(changePasswordButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -207,8 +201,6 @@ public class SettingsLayer extends javax.swing.JPanel {
                 .addComponent(dangerZoneLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(changeServerButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(generateIdentityButton)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -253,7 +245,6 @@ public class SettingsLayer extends javax.swing.JPanel {
     private javax.swing.JRadioButton contactsRadioBox;
     private javax.swing.JLabel dangerZoneLabel;
     private javax.swing.JRadioButton everyoneRadioBox;
-    private javax.swing.JButton generateIdentityButton;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JCheckBox rememberCheckBox;
     // End of variables declaration//GEN-END:variables
