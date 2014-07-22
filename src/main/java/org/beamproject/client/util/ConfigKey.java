@@ -58,6 +58,19 @@ public enum ConfigKey {
      */
     SERVER_ADDRESS,
     /**
+     * The host of the {@link Server}s MQTT broker.
+     */
+    SERVER_BROKER_HOST,
+    /**
+     * The port of the {@link Server}s MQTT broker.
+     */
+    SERVER_BROKER_PORT,
+    /**
+     * {@code true} when the client was last connected to the
+     * {@link Server}, {@code false} otherwise.
+     */
+    CONNECT_TO_SERVER,
+    /**
      * Defines of what sources/senders messages will be accepted.<br />
      * Allowed values are the values of {@link MenuModel.AcceptedMessageSender}.
      */
