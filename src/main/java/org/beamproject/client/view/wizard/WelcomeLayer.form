@@ -92,7 +92,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="usernameTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" value="ren&#xe9;"/>
+        <Property name="text" type="java.lang.String" value="Ren&#xe9;"/>
         <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
           <ComponentRef name="activationCodeTextField"/>
         </Property>
@@ -108,7 +108,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="activationCodeTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" value="beam:z7dBYZ1SNpTr8URsQVxzFg1hWvG33coDFBpxztn575Fadkatsp1wWRJS51s6ggctnXQymxkGNj7Hzo9rUVQwjvAoAfLv6ooC4WULsYWkduyiLAscmJikbDLZUN2rQNN3XQoFTUQdtcA7kxskitimpJYxv5dfJSCKPkBHKQ6cLwansBsxM6bW7CbQR4JrH1HVkQrqJxR4qQdsKiJ7gxJ6dqF48hRwrVxH28LSVFKL"/>
+        <Property name="text" type="java.lang.String" value="beam:Vsr1hpddfeaDHWHawwg4V4PSngWtLuUX8PQHBKBRkrYQvpTPLFZqQWgcWfFKbV1GJTPjRwPMS22kxCxnpvXHLEmNRXQGvSLMLZjYLXXA37wJEVRDHAGL1D1Ri7VmMq5H6LoSK941zshMfyUhSUrAEc7miyDaXLtMstNuvhPyGVWWFmp6qcdrvYhP9vrHDXKjY2XeJaCCph1zEe6yBvwjhNAyvsTaVK7UJrAeeyYU7GfaDMN"/>
         <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
           <ComponentRef name="nextButton"/>
         </Property>

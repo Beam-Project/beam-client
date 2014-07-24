@@ -80,7 +80,7 @@ public class WelcomeLayer extends javax.swing.JPanel {
 
         usernameLabel.setText("<html>Please enter your name:</html>");
 
-        usernameTextField.setText("rené");
+        usernameTextField.setText("René");
         usernameTextField.setNextFocusableComponent(activationCodeTextField);
         usernameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,7 +90,7 @@ public class WelcomeLayer extends javax.swing.JPanel {
 
         activationCodeLabel.setText("<html>Enter the <b>Activation Code</b> of your server:</html>");
 
-        activationCodeTextField.setText("beam:z7dBYZ1SNpTr8URsQVxzFg1hWvG33coDFBpxztn575Fadkatsp1wWRJS51s6ggctnXQymxkGNj7Hzo9rUVQwjvAoAfLv6ooC4WULsYWkduyiLAscmJikbDLZUN2rQNN3XQoFTUQdtcA7kxskitimpJYxv5dfJSCKPkBHKQ6cLwansBsxM6bW7CbQR4JrH1HVkQrqJxR4qQdsKiJ7gxJ6dqF48hRwrVxH28LSVFKL");
+        activationCodeTextField.setText("beam:Vsr1hpddfeaDHWHawwg4V4PSngWtLuUX8PQHBKBRkrYQvpTPLFZqQWgcWfFKbV1GJTPjRwPMS22kxCxnpvXHLEmNRXQGvSLMLZjYLXXA37wJEVRDHAGL1D1Ri7VmMq5H6LoSK941zshMfyUhSUrAEc7miyDaXLtMstNuvhPyGVWWFmp6qcdrvYhP9vrHDXKjY2XeJaCCph1zEe6yBvwjhNAyvsTaVK7UJrAeeyYU7GfaDMN");
         activationCodeTextField.setNextFocusableComponent(nextButton);
         activationCodeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
