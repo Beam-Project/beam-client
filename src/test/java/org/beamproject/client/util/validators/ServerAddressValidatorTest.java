@@ -26,7 +26,7 @@ import org.junit.Before;
 
 public class ServerAddressValidatorTest {
 
-    private final static String VALID_SERVER_ADDRESS = "beam:z7dBYZ1SNpTr8URsQVxzFg1hWvG33coDFBpxztn575Fadkatsp1wWRJS51s6ggctnXQymxkGNj7Hzo9rUVQwjvAoAfLv6ooC4WULsYWkduyiLAscmJikbDLZUN2rQNN3XQoFTUQdtcA7kxskitimpJYxv5dfJSCKPkBHKQ6cLwansBsxM6bW7CbQR4JrH1HVkQrqJxR4qQdsKiJ7gxJ6dqF48hRwrVxH28LSVFKL";
+    private final static String VALID_SERVER_ADDRESS = "beam:Vsr1hpddfeaDHWHawwg4V4PSngWtLuUX8PQHBKBRkrYQvpTPLFZqQWgcWfFKbV1GJTPjRwPMS22kxCxnpvXHLEmNRXQGvSLMLZjYLXXA37wJEVRDHAGL1D1Ri7VmMq5H6LoSK941zshMfyUhSUrAEc7miyDaXLtMstNuvhPyGVWWFmp6qcdrvYhP9vrHDXKjY2XeJaCCph1zEe6yBvwjhNAyvsTaVK7UJrAeeyYU7GfaDMN";
     private JTextField textField;
     private ServerAddressValidator validator;
     private Server server;
