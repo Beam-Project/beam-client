@@ -54,17 +54,18 @@ public enum ConfigKey {
      */
     USER_PRIVATE_KEY,
     /**
-     * The address of the {@link Server}, containing its public key and URL.
+     * The address of the {@link Server}, containing its public key, HTTP URL,
+     * and MQTT address.
      */
     SERVER_ADDRESS,
     /**
      * The host of the {@link Server}s MQTT broker.
      */
-    SERVER_BROKER_HOST,
+    SERVER_MQTT_HOST,
     /**
      * The port of the {@link Server}s MQTT broker.
      */
-    SERVER_BROKER_PORT,
+    SERVER_MQTT_PORT,
     /**
      * {@code true} when the client was last connected to the
      * {@link Server}, {@code false} otherwise.

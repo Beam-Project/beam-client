@@ -45,6 +45,7 @@ import org.beamproject.common.crypto.EncryptedConfig;
 import org.beamproject.common.util.Files;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
+import org.beamproject.common.carrier.MqttConnectionPool;
 import org.beamproject.common.crypto.BouncyCastleIntegrator;
 import org.beamproject.common.crypto.CryptoException;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
@@ -90,6 +91,10 @@ public class MainModel {
     @Getter
     @Setter
     private Server server;
+    @Inject
+    private MqttConnectionPool connectionPool;
+    @Getter
+    private String connectionStatus = "Stay offline";
 
     @Inject
     public MainModel(EventBus bus, Config<ConfigKey> config, Files files, Executor executor) {
@@ -244,6 +249,20 @@ public class MainModel {
     public void setUsername(String username) {
         user.setUsername(username);
         encryptedConfig.set(USERNAME, username);
+    }
+
+    public void setConnectionState(boolean doConnect) {
+        encryptedConfig.set(CONNECT_TO_SERVER, "" + doConnect);
+        System.out.println("connection state in model: " + doConnect);
+        
+        connectionStatus = doConnect ? "Online" : "Stay offline";
+        try {
+            connectionPool.borrowObject();
+        } catch (Exception ex) {
+            Logger.getLogger(MainModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        bus.post(UPDATE_CONNECTION_STATUS);
     }
 
     /**

@@ -43,6 +43,8 @@ import org.beamproject.client.view.ServerChangeLayer;
 import org.beamproject.client.view.menu.SettingsLayer;
 import org.beamproject.client.view.UnlockLayer;
 import org.beamproject.client.view.wizard.WelcomeLayer;
+import org.beamproject.common.crypto.CryptoPackerPool;
+import org.beamproject.common.crypto.CryptoPackerPoolFactory;
 import org.beamproject.common.util.Executor;
 
 public class AppModule extends AbstractModule {
@@ -98,6 +100,13 @@ public class AppModule extends AbstractModule {
     @Singleton
     Executor providesExecutor() {
         return new Executor();
+    }
+
+    @Provides
+    @Singleton
+    CryptoPackerPool providesCryptoPackerPool() {
+        CryptoPackerPoolFactory factory = new CryptoPackerPoolFactory();
+        return new CryptoPackerPool(factory);
     }
 
 }
