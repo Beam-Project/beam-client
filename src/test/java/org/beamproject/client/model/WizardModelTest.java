@@ -38,7 +38,7 @@ import org.beamproject.client.util.ConfigKey;
 public class WizardModelTest {
 
     private final String NAME = "name";
-    private final String ACCOUNT_ACTIVATION = Server.generate().getAddress();
+    private final String TEST_SERVER_ADDRESS = Server.generate().getAddress();
     private MainModel mainModel;
     private BusFake busFake;
     private Config<ConfigKey> config;
@@ -63,13 +63,13 @@ public class WizardModelTest {
     @Test
     public void testProcessWelcomeLayer() {
         model.username = NAME;
-        model.activationCode = ACCOUNT_ACTIVATION;
+        model.serverAddress = TEST_SERVER_ADDRESS;
 
         mainModel.setUser(anyObject(User.class));
         expectLastCall();
         replay(mainModel);
 
-        model.processWelcomeLayer(NAME, ACCOUNT_ACTIVATION);
+        model.processWelcomeLayer(NAME, TEST_SERVER_ADDRESS);
 
         assertEquals(SHOW_WIZARD_ADDRESS_LAYER, busFake.getNextEvent());
         assertEquals(ENABLE_WIZARD_ADDRESS_GENERATED_ADDRESS, busFake.getNextEvent());
@@ -117,6 +117,7 @@ public class WizardModelTest {
         assertTrue(model.encryptedConfig.contains(USER_PUBLIC_KEY));
         assertTrue(model.encryptedConfig.contains(USER_PRIVATE_KEY));
         assertTrue(model.encryptedConfig.contains(SERVER_ADDRESS));
+        assertTrue(model.encryptedConfig.contains(CONNECT_TO_SERVER));
         assertTrue(model.encryptedConfig.contains(ACCEPTED_MESSAGE_SENDER));
         assertEquals(CONTACTS.toString(), model.encryptedConfig.getAsString(ACCEPTED_MESSAGE_SENDER));
 

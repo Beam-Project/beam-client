@@ -43,13 +43,14 @@ import org.beamproject.common.util.Task;
 @Singleton
 public class WizardModel {
 
+    private final static boolean DO_CONNECT_PER_DEFAULT = true;
     @Delegate
     private final MainModel mainModel;
     private final EventBus bus;
     private final Config<ConfigKey> config;
     private final Executor executor;
     EncryptedConfig<ConfigKey> encryptedConfig;
-    String username, activationCode;
+    String username, serverAddress;
     Server server;
     User user;
     char[] password;
@@ -67,27 +68,27 @@ public class WizardModel {
      * Takes the username and creates a new {@link User} with that, what also
      * creates a new {@link KeyPair}.
      * <p>
-     * The activationCode is used to configure the {@link Server} where the user
+     * The serverAddress is used to configure the {@link Server} where the user
      * has an account.
      *
      * @param username The username to use.
-     * @param activationCode The activation code for the server.
+     * @param serverAddress The activation code for the server.
      */
-    public void processWelcomeLayer(String username, String activationCode) {
+    public void processWelcomeLayer(String username, String serverAddress) {
         this.username = username;
-        this.activationCode = activationCode;
+        this.serverAddress = serverAddress;
 
         bus.post(SHOW_WIZARD_ADDRESS_LAYER);
 
-        createUserByNameAndActivationCode();
+        createUserByNameAndServerAddress();
     }
 
-    private void createUserByNameAndActivationCode() {
+    private void createUserByNameAndServerAddress() {
         executor.runAsync(new Task() {
             @Override
             public void run() {
                 KeyPair keyPair = EccKeyPairGenerator.generate();
-                server = new Server(activationCode);
+                server = new Server(serverAddress);
                 user = new User(username, keyPair, server);
                 mainModel.setUser(user);
 
@@ -142,6 +143,7 @@ public class WizardModel {
         encryptedConfig.set(USER_PUBLIC_KEY, user.getPublicKeyAsBytes());
         encryptedConfig.set(USER_PRIVATE_KEY, user.getPrivateKeyAsBytes());
         encryptedConfig.set(SERVER_ADDRESS, server.getAddress());
+        encryptedConfig.set(CONNECT_TO_SERVER, String.valueOf(DO_CONNECT_PER_DEFAULT));
     }
 
     private void createDefaultValues() {
