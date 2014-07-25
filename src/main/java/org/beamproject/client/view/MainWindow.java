@@ -156,7 +156,10 @@ public class MainWindow extends javax.swing.JFrame {
     @Subscribe
     public void updateConnectionStatus(Event event) {
         if (event == UPDATE_CONNECTION_STATUS) {
-            connectionToggleButton.setText(model.getConnectionStatus());
+            boolean isConnected = model.getConnectionModel().isConnected();
+            connectionToggleButton.setText(isConnected
+                    ? "Online"
+                    : "Offline");
         }
     }
 
@@ -386,7 +389,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_addContactButtonActionPerformed
 
     private void connectionToggleButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_connectionToggleButtonItemStateChanged
-        model.setConnectionState(connectionToggleButton.isSelected());
+        model.connect(connectionToggleButton.isSelected());
     }//GEN-LAST:event_connectionToggleButtonItemStateChanged
 
     private void showUsernameLabel() {
