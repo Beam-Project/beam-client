@@ -59,14 +59,6 @@ public enum ConfigKey {
      */
     SERVER_ADDRESS,
     /**
-     * The host of the {@link Server}s MQTT broker.
-     */
-    SERVER_MQTT_HOST,
-    /**
-     * The port of the {@link Server}s MQTT broker.
-     */
-    SERVER_MQTT_PORT,
-    /**
      * {@code true} when the client was last connected to the
      * {@link Server}, {@code false} otherwise.
      */
