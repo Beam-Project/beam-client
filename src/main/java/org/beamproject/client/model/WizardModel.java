@@ -90,6 +90,7 @@ public class WizardModel {
                 KeyPair keyPair = EccKeyPairGenerator.generate();
                 server = new Server(serverAddress);
                 user = new User(username, keyPair, server);
+                mainModel.setServer(server);
                 mainModel.setUser(user);
 
                 bus.post(ENABLE_WIZARD_ADDRESS_GENERATED_ADDRESS);

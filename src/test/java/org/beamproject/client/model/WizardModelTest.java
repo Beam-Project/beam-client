@@ -65,6 +65,8 @@ public class WizardModelTest {
         model.username = NAME;
         model.serverAddress = TEST_SERVER_ADDRESS;
 
+        mainModel.setServer(anyObject(Server.class));
+        expectLastCall();
         mainModel.setUser(anyObject(User.class));
         expectLastCall();
         replay(mainModel);
