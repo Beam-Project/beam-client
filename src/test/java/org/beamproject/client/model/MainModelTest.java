@@ -20,6 +20,7 @@ package org.beamproject.client.model;
 
 import java.security.Security;
 import java.util.Properties;
+import java.util.logging.Logger;
 import org.beamproject.client.App;
 import org.beamproject.client.BusFake;
 import static org.beamproject.client.Event.*;
@@ -59,6 +60,7 @@ public class MainModelTest {
         files = createMock(Files.class);
         executor = new ExecutorFake();
         model = new MainModel(busFake.getBus(), config, files, executor);
+        model.log = Logger.getGlobal();
     }
 
     @After

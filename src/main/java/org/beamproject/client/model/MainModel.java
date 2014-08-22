@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
+import static java.util.logging.Level.*;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +45,6 @@ import org.beamproject.common.crypto.EncryptedConfig;
 import org.beamproject.common.util.Files;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
-import org.beamproject.common.carrier.MqttConnectionPool;
 import org.beamproject.common.crypto.BouncyCastleIntegrator;
 import org.beamproject.common.crypto.CryptoException;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
@@ -75,7 +74,9 @@ public class MainModel {
          */
         EVERYONE
     }
-    private static final int MAXIMAL_QR_CODE_SIDE_LENGTH_IN_PX = 250;
+    private static final int MAXIMAL_QR_CODE_SIDE_LENGTH_IN_PX = 200;
+    @Inject
+    Logger log;
     private final EventBus bus;
     private final Config<ConfigKey> config;
     private final Files files;
@@ -92,9 +93,8 @@ public class MainModel {
     @Setter
     private Server server;
     @Inject
-    private MqttConnectionPool connectionPool;
     @Getter
-    private String connectionStatus = "Stay offline";
+    private ConnectionModel connectionModel;
 
     @Inject
     public MainModel(EventBus bus, Config<ConfigKey> config, Files files, Executor executor) {
@@ -168,7 +168,7 @@ public class MainModel {
             applyUserEnvironment();
         } catch (IllegalArgumentException | CryptoException ex) {
             bus.post(UNLOCK_LAYER_WRONG_PASSWORD);
-            Logger.getLogger(MainModel.class.getName()).log(Level.INFO, "Could not decrypt data, possibly password wrong: {0}", ex.getMessage());
+            log.log(INFO, "Could not decrypt data, possibly password wrong: {0}", ex.getMessage());
         }
     }
 
@@ -251,17 +251,22 @@ public class MainModel {
         encryptedConfig.set(USERNAME, username);
     }
 
-    public void setConnectionState(boolean doConnect) {
-        encryptedConfig.set(CONNECT_TO_SERVER, "" + doConnect);
-        System.out.println("connection state in model: " + doConnect);
-        
-        connectionStatus = doConnect ? "Online" : "Stay offline";
-        try {
-            connectionPool.borrowObject();
-        } catch (Exception ex) {
-            Logger.getLogger(MainModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+    public void connect(final boolean doConnect) {
+        executor.runAsync(new Task() {
+            @Override
+            public void run() {
+                if (doConnect) {
+                    log.info("Connecting...");
+                    connectionModel.setUpConnectionPoolAndCarrier();
+                    connectionModel.startAsyncReceiving();
+                    connectionModel.startHandshake();
+                } else {
+                    log.info("Disconnecting...");
+                    connectionModel.shutdown();
+                }
+            }
+        });
+
         bus.post(UPDATE_CONNECTION_STATUS);
     }
 
@@ -334,7 +339,7 @@ public class MainModel {
         try {
             binary = new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, "Could not find the current jar file as URI: {0}", ex.getMessage());
+            log.log(SEVERE, "Could not find the current jar file as URI: {0}", ex.getMessage());
             return;
         }
 
@@ -347,7 +352,7 @@ public class MainModel {
             ProcessBuilder builder = new ProcessBuilder(command);
             builder.start();
         } catch (IOException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, "An error occurred while restarting application: {0}", ex.getMessage());
+            log.log(SEVERE, "An error occurred while restarting application: {0}", ex.getMessage());
         }
     }
 
