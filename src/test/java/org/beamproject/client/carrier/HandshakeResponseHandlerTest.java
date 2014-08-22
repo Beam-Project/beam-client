@@ -19,10 +19,10 @@
 package org.beamproject.client.carrier;
 
 import org.beamproject.client.model.ConnectionModel;
-import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.HSNONCE;
-import static org.beamproject.common.MessageField.ContentField.HSSIG;
-import static org.beamproject.common.MessageField.ContentField.TYP;
+import org.beamproject.common.message.Message;
+import static org.beamproject.common.message.MessageField.ContentField.HSNONCE;
+import static org.beamproject.common.message.MessageField.ContentField.HSSIG;
+import static org.beamproject.common.message.MessageField.ContentField.TYP;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
 import org.beamproject.common.carrier.MessageException;

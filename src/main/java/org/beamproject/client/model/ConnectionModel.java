@@ -28,7 +28,7 @@ import lombok.Setter;
 import lombok.experimental.Delegate;
 import static org.beamproject.client.Event.*;
 import org.beamproject.client.carrier.HandshakeResponseHandler;
-import org.beamproject.common.Message;
+import org.beamproject.common.message.Message;
 import org.beamproject.common.Session;
 import org.beamproject.common.carrier.ClientCarrier;
 import org.beamproject.common.carrier.ClientCarrierImpl;

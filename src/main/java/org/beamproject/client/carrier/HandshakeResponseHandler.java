@@ -19,8 +19,8 @@
 package org.beamproject.client.carrier;
 
 import org.beamproject.client.model.ConnectionModel;
-import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.*;
+import org.beamproject.common.message.Message;
+import static org.beamproject.common.message.MessageField.ContentField.*;
 import org.beamproject.common.Session;
 import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeChallenger;

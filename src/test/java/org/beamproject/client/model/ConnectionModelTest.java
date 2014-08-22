@@ -28,7 +28,7 @@ import static org.beamproject.client.Event.UPDATE_CONNECTION_STATUS;
 import org.beamproject.client.ExecutorFake;
 import static org.beamproject.client.model.ConnectionModel.*;
 import org.beamproject.client.util.ConfigKey;
-import org.beamproject.common.Message;
+import org.beamproject.common.message.Message;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
