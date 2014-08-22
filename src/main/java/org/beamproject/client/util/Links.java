@@ -18,6 +18,7 @@
  */
 package org.beamproject.client.util;
 
+import com.google.inject.Inject;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,6 +31,9 @@ import java.util.logging.Logger;
  */
 public class Links {
 
+    @Inject
+    static Logger log;
+
     /**
      * Opens the given {@code http} link with the configured web browser.
      *
@@ -41,7 +45,7 @@ public class Links {
                 Desktop.getDesktop().browse(new URL(link).toURI());
                 return;
             } catch (IOException | URISyntaxException ex) {
-                Logger.getLogger(Links.class.getName()).log(Level.WARNING, "Could not open the website ''" + link + "'' since: " + ex.getMessage());
+                log.log(Level.WARNING, "Could not open the website {0} since: {1}", new Object[]{link, ex.getMessage()});
             }
         }
 
@@ -53,7 +57,7 @@ public class Links {
             ProcessBuilder processBuilder = new ProcessBuilder(type, link);
             processBuilder.start();
         } catch (IOException ex) {
-            Logger.getLogger(Links.class.getName()).log(Level.WARNING, "Could not open the link ''" + link + "'' as process since: " + ex.getMessage());
+            log.log(Level.WARNING, "Could not open the link {0} as process since: {1}", new Object[]{link, ex.getMessage()});
         }
     }
 }
