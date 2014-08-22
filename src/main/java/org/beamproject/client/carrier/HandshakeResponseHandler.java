@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) 2013, 2014 beamproject.org
+ *
+ * This file is part of beam-client.
+ *
+ * beam-client is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * beam-client is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.beamproject.client.carrier;
+
+import org.beamproject.client.model.ConnectionModel;
+import org.beamproject.common.Message;
+import static org.beamproject.common.MessageField.ContentField.*;
+import org.beamproject.common.Session;
+import org.beamproject.common.crypto.Handshake;
+import org.beamproject.common.crypto.HandshakeChallenger;
+import org.beamproject.common.message.ContentFieldMessageValidator;
+import org.beamproject.common.message.HandshakeNonceMessageValidator;
+import org.beamproject.common.message.HandshakePublicKeyMessageValidator;
+import org.beamproject.common.message.HandshakeSignatureMessageValidator;
+import org.beamproject.common.message.MessageHandler;
+
+/**
+ * This {@link MessageHandler} is part of the {@link Handshake} procedure.
+ * <p>
+ * Handles messages of type: {@link TypeValue#HS_RESPONSE}
+ */
+public class HandshakeResponseHandler extends MessageHandler {
+
+    private final ConnectionModel connectionModel;
+    private HandshakeChallenger challenger;
+
+    public HandshakeResponseHandler(ConnectionModel connectionModel) {
+        super(new ContentFieldMessageValidator(TYP, HSPUBKEY, HSNONCE, HSSIG),
+                new HandshakePublicKeyMessageValidator(),
+                new HandshakeNonceMessageValidator(),
+                new HandshakeSignatureMessageValidator());
+        this.connectionModel = connectionModel;
+    }
+
+    @Override
+    protected Message handleValidMessage() {
+        challenger = connectionModel.getChallenger();
+        challenger.consumeResponse(message);
+
+        Message success = challenger.produceSuccess();
+        Session session = new Session(challenger.getRemoteParticipant(), challenger.getSessionKey());
+        connectionModel.setSession(session);
+
+        return success;
+    }
+
+}
