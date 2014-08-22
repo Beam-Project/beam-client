@@ -21,12 +21,15 @@ package org.beamproject.client.model;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import java.security.SecureRandom;
-import java.util.logging.Level;
+import static java.util.logging.Level.*;
 import java.util.logging.Logger;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Delegate;
 import static org.beamproject.client.Event.*;
-import static org.beamproject.client.util.ConfigKey.*;
+import org.beamproject.client.carrier.HandshakeResponseHandler;
 import org.beamproject.common.Message;
+import org.beamproject.common.Session;
 import org.beamproject.common.carrier.ClientCarrier;
 import org.beamproject.common.carrier.ClientCarrierImpl;
 import org.beamproject.common.carrier.ClientCarrierModel;
@@ -40,10 +43,12 @@ import org.beamproject.common.util.Task;
 
 public class ConnectionModel implements ClientCarrierModel {
 
+    @Inject
+    Logger log;
     final static int MQTT_USERNAME_LENGTH = 12;
     private final static String MQTT_USERNAME_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private final static String MQTT_SUBSCRIBER_TOPIC_PREFIX = "out/";
-    private final static String MQTT_PUBLISHER_TOPIC = "in";
+    private final static String MQTT_PUBLISHER_TOPIC_PREFIX = "in/";
     private final MainModel model;
     private final EventBus bus;
     private final Executor executor;
@@ -51,32 +56,34 @@ public class ConnectionModel implements ClientCarrierModel {
     @Delegate
     ClientCarrier carrier;
     MqttConnectionPool connectionPool;
-    HandshakeChallenger challenger;
+    @Getter
+    @Setter
+    private HandshakeChallenger challenger;
+    @Getter
+    @Setter
+    private Session session;
 
     @Inject
-    public ConnectionModel(MainModel model,
-            EventBus bus,
-            Executor executor,
-            CryptoPackerPool packerPool) {
+    public ConnectionModel(MainModel model, EventBus bus, Executor executor, CryptoPackerPool packerPool) {
         this.model = model;
         this.bus = bus;
         this.executor = executor;
         this.packerPool = packerPool;
-
-        setUpConnectionPoolAndCarrier();
     }
 
-    private void setUpConnectionPoolAndCarrier() {
-        String host = model.getEncryptedConfig().getAsString(SERVER_MQTT_HOST);
-        String port = model.getEncryptedConfig().getAsString(SERVER_MQTT_PORT);
-        String mqttUsername = generateRandomMqttUsername();
-        String subscriberTopoic = MQTT_SUBSCRIBER_TOPIC_PREFIX + mqttUsername;
+    public void setUpConnectionPoolAndCarrier() {
+        String host = model.getServer().getMqttAddress().getHostString();
+        int port = model.getServer().getMqttAddress().getPort();
+        String username = generateRandomMqttUsername();
+        String subscriberTopic = MQTT_SUBSCRIBER_TOPIC_PREFIX + username;
+        String publisherTopic = MQTT_PUBLISHER_TOPIC_PREFIX + username;
 
-        MqttConnectionPoolFactory factory = new MqttConnectionPoolFactory(host, port, mqttUsername, subscriberTopoic);
+        log.log(INFO, "Connecting: {0}:{1} with username ''{2}'' in topic ''{3}''", new Object[]{host, port, username, subscriberTopic});
+        MqttConnectionPoolFactory factory = new MqttConnectionPoolFactory(host, port, username, subscriberTopic);
 
         connectionPool = new MqttConnectionPool(factory);
         carrier = new ClientCarrierImpl(this, executor, connectionPool);
-        carrier.bindParticipantToTopic(model.getServer(), MQTT_PUBLISHER_TOPIC);
+        carrier.bindParticipantToTopic(model.getServer(), publisherTopic);
     }
 
     static String generateRandomMqttUsername() {
@@ -92,16 +99,18 @@ public class ConnectionModel implements ClientCarrierModel {
         return randomName.toString();
     }
 
-    public void startHandshake() {
-        challenger = new HandshakeChallenger(model.getUser());
-        sendMessage(challenger.produceChallenge(model.getServer()));
+    public void startAsyncReceiving() {
+        executor.runAsync(new Task() {
+            @Override
+            public void run() {
+                startReceiving();
+            }
+        });
     }
 
-    void handleHandshakeResponse(Message response) {
-        challenger.consumeResponse(response);
-        sendMessage(challenger.produceSuccess());
-
-        bus.post(UPDATE_CONNECTION_STATUS);
+    public void startHandshake() {
+        challenger = new HandshakeChallenger(model.getUser());
+        encryptAndSend(challenger.produceChallenge(model.getServer()));
     }
 
     @Override
@@ -116,8 +125,7 @@ public class ConnectionModel implements ClientCarrierModel {
                     Message message = packer.decryptAndUnpack(ciphertext, model.getUser());
                     routeMessage(message);
                 } catch (Exception ex) {
-                    Logger.getLogger(ConnectionModel.class.getName()).log(Level.WARNING,
-                            "Could not handle an incoming message: {0}", ex.getMessage());
+                    log.log(WARNING, "Could not handle incoming message: {0}", ex.getMessage());
                 } finally {
                     packerPool.returnObject(packer);
                 }
@@ -126,17 +134,27 @@ public class ConnectionModel implements ClientCarrierModel {
     }
 
     private void routeMessage(Message message) {
+        Message response = null;
+
         switch (message.getType()) {
-            case HANDSHAKE:
-                handleHandshakeResponse(message);
+
+            case HS_RESPONSE:
+                HandshakeResponseHandler responseHandler = new HandshakeResponseHandler(this);
+                response = responseHandler.handle(message);
+                bus.post(UPDATE_CONNECTION_STATUS);
                 break;
+
             default:
-                Logger.getLogger(ConnectionModel.class.getName()).log(Level.INFO,
-                        "Received a message of unknown type - ignore it.");
+                log.log(INFO, "Received message of unknown type; ignore it.");
+        }
+
+        if (response != null) {
+            encryptAndSend(message);
         }
     }
 
-    private void sendMessage(final Message message) {
+    @Override
+    public void encryptAndSend(final Message message) {
         executor.runAsync(new Task() {
             @Override
             public void run() {
@@ -147,12 +165,18 @@ public class ConnectionModel implements ClientCarrierModel {
                     byte[] ciphertext = packer.packAndEncrypt(message);
                     carrier.deliverMessage(ciphertext, message.getRecipient());
                 } catch (Exception ex) {
-                    Logger.getLogger(ConnectionModel.class.getName()).log(Level.WARNING,
-                            "Could not send a message: {0}", ex.getMessage());
+                    log.log(WARNING, "Could not send message: {0}", ex.getMessage());
                 } finally {
                     packerPool.returnObject(packer);
                 }
             }
         });
     }
+
+    public boolean isConnected() {
+        return carrier != null
+                && session != null
+                && session.getKey() != null;
+    }
+
 }

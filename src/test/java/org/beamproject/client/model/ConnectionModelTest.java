@@ -18,25 +18,31 @@
  */
 package org.beamproject.client.model;
 
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
+import java.util.logging.Logger;
 import org.beamproject.client.BusFake;
 import static org.beamproject.client.Event.UPDATE_CONNECTION_STATUS;
 import org.beamproject.client.ExecutorFake;
 import static org.beamproject.client.model.ConnectionModel.*;
 import org.beamproject.client.util.ConfigKey;
-import static org.beamproject.client.util.ConfigKey.*;
 import org.beamproject.common.Message;
-import static org.beamproject.common.MessageField.ContentField.TypeValue.HANDSHAKE;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
 import org.beamproject.common.carrier.ClientCarrier;
 import org.beamproject.common.carrier.MqttConnectionPoolFactory;
+import org.beamproject.common.crypto.CryptoPacker;
 import org.beamproject.common.crypto.CryptoPackerPool;
 import org.beamproject.common.crypto.CryptoPackerPoolFactory;
+import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedConfig;
 import org.beamproject.common.crypto.HandshakeChallenger;
+import org.beamproject.common.crypto.HandshakeResponder;
 import static org.easymock.EasyMock.*;
+import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -45,21 +51,31 @@ import org.junit.Before;
 public class ConnectionModelTest {
 
     private final String HOST = "myLocalhost";
-    private final String PORT = "2345";
-    private final Server SERVER = Server.generate();
+    private final int PORT = 2345;
     private final User USER = User.generate();
+    private Server server;
     private MainModel mainModel;
     private BusFake busFake;
     private EncryptedConfig<ConfigKey> config;
     private ConnectionModel model;
+    private HandshakeChallenger challenger;
+    private HandshakeResponder responder;
+    private Message challenge, response;
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setUp() {
+    public void setUp() throws MalformedURLException {
+        server = new Server(new InetSocketAddress(HOST, PORT),
+                new URL("http://" + HOST),
+                EccKeyPairGenerator.generate());
+
         config = createMock(EncryptedConfig.class);
         mainModel = createMock(MainModel.class);
         busFake = new BusFake();
-        expect(mainModel.getEncryptedConfig()).andReturn(config).anyTimes();
+        model = new ConnectionModel(mainModel, busFake.getBus(), new ExecutorFake(), getPackerPool());
+        model.log = Logger.getGlobal();
+        challenger = new HandshakeChallenger(USER);
+        responder = new HandshakeResponder(server);
     }
 
     private CryptoPackerPool getPackerPool() {
@@ -73,15 +89,13 @@ public class ConnectionModelTest {
     }
 
     @Test
-    public void testConstructor() {
-        expect(config.getAsString(SERVER_MQTT_HOST)).andReturn(HOST);
-        expect(config.getAsString(SERVER_MQTT_PORT)).andReturn(PORT);
-        expect(mainModel.getServer()).andReturn(SERVER);
-        replay(mainModel, config);
+    public void testSetUpConnectionPoolAndCarrier() {
+        expect(mainModel.getServer()).andReturn(server).times(3);
+        replay(mainModel);
 
-        model = new ConnectionModel(mainModel, busFake.getBus(), new ExecutorFake(), getPackerPool());
+        model.setUpConnectionPoolAndCarrier();
 
-        verify(mainModel, config);
+        verify(mainModel);
         MqttConnectionPoolFactory factory = (MqttConnectionPoolFactory) model.connectionPool.getFactory();
         assertEquals(HOST, factory.getHost());
         assertEquals(PORT, factory.getPort());
@@ -106,56 +120,75 @@ public class ConnectionModelTest {
     public void testStartHandshake() {
         instantiate();
         mockCarrier();
-
         model.carrier.deliverMessage(anyObject(byte[].class), anyObject(Participant.class));
         expectLastCall();
-        assertNull(model.challenger);
+        assertNull(model.getChallenger());
         replay(model.carrier);
 
         model.startHandshake();
 
         verify(mainModel, model.carrier);
-        assertNotNull(model.challenger);
+        assertNotNull(model.getChallenger());
     }
 
     @Test
     public void testHandleHandshakeResponse() {
-        Message response = new Message(HANDSHAKE, SERVER);
-        Message success = new Message(HANDSHAKE, SERVER);
         instantiate();
         mockCarrier();
-        mockChallenger();
-
-        model.challenger.consumeResponse(response);
-        expectLastCall();
-        expect(model.challenger.produceSuccess()).andReturn(success);
+        prepareHanshake();
         model.carrier.deliverMessage(anyObject(byte[].class), anyObject(Participant.class));
-        expectLastCall();
-        
-        replay(model.carrier, model.challenger);
+        expectLastCall().andAnswer(new IAnswer<Object>() {
+            @Override
+            public Object answer() throws Throwable {
+                byte[] ciphertext = (byte[]) getCurrentArguments()[0];
+                Message plaintext = decrypt(ciphertext);
+                Participant recipient = (Participant) getCurrentArguments()[1];
 
-        model.handleHandshakeResponse(response);
+                responder.consumeSuccess(plaintext); // expect no exception
+                assertArrayEquals(server.getPublicKeyAsBytes(), recipient.getPublicKeyAsBytes());
+
+                return null;
+            }
+        });
+        replay(model.carrier);
+
+        model.consumeMessage(encrypt(response));
 
         verify(mainModel, model.carrier);
+        assertSame(challenger.getSessionKey(), model.getSession().getKey());
+        assertSame(server, model.getSession().getRemoteParticipant());
         assertEquals(UPDATE_CONNECTION_STATUS, busFake.getNextEvent());
     }
 
     private void instantiate() {
-        expect(config.getAsString(SERVER_MQTT_HOST)).andReturn(HOST);
-        expect(config.getAsString(SERVER_MQTT_PORT)).andReturn(PORT);
-        expect(mainModel.getServer()).andReturn(SERVER).anyTimes();
+        expect(mainModel.getServer()).andReturn(server).anyTimes();
         expect(mainModel.getUser()).andReturn(USER).anyTimes();
         replay(config, mainModel);
 
         model = new ConnectionModel(mainModel, busFake.getBus(), new ExecutorFake(), getPackerPool());
+        model.log = Logger.getGlobal();
     }
 
     private void mockCarrier() {
         model.carrier = createMock(ClientCarrier.class);
     }
 
-    private void mockChallenger() {
-        model.challenger = createMock(HandshakeChallenger.class);
+    private void prepareHanshake() {
+        challenge = challenger.produceChallenge(server);
+        responder.consumeChallenge(challenge);
+        response = responder.produceResponse();
+
+        model.setChallenger(challenger);
+    }
+
+    private byte[] encrypt(Message message) {
+        CryptoPacker packer = new CryptoPacker();
+        return packer.packAndEncrypt(message);
+    }
+
+    private Message decrypt(byte[] ciphertext) {
+        CryptoPacker packer = new CryptoPacker();
+        return packer.decryptAndUnpack(ciphertext, server);
     }
 
 }
