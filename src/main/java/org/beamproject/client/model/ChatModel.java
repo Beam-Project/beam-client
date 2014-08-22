@@ -53,8 +53,6 @@ public class ChatModel {
      */
     public void addContact(String userAddress) {
         User user = new User(userAddress);
-        System.out.println("user created: " + user.getUsername());
-        System.out.println("address: " + user.getAddress());
         bus.post(SHOW_MAIN_WINDOW);
     }
 
