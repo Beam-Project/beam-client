@@ -22,9 +22,18 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;
 import com.google.inject.AbstractModule;
+import com.google.inject.MembersInjector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
+import java.lang.reflect.Field;
 import java.util.Properties;
+import static java.util.logging.Level.WARNING;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import org.beamproject.client.model.ChatModel;
 import org.beamproject.client.model.MainModel;
 import org.beamproject.client.model.MenuModel;
@@ -49,6 +58,8 @@ import org.beamproject.common.util.Executor;
 
 public class AppModule extends AbstractModule {
 
+    private static final Logger log = getLogger(AppModule.class.getName());
+
     @Override
     protected void configure() {
         // Models
@@ -72,6 +83,9 @@ public class AppModule extends AbstractModule {
         // Utils
         bind(ClipboardAccess.class);
         bind(Files.class);
+
+        // Logger
+        bindListener(Matchers.any(), new LogTypeListener());
     }
 
     @Provides
@@ -80,12 +94,21 @@ public class AppModule extends AbstractModule {
         return new EventBus(new SubscriberExceptionHandler() {
             @Override
             public void handleException(Throwable exception, SubscriberExceptionContext context) {
-                System.out.println("EventBus exception occurred: " + context.getSubscriber().toString());
-                System.out.println("Method: " + context.getSubscriberMethod().toString());
-                System.out.println("");
-                exception.printStackTrace();
+                log.log(WARNING, "EventBus exception occurred: {0}", context.getSubscriber().toString());
+                log.log(WARNING, "Method: {0}", context.getSubscriberMethod().toString());
+                log.log(WARNING, readStacktrace(exception));
             }
         });
+    }
+
+    private static String readStacktrace(Throwable throwable) {
+        StringBuilder builder = new StringBuilder();
+
+        for (StackTraceElement stacktrace1 : throwable.getStackTrace()) {
+            builder.append(stacktrace1.toString());
+        }
+
+        return builder.toString();
     }
 
     @Provides
@@ -107,6 +130,39 @@ public class AppModule extends AbstractModule {
     CryptoPackerPool providesCryptoPackerPool() {
         CryptoPackerPoolFactory factory = new CryptoPackerPoolFactory();
         return new CryptoPackerPool(factory);
+    }
+
+    private class LogTypeListener implements TypeListener {
+
+        @Override
+        public <T> void hear(TypeLiteral<T> typeLiteral, TypeEncounter<T> typeEncounter) {
+            for (Field field : typeLiteral.getRawType().getDeclaredFields()) {
+                if (field.getType() == Logger.class) {
+                    typeEncounter.register(new LogMemberInjector<T>(field));
+                }
+            }
+        }
+    }
+
+    private class LogMemberInjector<T> implements MembersInjector<T> {
+
+        private final Field field;
+        private final Logger logger;
+
+        LogMemberInjector(Field field) {
+            this.field = field;
+            this.logger = getLogger(field.getDeclaringClass().getName());
+            field.setAccessible(true);
+        }
+
+        @Override
+        public void injectMembers(T t) {
+            try {
+                field.set(t, logger);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }
