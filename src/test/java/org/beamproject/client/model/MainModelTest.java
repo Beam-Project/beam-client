@@ -33,7 +33,7 @@ import org.beamproject.common.crypto.EncryptedConfig;
 import org.beamproject.common.util.Files;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
-import org.beamproject.common.crypto.BouncyCastleIntegrator;
+import static org.beamproject.common.crypto.BouncyCastleIntegrator.PROVIDER_NAME;
 import org.beamproject.common.util.Executor;
 import static org.easymock.EasyMock.*;
 import org.junit.After;
@@ -70,10 +70,10 @@ public class MainModelTest {
 
     @Test
     public void testBootstrap() {
-        Security.removeProvider(BouncyCastleIntegrator.PROVIDER_NAME);
+        Security.removeProvider(PROVIDER_NAME);
         model.bootstrap();
         assertEquals(SHOW_WIZARD_WELCOME_LAYER, busFake.getNextEvent());
-        assertTrue(Security.getProvider(BouncyCastleIntegrator.PROVIDER_NAME) != null);
+        assertTrue(Security.getProvider(PROVIDER_NAME) != null);
     }
 
     @Test

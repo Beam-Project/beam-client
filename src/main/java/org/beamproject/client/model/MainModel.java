@@ -45,9 +45,9 @@ import org.beamproject.common.crypto.EncryptedConfig;
 import org.beamproject.common.util.Files;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
-import org.beamproject.common.crypto.BouncyCastleIntegrator;
+import static org.beamproject.common.crypto.BouncyCastleIntegrator.initBouncyCastleProvider;
 import org.beamproject.common.crypto.CryptoException;
-import org.beamproject.common.crypto.EccKeyPairGenerator;
+import static org.beamproject.common.crypto.EccKeyPairGenerator.fromBothKeys;
 import org.beamproject.common.util.Executor;
 import org.beamproject.common.util.QrCode;
 import org.beamproject.common.util.Task;
@@ -129,7 +129,7 @@ public class MainModel {
         executor.runAsync(new Task() {
             @Override
             public void run() {
-                BouncyCastleIntegrator.initBouncyCastleProvider();
+                initBouncyCastleProvider();
             }
         });
     }
@@ -191,7 +191,7 @@ public class MainModel {
     private KeyPair restoreKeyPair() {
         byte[] publicKeyBytes = encryptedConfig.getAsBytes(USER_PUBLIC_KEY);
         byte[] privateKeyBytes = encryptedConfig.getAsBytes(USER_PRIVATE_KEY);
-        return EccKeyPairGenerator.fromBothKeys(publicKeyBytes, privateKeyBytes);
+        return fromBothKeys(publicKeyBytes, privateKeyBytes);
     }
 
     /**
