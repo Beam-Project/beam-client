@@ -50,11 +50,11 @@ public class ServerAddressValidatorTest {
         test(server.getAddress(), true);
         test(VALID_SERVER_ADDRESS, true);
     }
-    
+
     private void test(String text, boolean assertTrue) {
         textField.setText(text);
         validator.validate();
-        
+
         if (assertTrue) {
             assertTrue(validator.isValid());
         } else {

@@ -20,7 +20,7 @@ package org.beamproject.client.carrier;
 
 import org.beamproject.client.model.ConnectionModel;
 import org.beamproject.common.message.Message;
-import static org.beamproject.common.message.MessageField.ContentField.*;
+import static org.beamproject.common.message.Field.Cnt.*;
 import org.beamproject.common.Session;
 import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeChallenger;
@@ -41,7 +41,7 @@ public class HandshakeResponseHandler extends MessageHandler {
     private HandshakeChallenger challenger;
 
     public HandshakeResponseHandler(ConnectionModel connectionModel) {
-        super(new ContentFieldMessageValidator(TYP, HSPUBKEY, HSNONCE, HSSIG),
+        super(new ContentFieldMessageValidator(TYP, HS_PUBKEY, HS_NONCE, HS_SIG),
                 new HandshakePublicKeyMessageValidator(),
                 new HandshakeNonceMessageValidator(),
                 new HandshakeSignatureMessageValidator());

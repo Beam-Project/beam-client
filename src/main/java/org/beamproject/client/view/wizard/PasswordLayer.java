@@ -173,7 +173,6 @@ public class PasswordLayer extends javax.swing.JPanel implements Observer {
         model.processPasswordLayer(passwordForm.getPassword(), rememberCheckBox.isSelected());
     }//GEN-LAST:event_nextButtonActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;

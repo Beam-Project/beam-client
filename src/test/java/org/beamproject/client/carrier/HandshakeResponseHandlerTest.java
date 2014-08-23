@@ -20,9 +20,9 @@ package org.beamproject.client.carrier;
 
 import org.beamproject.client.model.ConnectionModel;
 import org.beamproject.common.message.Message;
-import static org.beamproject.common.message.MessageField.ContentField.HSNONCE;
-import static org.beamproject.common.message.MessageField.ContentField.HSSIG;
-import static org.beamproject.common.message.MessageField.ContentField.TYP;
+import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
+import static org.beamproject.common.message.Field.Cnt.HS_SIG;
+import static org.beamproject.common.message.Field.Cnt.TYP;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
 import org.beamproject.common.carrier.MessageException;
@@ -69,13 +69,13 @@ public class HandshakeResponseHandlerTest {
 
     @Test(expected = MessageException.class)
     public void testHandleOnMissingNonce() {
-        response.getContent().remove(HSNONCE.toString());
+        response.getContent().remove(HS_NONCE.toString());
         success = handler.handle(response);
     }
 
     @Test(expected = MessageException.class)
     public void testHandleOnMissingSignature() {
-        response.getContent().remove(HSSIG.toString());
+        response.getContent().remove(HS_SIG.toString());
         success = handler.handle(response);
     }
 

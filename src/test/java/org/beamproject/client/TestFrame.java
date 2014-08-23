@@ -30,7 +30,7 @@ public class TestFrame extends javax.swing.JFrame {
 
     public TestFrame() {
         initComponents();
-        
+
         setLocationRelativeTo(null);
     }
 
@@ -55,7 +55,7 @@ public class TestFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       // Links.openMailLink("mailto:?subject=PlainTray:%20RHshU&body=This%20email%20contains%20a%20link%20to%20the%20PlainTray%20'RHshU'.%0AClick%20here%20to%20open%20the%20PlainTray:%20https://www.plaintray.com/RHshU%20%0A%0APlainTray's%20are%20used%20to%20transfer%20texts%20and%20files%20uncomplicated%20%0Abetween%20devices%20or%20to%20share%20them%20with%20friends.%0A%0APlainTray:%20the%20simple%20data%20tray%0Awww.plaintray.com");
+        // Links.openMailLink("mailto:?subject=PlainTray:%20RHshU&body=This%20email%20contains%20a%20link%20to%20the%20PlainTray%20'RHshU'.%0AClick%20here%20to%20open%20the%20PlainTray:%20https://www.plaintray.com/RHshU%20%0A%0APlainTray's%20are%20used%20to%20transfer%20texts%20and%20files%20uncomplicated%20%0Abetween%20devices%20or%20to%20share%20them%20with%20friends.%0A%0APlainTray:%20the%20simple%20data%20tray%0Awww.plaintray.com");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public static void main(String args[]) {

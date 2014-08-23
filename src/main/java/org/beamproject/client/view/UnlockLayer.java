@@ -168,7 +168,6 @@ public class UnlockLayer extends javax.swing.JPanel {
         unlockButton.doClick();
     }//GEN-LAST:event_passwordFieldActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
     private javax.swing.Box.Filler filler1;

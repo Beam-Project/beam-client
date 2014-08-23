@@ -30,9 +30,11 @@ public class PasswordStrenghtMeter {
     private static final int MINIMAL_NUMBER_OF_DIFFERENT_ITEMS = 3;
 
     /**
-     * Checks the strength of the given {@code password}. 
+     * Checks the strength of the given {@code password}.
+     *
      * @param password The password to check.
-     * @return An index between 0 and 4 that represents the strength of the password:
+     * @return An index between 0 and 4 that represents the strength of the
+     * password:
      * <ul>
      * <li>0: very weak</li>
      * <li>1: weak</li>

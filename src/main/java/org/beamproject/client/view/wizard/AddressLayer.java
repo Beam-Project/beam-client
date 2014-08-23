@@ -171,7 +171,6 @@ public class AddressLayer extends javax.swing.JPanel {
         model.copyAddressToClipboard();
     }//GEN-LAST:event_copyButtonActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton copyButton;

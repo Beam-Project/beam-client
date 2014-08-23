@@ -72,7 +72,7 @@ public class PasswordStrenghtMeterTest {
     public void testRewardUpperCaseCharachters() {
         score = rewardUpperCaseCharachters("aaaaaa".toCharArray());
         assertEquals(0, score);
-        
+
         score = rewardUpperCaseCharachters("".toCharArray());
         assertEquals(0, score);
 
@@ -90,7 +90,7 @@ public class PasswordStrenghtMeterTest {
     public void testRewardLowerCaseCharachters() {
         score = rewardLowerCaseCharachters("ASDFASDF".toCharArray());
         assertEquals(0, score);
-        
+
         score = rewardLowerCaseCharachters("".toCharArray());
         assertEquals(0, score);
 

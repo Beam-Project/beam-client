@@ -126,7 +126,7 @@ public class InfoLayer extends javax.swing.JPanel {
         generateAndShowQrCode();
     }//GEN-LAST:event_formComponentResized
 
-    private void generateAndShowQrCode() {        
+    private void generateAndShowQrCode() {
         int qrCodeWidth = mainWindow.getSize().width - HORIZONTAL_GAP;
         ImageIcon qrCode = new ImageIcon(model.getUserAddressQrCode(qrCodeWidth));
         qrCodeLabel.setSize(qrCodeWidth, qrCodeWidth);

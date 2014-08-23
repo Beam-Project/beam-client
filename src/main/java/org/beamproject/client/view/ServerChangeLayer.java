@@ -38,9 +38,9 @@ public class ServerChangeLayer extends javax.swing.JPanel {
 
         initComponents();
 
-        addressValidator = new ServerAddressValidator(changedServerTextField);        
+        addressValidator = new ServerAddressValidator(changedServerTextField);
     }
-    
+
     private void showCurrentServer() {
         currentServerTextField.setText(model.getServer().getAddress());
     }
@@ -181,7 +181,6 @@ public class ServerChangeLayer extends javax.swing.JPanel {
     private void confirmCheckboxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_confirmCheckboxItemStateChanged
         restartButton.setEnabled(confirmCheckbox.isSelected());
     }//GEN-LAST:event_confirmCheckboxItemStateChanged
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton abortButton;

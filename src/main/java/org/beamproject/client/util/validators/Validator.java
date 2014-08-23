@@ -49,9 +49,8 @@ public abstract class Validator {
      * Validates the configured {@link JTextComponent}. When the validation
      * fails, the background color will be set to red.
      * <p>
-     * The result of the validation may be evaluated via
-     * {@link isValid()} and the validated text via
-     * {@link getValidatedText()}.
+     * The result of the validation may be evaluated via {@link isValid()} and
+     * the validated text via {@link getValidatedText()}.
      */
     public final void validate() {
         validatedText = component.getText().trim();

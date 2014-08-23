@@ -90,11 +90,11 @@ public class Components {
 
         final Container validateRoot = findValidateRoot(labels[0]);
         final Graphics graphics = validateRoot.getGraphics();
-        
+
         if (graphics == null) {
             return;
         }
-        
+
         validateRoot.validate();
         Color foreground;
 
