@@ -24,10 +24,10 @@ import static org.beamproject.common.message.Field.Cnt.*;
 import org.beamproject.common.Session;
 import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeChallenger;
-import org.beamproject.common.message.ContentFieldMessageValidator;
-import org.beamproject.common.message.HandshakeNonceMessageValidator;
-import org.beamproject.common.message.HandshakePublicKeyMessageValidator;
-import org.beamproject.common.message.HandshakeSignatureMessageValidator;
+import org.beamproject.common.message.ContentFieldValidator;
+import org.beamproject.common.message.HandshakeNonceValidator;
+import org.beamproject.common.message.HandshakePublicKeyValidator;
+import org.beamproject.common.message.HandshakeSignatureValidator;
 import org.beamproject.common.message.MessageHandler;
 
 /**
@@ -41,10 +41,10 @@ public class HandshakeResponseHandler extends MessageHandler {
     private HandshakeChallenger challenger;
 
     public HandshakeResponseHandler(ConnectionModel connectionModel) {
-        super(new ContentFieldMessageValidator(TYP, HS_PUBKEY, HS_NONCE, HS_SIG),
-                new HandshakePublicKeyMessageValidator(),
-                new HandshakeNonceMessageValidator(),
-                new HandshakeSignatureMessageValidator());
+        super(new ContentFieldValidator(TYP, HS_PUBKEY, HS_NONCE, HS_SIG),
+                new HandshakePublicKeyValidator(),
+                new HandshakeNonceValidator(),
+                new HandshakeSignatureValidator());
         this.connectionModel = connectionModel;
     }
 
