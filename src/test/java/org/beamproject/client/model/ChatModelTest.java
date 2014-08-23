@@ -23,13 +23,13 @@ import static org.beamproject.client.Event.SHOW_ADD_CONTACT_LAYER;
 import static org.beamproject.client.Event.SHOW_MAIN_WINDOW;
 import org.beamproject.client.ExecutorFake;
 import org.beamproject.client.util.ConfigKey;
-import org.beamproject.common.util.Config;
 import org.beamproject.common.crypto.EncryptedConfig;
+import org.beamproject.common.util.Config;
 import static org.easymock.EasyMock.createMock;
 import org.junit.After;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
+import org.junit.Test;
 
 public class ChatModelTest {
 

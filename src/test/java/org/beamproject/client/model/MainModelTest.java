@@ -23,23 +23,42 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import org.beamproject.client.App;
 import org.beamproject.client.BusFake;
-import static org.beamproject.client.Event.*;
+import static org.beamproject.client.Event.DISPOSE;
+import static org.beamproject.client.Event.ENCRYPTED_CONFIG_UNLOCKED;
+import static org.beamproject.client.Event.SHOW_MAIN_WINDOW;
+import static org.beamproject.client.Event.SHOW_WIZARD_WELCOME_LAYER;
+import static org.beamproject.client.Event.UNLOCK_LAYER_WRONG_PASSWORD;
 import org.beamproject.client.ExecutorFake;
-import org.beamproject.common.util.Chars;
 import org.beamproject.client.util.ConfigKey;
-import org.beamproject.common.util.Config;
-import static org.beamproject.client.util.ConfigKey.*;
-import org.beamproject.common.crypto.EncryptedConfig;
-import org.beamproject.common.util.Files;
+import static org.beamproject.client.util.ConfigKey.PASSWORD;
+import static org.beamproject.client.util.ConfigKey.SALT;
+import static org.beamproject.client.util.ConfigKey.SERVER_ADDRESS;
+import static org.beamproject.client.util.ConfigKey.USERNAME;
+import static org.beamproject.client.util.ConfigKey.USER_PRIVATE_KEY;
+import static org.beamproject.client.util.ConfigKey.USER_PUBLIC_KEY;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
 import static org.beamproject.common.crypto.BouncyCastleIntegrator.PROVIDER_NAME;
+import org.beamproject.common.crypto.EncryptedConfig;
+import org.beamproject.common.util.Chars;
+import org.beamproject.common.util.Config;
 import org.beamproject.common.util.Executor;
-import static org.easymock.EasyMock.*;
+import org.beamproject.common.util.Files;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.junit.After;
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Test;
 
 public class MainModelTest {
 
@@ -253,7 +272,7 @@ public class MainModelTest {
 
     private boolean areAllValuesZeros(char[] chars) {
         for (char character : chars) {
-            if (character != (char) 0) {
+            if (character != 0) {
                 return false;
             }
         }
@@ -263,7 +282,7 @@ public class MainModelTest {
 
     private boolean areAllValuesZeros(byte[] bytes) {
         for (byte b : bytes) {
-            if (b != (byte) 0) {
+            if (b != 0) {
                 return false;
             }
         }

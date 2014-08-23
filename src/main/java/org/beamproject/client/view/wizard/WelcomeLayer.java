@@ -22,8 +22,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 import org.beamproject.client.model.WizardModel;
 import org.beamproject.client.util.Components;
-import org.beamproject.client.util.validators.ServerAddressValidator;
 import org.beamproject.client.util.validators.RegexValidator;
+import org.beamproject.client.util.validators.ServerAddressValidator;
 
 public class WelcomeLayer extends javax.swing.JPanel {
 

@@ -19,18 +19,26 @@
 package org.beamproject.client.model;
 
 import org.beamproject.client.BusFake;
-import static org.beamproject.client.Event.*;
+import static org.beamproject.client.Event.PASSWORD_CHANGE_WRONG_PASSWORD;
+import static org.beamproject.client.Event.SHOW_MAIN_WINDOW;
+import static org.beamproject.client.Event.SHOW_PASSWORD_CHANGE_LAYER;
+import static org.beamproject.client.Event.SHOW_SERVER_CHANGE_LAYER;
 import org.beamproject.client.ExecutorFake;
 import org.beamproject.client.util.ConfigKey;
-import org.beamproject.common.util.Config;
 import static org.beamproject.client.util.ConfigKey.SERVER_ADDRESS;
-import org.beamproject.common.crypto.EncryptedConfig;
 import org.beamproject.common.Server;
-import static org.easymock.EasyMock.*;
+import org.beamproject.common.crypto.EncryptedConfig;
+import org.beamproject.common.util.Config;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.junit.After;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
+import org.junit.Test;
 
 public class MenuModelTest {
 

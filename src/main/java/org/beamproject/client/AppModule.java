@@ -40,21 +40,21 @@ import org.beamproject.client.model.MenuModel;
 import org.beamproject.client.model.WizardModel;
 import org.beamproject.client.util.ClipboardAccess;
 import org.beamproject.client.util.ConfigKey;
-import org.beamproject.common.util.Config;
-import org.beamproject.common.util.Files;
 import org.beamproject.client.view.AddContactLayer;
-import org.beamproject.client.view.wizard.AddressLayer;
 import org.beamproject.client.view.BootstrapLayer;
-import org.beamproject.client.view.menu.InfoLayer;
 import org.beamproject.client.view.MainWindow;
 import org.beamproject.client.view.PasswordChangeLayer;
 import org.beamproject.client.view.ServerChangeLayer;
-import org.beamproject.client.view.menu.SettingsLayer;
 import org.beamproject.client.view.UnlockLayer;
+import org.beamproject.client.view.menu.InfoLayer;
+import org.beamproject.client.view.menu.SettingsLayer;
+import org.beamproject.client.view.wizard.AddressLayer;
 import org.beamproject.client.view.wizard.WelcomeLayer;
 import org.beamproject.common.crypto.CryptoPackerPool;
 import org.beamproject.common.crypto.CryptoPackerPoolFactory;
+import org.beamproject.common.util.Config;
 import org.beamproject.common.util.Executor;
+import org.beamproject.common.util.Files;
 
 public class AppModule extends AbstractModule {
 

@@ -19,15 +19,18 @@
 package org.beamproject.client.carrier;
 
 import org.beamproject.client.model.ConnectionModel;
-import org.beamproject.common.message.Message;
-import static org.beamproject.common.message.Field.Cnt.*;
 import org.beamproject.common.Session;
 import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.message.ContentFieldValidator;
+import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
+import static org.beamproject.common.message.Field.Cnt.HS_PUBKEY;
+import static org.beamproject.common.message.Field.Cnt.HS_SIG;
+import static org.beamproject.common.message.Field.Cnt.TYP;
 import org.beamproject.common.message.HandshakeNonceValidator;
 import org.beamproject.common.message.HandshakePublicKeyValidator;
 import org.beamproject.common.message.HandshakeSignatureValidator;
+import org.beamproject.common.message.Message;
 import org.beamproject.common.message.MessageHandler;
 
 /**

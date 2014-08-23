@@ -22,8 +22,10 @@ import java.awt.Image;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class ComponentsTest {
 

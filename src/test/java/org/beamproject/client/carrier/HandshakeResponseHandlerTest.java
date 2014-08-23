@@ -19,20 +19,26 @@
 package org.beamproject.client.carrier;
 
 import org.beamproject.client.model.ConnectionModel;
-import org.beamproject.common.message.Message;
-import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
-import static org.beamproject.common.message.Field.Cnt.HS_SIG;
-import static org.beamproject.common.message.Field.Cnt.TYP;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Session;
 import org.beamproject.common.carrier.MessageException;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.crypto.HandshakeResponder;
-import static org.easymock.EasyMock.*;
+import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
+import static org.beamproject.common.message.Field.Cnt.HS_SIG;
+import static org.beamproject.common.message.Field.Cnt.TYP;
+import org.beamproject.common.message.Message;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.easymock.IAnswer;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
+import org.junit.Test;
 
 public class HandshakeResponseHandlerTest {
 

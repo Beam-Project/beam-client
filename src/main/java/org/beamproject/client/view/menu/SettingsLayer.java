@@ -24,9 +24,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.beamproject.client.Event;
 import static org.beamproject.client.Event.ENCRYPTED_CONFIG_UNLOCKED;
+import org.beamproject.client.model.MainModel.AcceptedSender;
+import static org.beamproject.client.model.MainModel.AcceptedSender.CONTACTS;
+import static org.beamproject.client.model.MainModel.AcceptedSender.EVERYONE;
 import org.beamproject.client.model.MenuModel;
-import static org.beamproject.client.model.MainModel.AcceptedSender;
-import static org.beamproject.client.model.MainModel.AcceptedSender.*;
 import static org.beamproject.client.util.ConfigKey.ACCEPTED_MESSAGE_SENDER;
 
 @Singleton

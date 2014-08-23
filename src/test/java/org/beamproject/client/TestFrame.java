@@ -20,7 +20,6 @@ package org.beamproject.client;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.beamproject.client.util.Links;
 import org.junit.Ignore;
 
 @Ignore

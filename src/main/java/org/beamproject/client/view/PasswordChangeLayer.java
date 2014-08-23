@@ -24,7 +24,8 @@ import com.google.inject.Inject;
 import java.util.Observable;
 import java.util.Observer;
 import org.beamproject.client.Event;
-import static org.beamproject.client.Event.*;
+import static org.beamproject.client.Event.PASSWORD_CHANGE_WRONG_PASSWORD;
+import static org.beamproject.client.Event.SHOW_MAIN_WINDOW;
 import org.beamproject.client.model.MenuModel;
 import org.beamproject.client.util.validators.Validator;
 

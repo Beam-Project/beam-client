@@ -24,9 +24,13 @@ import com.google.inject.Singleton;
 import java.util.Arrays;
 import lombok.experimental.Delegate;
 import org.beamproject.client.Event;
-import static org.beamproject.client.Event.*;
-import static org.beamproject.client.model.MainModel.AcceptedSender;
-import static org.beamproject.client.util.ConfigKey.*;
+import static org.beamproject.client.Event.PASSWORD_CHANGE_WRONG_PASSWORD;
+import static org.beamproject.client.Event.SHOW_MAIN_WINDOW;
+import static org.beamproject.client.Event.SHOW_PASSWORD_CHANGE_LAYER;
+import static org.beamproject.client.Event.SHOW_SERVER_CHANGE_LAYER;
+import org.beamproject.client.model.MainModel.AcceptedSender;
+import static org.beamproject.client.util.ConfigKey.ACCEPTED_MESSAGE_SENDER;
+import static org.beamproject.client.util.ConfigKey.SERVER_ADDRESS;
 import org.beamproject.common.Server;
 import org.beamproject.common.crypto.EncryptedConfig;
 

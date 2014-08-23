@@ -18,9 +18,18 @@
  */
 package org.beamproject.client.util;
 
-import static org.beamproject.client.util.PasswordStrenghtMeter.*;
+import static org.beamproject.client.util.PasswordStrenghtMeter.checkStrength;
+import static org.beamproject.client.util.PasswordStrenghtMeter.punishForDigitsOnly;
+import static org.beamproject.client.util.PasswordStrenghtMeter.punishForLettersOnly;
+import static org.beamproject.client.util.PasswordStrenghtMeter.rewardDigits;
+import static org.beamproject.client.util.PasswordStrenghtMeter.rewardLowerCaseCharachters;
+import static org.beamproject.client.util.PasswordStrenghtMeter.rewardMiddleNumbersOrSymbols;
+import static org.beamproject.client.util.PasswordStrenghtMeter.rewardNumberOfCharacters;
+import static org.beamproject.client.util.PasswordStrenghtMeter.rewardRequirements;
+import static org.beamproject.client.util.PasswordStrenghtMeter.rewardSymbols;
+import static org.beamproject.client.util.PasswordStrenghtMeter.rewardUpperCaseCharachters;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class PasswordStrenghtMeterTest {
 

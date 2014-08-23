@@ -18,8 +18,8 @@
  */
 package org.beamproject.client.util;
 
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * The tests of {@link ClipboardAccess} are very limited since in JUnit the

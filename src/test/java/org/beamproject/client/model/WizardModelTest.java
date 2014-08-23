@@ -19,21 +19,34 @@
 package org.beamproject.client.model;
 
 import org.beamproject.client.BusFake;
-import static org.beamproject.client.Event.*;
+import static org.beamproject.client.Event.ENABLE_WIZARD_ADDRESS_GENERATED_ADDRESS;
+import static org.beamproject.client.Event.SHOW_WIZARD_ADDRESS_LAYER;
+import static org.beamproject.client.Event.SHOW_WIZARD_PASSWORD_LAYER;
 import org.beamproject.client.ExecutorFake;
-import org.beamproject.common.util.Config;
-import static org.beamproject.client.util.ConfigKey.*;
-import org.beamproject.common.crypto.EncryptedConfig;
+import static org.beamproject.client.model.MainModel.AcceptedSender.CONTACTS;
+import org.beamproject.client.util.ConfigKey;
+import static org.beamproject.client.util.ConfigKey.ACCEPTED_MESSAGE_SENDER;
+import static org.beamproject.client.util.ConfigKey.CONNECT_TO_SERVER;
+import static org.beamproject.client.util.ConfigKey.SALT;
+import static org.beamproject.client.util.ConfigKey.SERVER_ADDRESS;
+import static org.beamproject.client.util.ConfigKey.USERNAME;
+import static org.beamproject.client.util.ConfigKey.USER_PRIVATE_KEY;
+import static org.beamproject.client.util.ConfigKey.USER_PUBLIC_KEY;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
 import org.beamproject.common.crypto.EccKeyPairGenerator;
-import static org.easymock.EasyMock.*;
+import org.beamproject.common.crypto.EncryptedConfig;
+import org.beamproject.common.util.Config;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.junit.After;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
-import static org.beamproject.client.model.MainModel.AcceptedSender.*;
-import org.beamproject.client.util.ConfigKey;
+import org.junit.Test;
 
 public class WizardModelTest {
 

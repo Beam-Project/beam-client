@@ -26,9 +26,8 @@ import java.util.logging.Logger;
 import org.beamproject.client.BusFake;
 import static org.beamproject.client.Event.UPDATE_CONNECTION_STATUS;
 import org.beamproject.client.ExecutorFake;
-import static org.beamproject.client.model.ConnectionModel.*;
+import static org.beamproject.client.model.ConnectionModel.MQTT_USERNAME_LENGTH;
 import org.beamproject.client.util.ConfigKey;
-import org.beamproject.common.message.Message;
 import org.beamproject.common.Participant;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
@@ -41,12 +40,24 @@ import org.beamproject.common.crypto.EccKeyPairGenerator;
 import org.beamproject.common.crypto.EncryptedConfig;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.crypto.HandshakeResponder;
-import static org.easymock.EasyMock.*;
+import org.beamproject.common.message.Message;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.easymock.IAnswer;
 import org.junit.After;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import org.junit.Before;
+import org.junit.Test;
 
 public class ConnectionModelTest {
 
