@@ -62,6 +62,7 @@ import org.junit.Test;
 public class ConnectionModelTest {
 
     private final String HOST = "myLocalhost";
+    private final String TOPIC = "inOrOut/username";
     private final int PORT = 2345;
     private final User USER = User.generate();
     private Server server;
@@ -163,7 +164,7 @@ public class ConnectionModelTest {
         });
         replay(model.carrier);
 
-        model.consumeMessage(encrypt(response));
+        model.consumeMessage(encrypt(response), TOPIC);
 
         verify(mainModel, model.carrier);
         assertSame(challenger.getSessionKey(), model.getSession().getKey());

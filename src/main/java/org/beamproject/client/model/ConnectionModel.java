@@ -115,7 +115,7 @@ public class ConnectionModel implements ClientCarrierModel {
     }
 
     @Override
-    public void consumeMessage(final byte[] ciphertext) {
+    public void consumeMessage(final byte[] ciphertext, String topic) {
         executor.runAsync(new Task() {
             @Override
             public void run() {
