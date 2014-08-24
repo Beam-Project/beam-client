@@ -23,9 +23,9 @@ import org.beamproject.common.Session;
 import org.beamproject.common.crypto.Handshake;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.message.ContentFieldValidator;
-import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
-import static org.beamproject.common.message.Field.Cnt.HS_PUBKEY;
-import static org.beamproject.common.message.Field.Cnt.HS_SIG;
+import static org.beamproject.common.message.Field.Cnt.NONCE;
+import static org.beamproject.common.message.Field.Cnt.PUBLIC_KEY;
+import static org.beamproject.common.message.Field.Cnt.SIGNATURE;
 import static org.beamproject.common.message.Field.Cnt.TYP;
 import org.beamproject.common.message.HandshakeNonceValidator;
 import org.beamproject.common.message.HandshakePublicKeyValidator;
@@ -44,7 +44,7 @@ public class HandshakeResponseHandler extends MessageHandler {
     private HandshakeChallenger challenger;
 
     public HandshakeResponseHandler(ConnectionModel connectionModel) {
-        super(new ContentFieldValidator(TYP, HS_PUBKEY, HS_NONCE, HS_SIG),
+        super(new ContentFieldValidator(TYP, PUBLIC_KEY, NONCE, SIGNATURE),
                 new HandshakePublicKeyValidator(),
                 new HandshakeNonceValidator(),
                 new HandshakeSignatureValidator());

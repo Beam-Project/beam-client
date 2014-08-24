@@ -24,8 +24,8 @@ import org.beamproject.common.Session;
 import org.beamproject.common.carrier.MessageException;
 import org.beamproject.common.crypto.HandshakeChallenger;
 import org.beamproject.common.crypto.HandshakeResponder;
-import static org.beamproject.common.message.Field.Cnt.HS_NONCE;
-import static org.beamproject.common.message.Field.Cnt.HS_SIG;
+import static org.beamproject.common.message.Field.Cnt.NONCE;
+import static org.beamproject.common.message.Field.Cnt.SIGNATURE;
 import static org.beamproject.common.message.Field.Cnt.TYP;
 import org.beamproject.common.message.Message;
 import static org.easymock.EasyMock.anyObject;
@@ -75,13 +75,13 @@ public class HandshakeResponseHandlerTest {
 
     @Test(expected = MessageException.class)
     public void testHandleOnMissingNonce() {
-        response.getContent().remove(HS_NONCE.toString());
+        response.getContent().remove(NONCE.toString());
         success = handler.handle(response);
     }
 
     @Test(expected = MessageException.class)
     public void testHandleOnMissingSignature() {
-        response.getContent().remove(HS_SIG.toString());
+        response.getContent().remove(SIGNATURE.toString());
         success = handler.handle(response);
     }
 
