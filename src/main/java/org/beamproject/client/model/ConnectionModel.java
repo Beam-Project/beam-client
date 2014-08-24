@@ -57,6 +57,7 @@ public class ConnectionModel implements ClientCarrierModel {
     @Delegate
     ClientCarrier carrier;
     MqttConnectionPool connectionPool;
+    String mqttUsername;
     @Getter
     @Setter
     private HandshakeChallenger challenger;
@@ -75,12 +76,12 @@ public class ConnectionModel implements ClientCarrierModel {
     public void setUpConnectionPoolAndCarrier() {
         String host = model.getServer().getMqttAddress().getHostString();
         int port = model.getServer().getMqttAddress().getPort();
-        String username = generateRandomMqttUsername();
-        String subscriberTopic = MQTT_SUBSCRIBER_TOPIC_PREFIX + username;
-        String publisherTopic = MQTT_PUBLISHER_TOPIC_PREFIX + username;
+        mqttUsername = generateRandomMqttUsername();
+        String subscriberTopic = MQTT_SUBSCRIBER_TOPIC_PREFIX + mqttUsername;
+        String publisherTopic = MQTT_PUBLISHER_TOPIC_PREFIX + mqttUsername;
 
-        log.log(INFO, "Connecting: {0}:{1} with username ''{2}'' in topic ''{3}''", new Object[]{host, port, username, subscriberTopic});
-        MqttConnectionPoolFactory factory = new MqttConnectionPoolFactory(host, port, username, subscriberTopic);
+        log.log(INFO, "Connecting: {0}:{1} with username ''{2}'' in topic ''{3}''", new Object[]{host, port, mqttUsername, subscriberTopic});
+        MqttConnectionPoolFactory factory = new MqttConnectionPoolFactory(host, port, mqttUsername, subscriberTopic);
 
         connectionPool = new MqttConnectionPool(factory);
         carrier = new ClientCarrierImpl(this, executor, connectionPool);
@@ -111,11 +112,11 @@ public class ConnectionModel implements ClientCarrierModel {
 
     public void startHandshake() {
         challenger = new HandshakeChallenger(model.getUser());
-        encryptAndSend(challenger.produceChallenge(model.getServer()));
+        encryptAndSend(challenger.produceChallenge(model.getServer()), mqttUsername);
     }
 
     @Override
-    public void consumeMessage(final byte[] ciphertext, String topic) {
+    public void consumeMessage(final byte[] ciphertext, final String username) {
         executor.runAsync(new Task() {
             @Override
             public void run() {
@@ -124,7 +125,11 @@ public class ConnectionModel implements ClientCarrierModel {
                 try {
                     packer = packerPool.borrowObject();
                     Message message = packer.decryptAndUnpack(ciphertext, model.getUser());
-                    routeMessage(message);
+                    Message response = produceResponse(message);
+
+                    if (response != null) {
+                        encryptAndSend(message, mqttUsername);
+                    }
                 } catch (Exception ex) {
                     log.log(WARNING, "Could not handle incoming message: {0}", ex.getMessage());
                 } finally {
@@ -134,28 +139,24 @@ public class ConnectionModel implements ClientCarrierModel {
         });
     }
 
-    private void routeMessage(Message message) {
-        Message response = null;
+    private Message produceResponse(Message message) {
 
         switch (message.getType()) {
 
             case HS_RESPONSE:
                 HandshakeResponseHandler responseHandler = new HandshakeResponseHandler(this);
-                response = responseHandler.handle(message);
                 bus.post(UPDATE_CONNECTION_STATUS);
-                break;
+                return responseHandler.handle(message);
 
             default:
                 log.log(INFO, "Received message of unknown type; ignore it.");
         }
 
-        if (response != null) {
-            encryptAndSend(message);
-        }
+        return null;
     }
 
     @Override
-    public void encryptAndSend(final Message message) {
+    public void encryptAndSend(final Message message, final String topic) {
         executor.runAsync(new Task() {
             @Override
             public void run() {
@@ -164,7 +165,7 @@ public class ConnectionModel implements ClientCarrierModel {
                 try {
                     packer = packerPool.borrowObject();
                     byte[] ciphertext = packer.packAndEncrypt(message);
-                    carrier.deliverMessage(ciphertext, message.getRecipient());
+                    carrier.deliverMessage(ciphertext, topic);
                 } catch (Exception ex) {
                     log.log(WARNING, "Could not send message: {0}", ex.getMessage());
                 } finally {

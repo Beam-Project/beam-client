@@ -28,7 +28,6 @@ import static org.beamproject.client.Event.UPDATE_CONNECTION_STATUS;
 import org.beamproject.client.ExecutorFake;
 import static org.beamproject.client.model.ConnectionModel.MQTT_USERNAME_LENGTH;
 import org.beamproject.client.util.ConfigKey;
-import org.beamproject.common.Participant;
 import org.beamproject.common.Server;
 import org.beamproject.common.User;
 import org.beamproject.common.carrier.ClientCarrier;
@@ -50,7 +49,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import org.easymock.IAnswer;
 import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -63,6 +61,7 @@ public class ConnectionModelTest {
 
     private final String HOST = "myLocalhost";
     private final String TOPIC = "inOrOut/username";
+    private final String USERNAME = "username";
     private final int PORT = 2345;
     private final User USER = User.generate();
     private Server server;
@@ -131,8 +130,8 @@ public class ConnectionModelTest {
     @Test
     public void testStartHandshake() {
         instantiate();
-        mockCarrier();
-        model.carrier.deliverMessage(anyObject(byte[].class), anyObject(Participant.class));
+        prepareCarrier();
+        model.carrier.deliverMessage(anyObject(byte[].class), anyObject(String.class));
         expectLastCall();
         assertNull(model.getChallenger());
         replay(model.carrier);
@@ -146,19 +145,18 @@ public class ConnectionModelTest {
     @Test
     public void testHandleHandshakeResponse() {
         instantiate();
-        mockCarrier();
+        prepareCarrier();
         prepareHanshake();
-        model.carrier.deliverMessage(anyObject(byte[].class), anyObject(Participant.class));
+        model.carrier.deliverMessage(anyObject(byte[].class), anyObject(String.class));
         expectLastCall().andAnswer(new IAnswer<Object>() {
             @Override
             public Object answer() throws Throwable {
                 byte[] ciphertext = (byte[]) getCurrentArguments()[0];
                 Message plaintext = decrypt(ciphertext);
-                Participant recipient = (Participant) getCurrentArguments()[1];
+                String topic = (String) getCurrentArguments()[1];
 
                 responder.consumeSuccess(plaintext); // expect no exception
-                assertArrayEquals(server.getPublicKeyAsBytes(), recipient.getPublicKeyAsBytes());
-
+                assertEquals(TOPIC, topic);
                 return null;
             }
         });
@@ -181,8 +179,9 @@ public class ConnectionModelTest {
         model.log = Logger.getGlobal();
     }
 
-    private void mockCarrier() {
+    private void prepareCarrier() {
         model.carrier = createMock(ClientCarrier.class);
+        model.mqttUsername = USERNAME;
     }
 
     private void prepareHanshake() {
