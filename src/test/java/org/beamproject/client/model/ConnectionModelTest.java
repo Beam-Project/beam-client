@@ -29,6 +29,7 @@ import org.beamproject.client.ExecutorFake;
 import static org.beamproject.client.model.ConnectionModel.MQTT_USERNAME_LENGTH;
 import org.beamproject.client.util.ConfigKey;
 import org.beamproject.common.Server;
+import org.beamproject.common.Session;
 import org.beamproject.common.User;
 import org.beamproject.common.carrier.ClientCarrier;
 import org.beamproject.common.carrier.MqttConnectionPoolFactory;
@@ -60,7 +61,7 @@ import org.junit.Test;
 public class ConnectionModelTest {
 
     private final String HOST = "myLocalhost";
-    private final String TOPIC = "inOrOut/username";
+    private final String TOPIC = "out/username";
     private final String USERNAME = "username";
     private final int PORT = 2345;
     private final User USER = User.generate();
@@ -100,11 +101,11 @@ public class ConnectionModelTest {
     }
 
     @Test
-    public void testSetUpConnectionPoolAndCarrier() {
+    public void testPrepareConnectionPoolAndCarrier() {
         expect(mainModel.getServer()).andReturn(server).times(3);
         replay(mainModel);
 
-        model.setUpConnectionPoolAndCarrier();
+        model.prepareConnectionPoolAndCarrier();
 
         verify(mainModel);
         MqttConnectionPoolFactory factory = (MqttConnectionPoolFactory) model.connectionPool.getFactory();
@@ -118,12 +119,12 @@ public class ConnectionModelTest {
         HashSet<String> alreadyGeneratedUsernames = new HashSet<>();
 
         for (int i = 0; i < 1000; i++) {
-            String username = ConnectionModel.generateRandomMqttUsername();
+            model.generateRandomMqttUsername();
 
-            assertEquals(MQTT_USERNAME_LENGTH, username.length());
-            assertFalse(alreadyGeneratedUsernames.contains(username));
+            assertEquals(MQTT_USERNAME_LENGTH, model.mqttUsername.length());
+            assertFalse(alreadyGeneratedUsernames.contains(model.mqttUsername));
 
-            alreadyGeneratedUsernames.add(username);
+            alreadyGeneratedUsernames.add(model.mqttUsername);
         }
     }
 
@@ -147,6 +148,7 @@ public class ConnectionModelTest {
         instantiate();
         prepareCarrier();
         prepareHanshake();
+        model.publisherTopic = TOPIC;
         model.carrier.deliverMessage(anyObject(byte[].class), anyObject(String.class));
         expectLastCall().andAnswer(new IAnswer<Object>() {
             @Override
@@ -162,11 +164,30 @@ public class ConnectionModelTest {
         });
         replay(model.carrier);
 
-        model.consumeMessage(encrypt(response), TOPIC);
+        model.consumeMessage(encrypt(response), USERNAME);
 
         verify(mainModel, model.carrier);
         assertSame(challenger.getSessionKey(), model.getSession().getKey());
         assertSame(server, model.getSession().getRemoteParticipant());
+        assertEquals(UPDATE_CONNECTION_STATUS, busFake.getNextEvent());
+    }
+    
+    @Test
+    public void testDisconnect() {
+        instantiate();
+        prepareCarrier();
+        model.carrier.shutdown();
+        expectLastCall();
+        Session session = createMock(Session.class);
+        session.invalidateSession();
+        expectLastCall();
+        model.setSession(session);
+        replay(model.carrier, session);
+
+        model.disconnect();
+
+        verify(mainModel, model.carrier, session);
+        assertNull(model.getSession());
         assertEquals(UPDATE_CONNECTION_STATUS, busFake.getNextEvent());
     }
 

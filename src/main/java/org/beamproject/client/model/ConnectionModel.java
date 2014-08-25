@@ -31,6 +31,8 @@ import static org.beamproject.client.Event.UPDATE_CONNECTION_STATUS;
 import org.beamproject.client.carrier.HandshakeResponseHandler;
 import org.beamproject.common.Session;
 import org.beamproject.common.carrier.ClientCarrier;
+import static org.beamproject.common.carrier.ClientCarrier.MQTT_IN_TOPIC_PREFIX;
+import static org.beamproject.common.carrier.ClientCarrier.MQTT_OUT_TOPIC_PREFIX;
 import org.beamproject.common.carrier.ClientCarrierImpl;
 import org.beamproject.common.carrier.ClientCarrierModel;
 import org.beamproject.common.carrier.MqttConnectionPool;
@@ -48,8 +50,6 @@ public class ConnectionModel implements ClientCarrierModel {
     Logger log;
     final static int MQTT_USERNAME_LENGTH = 12;
     private final static String MQTT_USERNAME_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private final static String MQTT_SUBSCRIBER_TOPIC_PREFIX = "out/";
-    private final static String MQTT_PUBLISHER_TOPIC_PREFIX = "in/";
     private final MainModel model;
     private final EventBus bus;
     private final Executor executor;
@@ -57,7 +57,7 @@ public class ConnectionModel implements ClientCarrierModel {
     @Delegate
     ClientCarrier carrier;
     MqttConnectionPool connectionPool;
-    String mqttUsername;
+    String mqttUsername, subscriberTopic, publisherTopic;
     @Getter
     @Setter
     private HandshakeChallenger challenger;
@@ -73,22 +73,23 @@ public class ConnectionModel implements ClientCarrierModel {
         this.packerPool = packerPool;
     }
 
-    public void setUpConnectionPoolAndCarrier() {
+    public void prepareConnectionPoolAndCarrier() {
         String host = model.getServer().getMqttAddress().getHostString();
         int port = model.getServer().getMqttAddress().getPort();
-        mqttUsername = generateRandomMqttUsername();
-        String subscriberTopic = MQTT_SUBSCRIBER_TOPIC_PREFIX + mqttUsername;
-        String publisherTopic = MQTT_PUBLISHER_TOPIC_PREFIX + mqttUsername;
+
+        generateRandomMqttUsername();
+        subscriberTopic = MQTT_OUT_TOPIC_PREFIX + mqttUsername;
+        publisherTopic = MQTT_IN_TOPIC_PREFIX + mqttUsername;
 
         log.log(INFO, "Connecting: {0}:{1} with username ''{2}'' in topic ''{3}''", new Object[]{host, port, mqttUsername, subscriberTopic});
         MqttConnectionPoolFactory factory = new MqttConnectionPoolFactory(host, port, mqttUsername, subscriberTopic);
 
         connectionPool = new MqttConnectionPool(factory);
         carrier = new ClientCarrierImpl(this, executor, connectionPool);
-        carrier.bindParticipantToTopic(model.getServer(), publisherTopic);
+        carrier.bindParticipantToTopic(model.getServer(), subscriberTopic);
     }
 
-    static String generateRandomMqttUsername() {
+    void generateRandomMqttUsername() {
         final int alphabetLength = MQTT_USERNAME_ALPHABET.length();
         SecureRandom random = new SecureRandom();
         StringBuilder randomName = new StringBuilder();
@@ -98,7 +99,7 @@ public class ConnectionModel implements ClientCarrierModel {
             randomName.append(nextSymbol);
         }
 
-        return randomName.toString();
+        mqttUsername = randomName.toString();
     }
 
     public void startAsyncReceiving() {
@@ -112,7 +113,7 @@ public class ConnectionModel implements ClientCarrierModel {
 
     public void startHandshake() {
         challenger = new HandshakeChallenger(model.getUser());
-        encryptAndSend(challenger.produceChallenge(model.getServer()), mqttUsername);
+        encryptAndSend(challenger.produceChallenge(model.getServer()), publisherTopic);
     }
 
     @Override
@@ -124,11 +125,13 @@ public class ConnectionModel implements ClientCarrierModel {
 
                 try {
                     packer = packerPool.borrowObject();
-                    Message message = packer.decryptAndUnpack(ciphertext, model.getUser());
-                    Message response = produceResponse(message);
+                    Message request = packer.decryptAndUnpack(ciphertext, model.getUser());
+                    log.log(INFO, "Handle request of type: {0}", request.getType().toString());
+                    Message response = produceResponse(request);
 
                     if (response != null) {
-                        encryptAndSend(message, mqttUsername);
+                        log.log(INFO, "Send response of type: {0}", response.getType().toString());
+                        encryptAndSend(response, publisherTopic);
                     }
                 } catch (Exception ex) {
                     log.log(WARNING, "Could not handle incoming message: {0}", ex.getMessage());
@@ -140,13 +143,13 @@ public class ConnectionModel implements ClientCarrierModel {
     }
 
     private Message produceResponse(Message message) {
-
         switch (message.getType()) {
 
             case HS_RESPONSE:
                 HandshakeResponseHandler responseHandler = new HandshakeResponseHandler(this);
+                Message success = responseHandler.handle(message);
                 bus.post(UPDATE_CONNECTION_STATUS);
-                return responseHandler.handle(message);
+                return success;
 
             default:
                 log.log(INFO, "Received message of unknown type; ignore it.");
@@ -175,10 +178,16 @@ public class ConnectionModel implements ClientCarrierModel {
         });
     }
 
+    public void disconnect() {
+        carrier.shutdown();
+        session.invalidateSession();
+        session = null;
+
+        bus.post(UPDATE_CONNECTION_STATUS);
+    }
+
     public boolean isConnected() {
-        return carrier != null
-                && session != null
-                && session.getKey() != null;
+        return carrier != null && session != null && session.getKey() != null;
     }
 
 }

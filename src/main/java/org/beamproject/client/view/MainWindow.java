@@ -167,9 +167,7 @@ public class MainWindow extends javax.swing.JFrame {
     public void updateConnectionStatus(Event event) {
         if (event == UPDATE_CONNECTION_STATUS) {
             boolean isConnected = model.getConnectionModel().isConnected();
-            connectionToggleButton.setText(isConnected
-                    ? "Online"
-                    : "Offline");
+            connectionToggleButton.setText(isConnected ? "Online" : "Offline");
         }
     }
 

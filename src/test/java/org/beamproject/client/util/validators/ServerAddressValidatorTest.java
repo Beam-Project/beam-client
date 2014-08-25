@@ -46,7 +46,7 @@ public class ServerAddressValidatorTest {
         test("beam:", false);
         test(server.getAddress().replaceAll("beam:", "Beam:"), false);
         test(server.getAddress().replaceAll("beam", ""), false);
-        test(server.getAddress().replaceFirst("M", ""), false);
+        test(server.getAddress().replaceFirst("M", "mmm"), false);
         test(server.getAddress().replaceFirst("X", "X "), false);
         test(server.getAddress(), true);
         test(VALID_SERVER_ADDRESS, true);

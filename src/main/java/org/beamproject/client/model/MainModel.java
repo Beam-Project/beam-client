@@ -269,17 +269,18 @@ public class MainModel {
             public void run() {
                 if (doConnect) {
                     log.info("Connecting...");
-                    connectionModel.setUpConnectionPoolAndCarrier();
+                    connectionModel.prepareConnectionPoolAndCarrier();
                     connectionModel.startAsyncReceiving();
                     connectionModel.startHandshake();
                 } else {
                     log.info("Disconnecting...");
-                    connectionModel.shutdown();
+                    connectionModel.disconnect();
+                    log.info("Disconnected");
                 }
+
+                bus.post(UPDATE_CONNECTION_STATUS);
             }
         });
-
-        bus.post(UPDATE_CONNECTION_STATUS);
     }
 
     /**
