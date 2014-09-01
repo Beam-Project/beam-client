@@ -82,7 +82,6 @@ public class ServerChangeLayer extends javax.swing.JPanel {
 
         changedServerLabel.setText("Changed Server Address:");
 
-        changedServerTextField.setNextFocusableComponent(confirmCheckbox);
         changedServerTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 changedServerTextFieldActionPerformed(evt);
@@ -90,7 +89,6 @@ public class ServerChangeLayer extends javax.swing.JPanel {
         });
 
         confirmCheckbox.setText("Yes, I know what I am doing");
-        confirmCheckbox.setNextFocusableComponent(restartButton);
         confirmCheckbox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 confirmCheckboxItemStateChanged(evt);
@@ -98,7 +96,6 @@ public class ServerChangeLayer extends javax.swing.JPanel {
         });
 
         abortButton.setText("Abort");
-        abortButton.setNextFocusableComponent(changedServerTextField);
         abortButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 abortButtonActionPerformed(evt);
@@ -107,7 +104,6 @@ public class ServerChangeLayer extends javax.swing.JPanel {
 
         restartButton.setText("Restart Beam");
         restartButton.setEnabled(false);
-        restartButton.setNextFocusableComponent(abortButton);
         restartButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 restartButtonActionPerformed(evt);

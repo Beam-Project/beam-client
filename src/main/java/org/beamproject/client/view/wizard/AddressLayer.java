@@ -97,7 +97,6 @@ public class AddressLayer extends javax.swing.JPanel {
         copyPanel.add(filler3);
 
         copyButton.setText("Copy Beam address");
-        copyButton.setNextFocusableComponent(nextButton);
         copyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 copyButtonActionPerformed(evt);
@@ -111,7 +110,6 @@ public class AddressLayer extends javax.swing.JPanel {
         buttonPanel.add(filler1);
 
         nextButton.setText("Next");
-        nextButton.setNextFocusableComponent(copyButton);
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nextButtonActionPerformed(evt);

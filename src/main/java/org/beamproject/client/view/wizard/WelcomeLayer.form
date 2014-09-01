@@ -93,9 +93,6 @@
     <Component class="javax.swing.JTextField" name="usernameTextField">
       <Properties>
         <Property name="text" type="java.lang.String" value="Ren&#xe9;"/>
-        <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="activationCodeTextField"/>
-        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="usernameTextFieldActionPerformed"/>
@@ -109,9 +106,6 @@
     <Component class="javax.swing.JTextField" name="activationCodeTextField">
       <Properties>
         <Property name="text" type="java.lang.String" value="beam:Vsr1hpddfeaDHWHawwg4V4PSngWtLuUX8PQHBKBRkrYQvpTPLFZqQWgcWfFKbV1GJTPjRwPMS22kxCxnpvXHLEmNRXQGvSLMLZjYLXXA37wJEVRDHAGL1D1Ri7VmMq5H6LoSK941zshMfyUhSUrAEc7miyDaXLtMstNuvhPyGVWWFmp6qcdrvYhP9vrHDXKjY2XeJaCCph1zEe6yBvwjhNAyvsTaVK7UJrAeeyYU7GfaDMN"/>
-        <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="nextButton"/>
-        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="activationCodeTextFieldActionPerformed"/>
@@ -147,9 +141,6 @@
         <Component class="javax.swing.JButton" name="nextButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Next"/>
-            <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-              <ComponentRef name="usernameTextField"/>
-            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nextButtonActionPerformed"/>

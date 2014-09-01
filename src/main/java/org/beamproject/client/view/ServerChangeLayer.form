@@ -107,11 +107,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="changedServerTextField">
-      <Properties>
-        <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="confirmCheckbox"/>
-        </Property>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changedServerTextFieldActionPerformed"/>
       </Events>
@@ -119,9 +114,6 @@
     <Component class="javax.swing.JCheckBox" name="confirmCheckbox">
       <Properties>
         <Property name="text" type="java.lang.String" value="Yes, I know what I am doing"/>
-        <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="restartButton"/>
-        </Property>
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="confirmCheckboxItemStateChanged"/>
@@ -130,9 +122,6 @@
     <Component class="javax.swing.JButton" name="abortButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Abort"/>
-        <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="changedServerTextField"/>
-        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="abortButtonActionPerformed"/>
@@ -142,9 +131,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Restart Beam"/>
         <Property name="enabled" type="boolean" value="false"/>
-        <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
-          <ComponentRef name="abortButton"/>
-        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="restartButtonActionPerformed"/>

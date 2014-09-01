@@ -99,7 +99,6 @@ public class PasswordLayer extends javax.swing.JPanel implements Observer {
         passwordPanel.setLayout(new javax.swing.BoxLayout(passwordPanel, javax.swing.BoxLayout.PAGE_AXIS));
 
         rememberCheckBox.setText("Remember password");
-        rememberCheckBox.setNextFocusableComponent(nextButtonPanel);
         rememberCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 rememberCheckBoxItemStateChanged(evt);

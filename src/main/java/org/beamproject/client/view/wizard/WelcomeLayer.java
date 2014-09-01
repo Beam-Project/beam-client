@@ -81,7 +81,6 @@ public class WelcomeLayer extends javax.swing.JPanel {
         usernameLabel.setText("<html>Please enter your name:</html>");
 
         usernameTextField.setText("René");
-        usernameTextField.setNextFocusableComponent(activationCodeTextField);
         usernameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 usernameTextFieldActionPerformed(evt);
@@ -91,7 +90,6 @@ public class WelcomeLayer extends javax.swing.JPanel {
         activationCodeLabel.setText("<html>Enter the <b>Activation Code</b> of your server:</html>");
 
         activationCodeTextField.setText("beam:Vsr1hpddfeaDHWHawwg4V4PSngWtLuUX8PQHBKBRkrYQvpTPLFZqQWgcWfFKbV1GJTPjRwPMS22kxCxnpvXHLEmNRXQGvSLMLZjYLXXA37wJEVRDHAGL1D1Ri7VmMq5H6LoSK941zshMfyUhSUrAEc7miyDaXLtMstNuvhPyGVWWFmp6qcdrvYhP9vrHDXKjY2XeJaCCph1zEe6yBvwjhNAyvsTaVK7UJrAeeyYU7GfaDMN");
-        activationCodeTextField.setNextFocusableComponent(nextButton);
         activationCodeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 activationCodeTextFieldActionPerformed(evt);
@@ -106,7 +104,6 @@ public class WelcomeLayer extends javax.swing.JPanel {
         nextPanel.add(filler1);
 
         nextButton.setText("Next");
-        nextButton.setNextFocusableComponent(usernameTextField);
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nextButtonActionPerformed(evt);
